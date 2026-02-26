@@ -51,6 +51,23 @@ const populateModels = (unit: Unit) => {
                         model.slots[optionDef.slotName] = choice.name;
                     }
                 }
+
+                // Also apply any additional modifications attached to this choice
+                if (choice.modifications) {
+                    for (const mod of choice.modifications) {
+                        for (const model of unit.models) {
+                            if (mod.targetName && model.name !== mod.targetName) continue;
+                            if (mod.targetClass && model.class !== mod.targetClass) continue;
+                            if (mod.clearSlot) delete model.slots[mod.clearSlot];
+                            if (mod.setSlot) {
+                                for (const [k, v] of Object.entries(mod.setSlot)) {
+                                    model.slots[k] = v;
+                                }
+                            }
+                            if (mod.addExtras) model.extras.push(...mod.addExtras);
+                        }
+                    }
+                }
             }
         } else {
             // Toggle option: apply parent modifications if active
