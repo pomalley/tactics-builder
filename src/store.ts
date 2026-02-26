@@ -1,6 +1,6 @@
 import { reactive, computed } from 'vue'
 import type { Army, Unit, Model, UnitType, Lifeform } from './types'
-import { unitDefinitions, lifeformClassPoints, weaponPoints, unitOptions } from './data'
+import { unitDefinitions, lifeformClassPoints, weaponPoints, unitOptions, type EquipmentName } from './data'
 
 export const armyState = reactive<Army>({
     name: 'New Army',
@@ -24,8 +24,8 @@ const applyModifications = (models: Model[], modifications: Array<{
     targetName?: string;
     targetClass?: string;
     clearSlot?: string;
-    setSlot?: Record<string, string>;
-    addExtras?: string[];
+    setSlot?: Record<string, EquipmentName>;
+    addExtras?: EquipmentName[];
 }>) => {
     for (const mod of modifications) {
         for (const model of models) {
@@ -58,7 +58,7 @@ const populateModels = (unit: Unit) => {
             name: modelDef.name,
             lifeform: unit.lifeform,
             class: modelDef.class,
-            slots: { ...modelDef.slots },
+            slots: { ...modelDef.slots } as Record<string, EquipmentName>,
             extras: [...modelDef.extras]
         });
     }
@@ -76,7 +76,7 @@ const populateModels = (unit: Unit) => {
                 // Apply to every model that has this slot
                 for (const model of unit.models) {
                     if (optionDef.slotName in model.slots) {
-                        model.slots[optionDef.slotName] = choice.name;
+                        model.slots[optionDef.slotName] = choice.name as EquipmentName;
                     }
                 }
 

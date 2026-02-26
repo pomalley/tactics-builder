@@ -1,3 +1,5 @@
+import type { EquipmentName } from './data'
+
 export type Lifeform = 'Human' | 'Feral' | 'K\'Erin';
 // TODO: Refactor UnitType to be dynamically generated from Object.keys(unitDefinitions)
 export type UnitType = 'Infantry' | 'Recon' | 'Storm' | 'Weapon Team' | 'Minor Character' | 'Major Character' | 'Epic Character' | 'Tech' | 'Sharpshooter' | 'Fire Section' | 'Comms' | 'Medic' | 'Scout' | 'Enforcers' | 'Militia' | 'Pirate' | 'Cavalry';
@@ -8,8 +10,8 @@ export interface Model {
     name: string;
     lifeform: Lifeform;
     class: ModelClass;
-    slots: Record<string, string>; // named weapon slots, e.g. { rifle: 'Military Rifle', support: 'Light Machine Gun' }
-    extras: string[];              // non-swappable items: grenades, blades, etc.
+    slots: Record<string, EquipmentName>; // named weapon slots, e.g. { rifle: 'Military Rifle', support: 'Light Machine Gun' }
+    extras: EquipmentName[];              // non-swappable items: grenades, blades, etc.
 }
 
 export interface Unit {
@@ -31,8 +33,8 @@ export interface UnitOptionDef {
         targetName?: string;
         targetClass?: ModelClass;
         clearSlot?: string;             // remove this slot from the model entirely
-        setSlot?: Record<string, string>; // override a slot value, e.g. { rifle: 'Shotgun' }
-        addExtras?: string[];             // push items onto the model's extras
+        setSlot?: Record<string, EquipmentName>; // override a slot value, e.g. { rifle: 'Shotgun' }
+        addExtras?: EquipmentName[];             // push items onto the model's extras
     }[];
 }
 

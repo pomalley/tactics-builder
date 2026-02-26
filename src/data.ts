@@ -1,10 +1,71 @@
 import type { UnitType, Lifeform, ModelClass, UnitOptionDef } from './types'
 
+export const weaponPoints = {
+    // Rifles
+    'Military Rifle': 3,
+    'Infantry Laser': 4,
+    'Precision Rifle': 6,
+    'Blaster': 3,
+    'Primitive Weapon': 1,
+    'Shotgun': 2,
+    // Support Weapons
+    'Light Machine Gun': 10,
+    'Flak Gun': 5,
+    'Grenade Launcher': 10,
+    'Fury Rifle': 15,
+    'Plasma Rifle': 8,
+    'Sniper Rifle': 10,
+    'Hyper Blaster': 14,
+    'Flame Projector': 6,
+    'Fusion Rifle': 10,
+    // Melee
+    'Blade': 1,
+    'Glare Sword': 2,
+    'Powered Claw': 3,
+    'Breaching Axe': 4,
+    'Suppression Maul': 1,
+    'Ripper Sword': 3,
+    // Sidearms
+    'Service Pistol': 1,
+    'Hand Laser': 2,
+    'Blast Pistol': 2,
+    // Grenades
+    'Frag Grenade': 1,
+    'Penetrator Grenade': 2,
+    'Jinx Grenade': 3,
+    'Fog Grenade': 1,
+    'Cling-fire Grenade': 2,
+    'Shock Grenade': 1,
+    // Crewed Weapons
+    'Laser Cannon': 35,
+    '20mm Auto Cannon': 20,
+    'Infantry Mortar': 15,
+    // Upgrades
+    'Hero': 5,
+    'Leader': 10,
+    // Abilities
+    'Observation +1': 1,
+    'Morale +1': 0,
+    'Tech +1 (hacking, repairs, etc.)': 4,
+    'Sharpshooter +1 Hit': 4,
+    'Morale +1 (Fire Section)': 5,
+    'Comms +1': 9,
+    'Medic (Remove 1 suppression)': 9,
+    'Scout +1" Spd, +2 Obs': 6,
+    'Cavalry': 1,
+    // Armor
+    'None': 0,
+    'Powered Armor': 2,
+    'Breach Armor': 4
+} as const;
+
+export type EquipmentName = keyof typeof weaponPoints;
+
 export interface ModelDef {
     name: string;
     class: ModelClass;
-    slots: Record<string, string>;
-    extras: string[];
+    slots: Record<string, EquipmentName>;
+    extras: EquipmentName[];
 }
 
 export interface UnitTypeDef {
@@ -128,7 +189,6 @@ export const unitDefinitions: Record<UnitType, UnitTypeDef> = {
             { name: 'Trooper 4', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade' }, extras: ['Cavalry'] },
         ]
     },
-
 }
 
 export const lifeformClassPoints: Record<Lifeform, Record<ModelClass, number>> = {
@@ -153,65 +213,6 @@ export const lifeformClassPoints: Record<Lifeform, Record<ModelClass, number>> =
         'Major Character': 25,
         'Epic Character': 35
     }
-}
-
-export const weaponPoints: Record<string, number> = {
-    // Rifles
-    'Military Rifle': 3,
-    'Infantry Laser': 4,
-    'Precision Rifle': 6,
-    'Blaster': 3,
-    'Primitive Weapon': 1,
-    'Shotgun': 2,
-    // Support Weapons
-    'Light Machine Gun': 10,
-    'Flak Gun': 5,
-    'Grenade Launcher': 10,
-    'Fury Rifle': 15,
-    'Plasma Rifle': 8,
-    'Sniper Rifle': 10,
-    'Hyper Blaster': 14,
-    'Flame Projector': 6,
-    'Fusion Rifle': 10,
-    // Melee
-    'Blade': 1,
-    'Glare Sword': 2,
-    'Powered Claw': 3,
-    'Breaching Axe': 4,
-    'Suppression Maul': 1,
-    'Ripper Sword': 3,
-    // Sidearms
-    'Service Pistol': 1,
-    'Hand Laser': 2,
-    'Blast Pistol': 2,
-    // Grenades
-    'Frag Grenade': 1,
-    'Penetrator Grenade': 2,
-    'Jinx Grenade': 3,
-    'Fog Grenade': 1,
-    'Cling-fire Grenade': 2,
-    'Shock Grenade': 1,
-    // Crewed Weapons
-    'Laser Cannon': 35,
-    '20mm Auto Cannon': 20,
-    'Infantry Mortar': 15,
-    // Upgrades
-    'Hero': 5,
-    'Leader': 10,
-    // Abilities
-    'Observation +1': 1,
-    'Morale +1': 0,
-    'Tech +1 (hacking, repairs, etc.)': 4,
-    'Sharpshooter +1 Hit': 4,
-    'Morale +1 (Fire Section)': 5,
-    'Comms +1': 9,
-    'Medic (Remove 1 suppression)': 9,
-    'Scout +1" Spd, +2 Obs': 6,
-    'Cavalry': 1,
-    // Armor
-    'None': 0,
-    'Powered Armor': 2,
-    'Breach Armor': 4
 }
 
 const techOptions: UnitOptionDef[] = [

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { Unit, UnitType, Lifeform, UnitOptionDef } from "../types";
-import { unitOptions, weaponPoints, unitDefinitions } from "../data";
+import { unitOptions, weaponPoints, unitDefinitions, type EquipmentName } from "../data";
 import ModelItem from "./ModelItem.vue";
 import {
   addModelToUnit,
@@ -60,7 +60,7 @@ const getOptionDefaultLabel = (opt: UnitOptionDef) => {
 
     if (targetModel) {
       const currentWeapon = targetModel.slots[slotName];
-      const points = weaponPoints[currentWeapon];
+      const points = weaponPoints[currentWeapon as EquipmentName];
       const pointsLabel = points !== undefined ? ` [${points}]` : "";
       return `Default (${currentWeapon}${pointsLabel})`;
     }
@@ -71,7 +71,7 @@ const getOptionDefaultLabel = (opt: UnitOptionDef) => {
     const targetModel = props.unit.models.find((m) => m.slots[opt.slotName!]);
     if (targetModel) {
       const currentWeapon = targetModel.slots[opt.slotName!];
-      const points = weaponPoints[currentWeapon];
+      const points = weaponPoints[currentWeapon as EquipmentName];
       const pointsLabel = points !== undefined ? ` [${points}]` : "";
       return `Default (${currentWeapon}${pointsLabel})`;
     }
@@ -82,14 +82,14 @@ const getOptionDefaultLabel = (opt: UnitOptionDef) => {
 
 const getChoicePointsLabel = (choice: any) => {
   // Try weapon name directly first
-  let points = weaponPoints[choice.name];
+  let points = weaponPoints[choice.name as EquipmentName];
 
   // If not found, check modifications
   if (points === undefined && choice.modifications) {
     for (const mod of choice.modifications) {
       if (mod.setSlot) {
         const weaponName = Object.values(mod.setSlot)[0] as string;
-        points = weaponPoints[weaponName];
+        points = weaponPoints[weaponName as EquipmentName];
         if (points !== undefined) break;
       }
     }
@@ -105,7 +105,7 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
     for (const mod of opt.modifications) {
       if (mod.addExtras) {
         total += mod.addExtras.reduce(
-          (sum, item) => sum + (weaponPoints[item] || 0),
+          (sum, item) => sum + (weaponPoints[item as EquipmentName] || 0),
           0,
         );
         found = true;
@@ -114,7 +114,7 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
         // For toggles that set a slot (like "Replace X with Y"),
         // finding net change is hard without context, but we can show the weapon cost
         const weaponName = Object.values(mod.setSlot)[0] as string;
-        const wp = weaponPoints[weaponName];
+        const wp = weaponPoints[weaponName as EquipmentName];
         if (wp !== undefined) {
           total += wp;
           found = true;
