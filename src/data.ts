@@ -91,7 +91,44 @@ export const unitDefinitions: Record<UnitType, UnitTypeDef> = {
         models: [
             { name: 'Scout', class: 'Soldier', slots: { rifle: 'Infantry Laser', armor: 'None' }, extras: ['Scout +1" Spd, +2 Obs'] }
         ]
-    }
+    },
+    'Enforcers': {
+        models: [
+            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Shotgun', armor: 'None' }, extras: ['Shock Grenade'] },
+            { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Shotgun', armor: 'None' }, extras: ['Shock Grenade'] },
+            { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Shotgun', armor: 'None' }, extras: ['Shock Grenade'] },
+            { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Shotgun', armor: 'None' }, extras: ['Shock Grenade'] },
+            { name: 'Trooper 4', class: 'Soldier', slots: { rifle: 'Shotgun', armor: 'None' }, extras: ['Shock Grenade'] },
+        ]
+    },
+    'Militia': {
+        models: [
+            { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Military Rifle', armor: 'None' }, extras: [] },
+            { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Military Rifle', armor: 'None' }, extras: [] },
+            { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Military Rifle', armor: 'None' }, extras: [] },
+            { name: 'Trooper 4', class: 'Soldier', slots: { rifle: 'Military Rifle', armor: 'None' }, extras: [] },
+            { name: 'Trooper 5', class: 'Soldier', slots: { rifle: 'Military Rifle', armor: 'None' }, extras: [] },
+        ]
+    },
+    'Pirate': {
+        models: [
+            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Blaster' }, extras: [] },
+            { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Blaster', armor: 'None' }, extras: [] },
+            { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Blaster', armor: 'None' }, extras: [] },
+            { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Blaster', armor: 'None' }, extras: [] },
+            { name: 'Trooper 4', class: 'Soldier', slots: { support: 'Fusion Rifle', armor: 'None' }, extras: [] },
+        ]
+    },
+    'Cavalry': {
+        models: [
+            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Military Rifle', melee: 'Blade', armor: 'None' }, extras: ['Cavalry'] },
+            { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade', armor: 'None' }, extras: ['Cavalry'] },
+            { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade', armor: 'None' }, extras: ['Cavalry'] },
+            { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade', armor: 'None' }, extras: ['Cavalry'] },
+            { name: 'Trooper 4', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade', armor: 'None' }, extras: ['Cavalry'] },
+        ]
+    },
+
 }
 
 export const lifeformClassPoints: Record<Lifeform, Record<ModelClass, number>> = {
@@ -170,6 +207,7 @@ export const weaponPoints: Record<string, number> = {
     'Comms +1': 9,
     'Medic (Remove 1 suppression)': 9,
     'Scout +1" Spd, +2 Obs': 6,
+    'Cavalry': 1,
     // Armor
     'None': 0,
     'Powered Armor': 2,
@@ -442,5 +480,86 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
     'Fire Section': [armorOptions, ...fireSectionOptions],
     'Comms': [armorOptions],
     'Medic': [armorOptions],
-    'Scout': [armorOptions]
+    'Scout': [armorOptions],
+    'Enforcers': [
+        armorOptions,
+        {
+            id: 'enforcer_sgt_maul',
+            name: 'Sergeant: Suppression Maul',
+            modifications: [{
+                targetName: 'Sergeant',
+                setSlot: { melee: 'Suppression Maul' }
+            }]
+        },
+        {
+            id: 'enforcer_support',
+            name: 'Support Weapon',
+            choices: [
+                { id: 'enforcer_flak',   name: 'Flak Gun',        modifications: [{ targetName: 'Trooper 1', setSlot: { rifle: 'Flak Gun' } }] },
+                { id: 'enforcer_grenade',  name: 'Grenade Launcher', modifications: [{ targetName: 'Trooper 1', setSlot: { rifle: 'Grenade Launcher' } }] }
+            ]
+        },
+    ],
+    'Militia': [
+        armorOptions,
+        {
+            id: 'militia_grenade',
+            name: 'Penetrator Grenade (one soldier)',
+            modifications: [
+                { targetName: 'Trooper 2', addExtras: ['Penetrator Grenade'] }
+            ]
+        },
+        {
+            id: 'militia_support',
+            name: 'Support Weapon',
+            choices: [
+              { id: 'militia_precision',   name: 'Precision Rifle', modifications: [{ targetName: 'Trooper 1', setSlot: { rifle: 'Precision Rifle' } }] },
+              { id: 'militia_light_machine_gun', name: 'Light Machine Gun', modifications: [{ targetName: 'Trooper 1', setSlot: { rifle: 'Light Machine Gun' } }] }
+            ]
+        }
+    ],
+    'Pirate': [
+        armorOptions,
+        {
+            id: 'pirate_support_slot',
+            name: 'Support Weapon',
+            type: 'slot',
+            slotName: 'support',
+            choices: [
+                { id: 'support_fusion', name: 'Fusion Rifle' },
+                { id: 'support_lmg', name: 'Light Machine Gun' },
+            ]
+        },
+        {
+            id: 'pirate_sergeant_melee',
+            name: 'Sergeant Melee',
+            slotName: 'sgt_melee',
+            choices: [
+                { id: 'sgt_blade', name: 'Blade', modifications: [{ targetName: 'Sergeant', setSlot: { melee: 'Blade' } }] },
+                { id: 'sgt_powered_claw', name: 'Ripper Sword', modifications: [{ targetName: 'Sergeant', setSlot: { melee: 'Ripper Sword' } }] }
+            ]
+        },
+        {
+            id: 'pirate_sgt_grenade',
+            name: 'Sergeant Cling-Fire Grenades',
+            modifications: [
+                { targetName: 'Sergeant', addExtras: ['Cling-fire Grenade'] }
+            ]
+        },
+        {
+            id: 'pirate_axe_1',
+            name: 'Breaching Axe (1st)',
+            modifications: [
+                { targetName: 'Trooper 1', setSlot: { melee: 'Breaching Axe' } }
+            ]
+        },
+        {
+            id: 'pirate_axe_2',
+            name: 'Breaching Axe (2nd)',
+            modifications: [
+                { targetName: 'Trooper 2', setSlot: { melee: 'Breaching Axe' } }
+            ]
+        }
+    ],
+    'Cavalry': [armorOptions]
 }

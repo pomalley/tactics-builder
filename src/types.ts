@@ -1,6 +1,6 @@
 export type Lifeform = 'Human' | 'Feral' | 'K\'Erin';
 // TODO: Refactor UnitType to be dynamically generated from Object.keys(unitDefinitions)
-export type UnitType = 'Infantry' | 'Recon' | 'Storm' | 'Weapon Team' | 'Minor Character' | 'Major Character' | 'Epic Character' | 'Tech' | 'Sharpshooter' | 'Fire Section' | 'Comms' | 'Medic' | 'Scout';
+export type UnitType = 'Infantry' | 'Recon' | 'Storm' | 'Weapon Team' | 'Minor Character' | 'Major Character' | 'Epic Character' | 'Tech' | 'Sharpshooter' | 'Fire Section' | 'Comms' | 'Medic' | 'Scout' | 'Enforcers' | 'Militia' | 'Pirate' | 'Cavalry';
 export type ModelClass = 'Civilian' | 'Soldier' | 'Minor Character' | 'Major Character' | 'Epic Character';
 
 export interface Model {
