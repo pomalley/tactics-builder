@@ -14,118 +14,118 @@ export interface UnitTypeDef {
 export const unitDefinitions: Record<UnitType, UnitTypeDef> = {
     'Infantry': {
         models: [
-            { name: 'Sergeant',  class: 'Minor Character', slots: { rifle: 'Military Rifle', armor: 'None' },      extras: ['Frag Grenade'] },
-            { name: 'Trooper 1', class: 'Soldier',         slots: { rifle: 'Military Rifle', armor: 'None' },      extras: ['Frag Grenade'] },
-            { name: 'Trooper 2', class: 'Soldier',         slots: { rifle: 'Military Rifle', armor: 'None' },      extras: ['Frag Grenade'] },
-            { name: 'Trooper 3', class: 'Soldier',         slots: { rifle: 'Military Rifle', armor: 'None' },      extras: ['Frag Grenade'] },
-            { name: 'Trooper 4', class: 'Soldier',         slots: { support: 'Light Machine Gun', armor: 'None' }, extras: ['Frag Grenade'] }
+            { name: 'Sergeant',  class: 'Minor Character', slots: { rifle: 'Military Rifle' },      extras: ['Frag Grenade'] },
+            { name: 'Trooper 1', class: 'Soldier',         slots: { rifle: 'Military Rifle' },      extras: ['Frag Grenade'] },
+            { name: 'Trooper 2', class: 'Soldier',         slots: { rifle: 'Military Rifle' },      extras: ['Frag Grenade'] },
+            { name: 'Trooper 3', class: 'Soldier',         slots: { rifle: 'Military Rifle' },      extras: ['Frag Grenade'] },
+            { name: 'Trooper 4', class: 'Soldier',         slots: { support: 'Light Machine Gun' }, extras: ['Frag Grenade'] }
         ]
     },
     'Recon': {
         models: [
-            { name: 'Sergeant',  class: 'Minor Character', slots: { rifle: 'Military Rifle', armor: 'None' },    extras: ['Observation +1'] },
-            { name: 'Trooper 1', class: 'Soldier',         slots: { rifle: 'Military Rifle', armor: 'None' },    extras: ['Observation +1'] },
-            { name: 'Trooper 2', class: 'Soldier',         slots: { rifle: 'Military Rifle', armor: 'None' },    extras: ['Observation +1'] },
-            { name: 'Trooper 3', class: 'Soldier',         slots: { rifle: 'Military Rifle', armor: 'None' },    extras: ['Observation +1'] },
-            { name: 'Trooper 4', class: 'Soldier',         slots: { support: 'Precision Rifle', armor: 'None' }, extras: ['Observation +1'] }
+            { name: 'Sergeant',  class: 'Minor Character', slots: { rifle: 'Military Rifle' },    extras: ['Observation +1'] },
+            { name: 'Trooper 1', class: 'Soldier',         slots: { rifle: 'Military Rifle' },    extras: ['Observation +1'] },
+            { name: 'Trooper 2', class: 'Soldier',         slots: { rifle: 'Military Rifle' },    extras: ['Observation +1'] },
+            { name: 'Trooper 3', class: 'Soldier',         slots: { rifle: 'Military Rifle' },    extras: ['Observation +1'] },
+            { name: 'Trooper 4', class: 'Soldier',         slots: { support: 'Precision Rifle' }, extras: ['Observation +1'] }
         ]
     },
     'Storm': {
         models: [
-            { name: 'Sergeant',  class: 'Minor Character', slots: { rifle: 'Shotgun', sgt_melee: 'Blade', armor: 'None' }, extras: ['Frag Grenade', 'Fog Grenade'] },
-            { name: 'Trooper 1', class: 'Soldier',         slots: { rifle: 'Shotgun', melee: 'Breaching Axe', armor: 'None' }, extras: ['Frag Grenade', 'Fog Grenade'] },
-            { name: 'Trooper 2', class: 'Soldier',         slots: { rifle: 'Shotgun', melee: 'Blade', armor: 'None' }, extras: ['Frag Grenade', 'Fog Grenade'] },
-            { name: 'Trooper 3', class: 'Soldier',         slots: { rifle: 'Shotgun', melee: 'Blade', armor: 'None' }, extras: ['Frag Grenade', 'Fog Grenade'] },
-            { name: 'Trooper 4', class: 'Soldier',         slots: { rifle: 'Shotgun', melee: 'Blade', armor: 'None' }, extras: ['Frag Grenade', 'Fog Grenade'] }
+            { name: 'Sergeant',  class: 'Minor Character', slots: { rifle: 'Shotgun', sgt_melee: 'Blade' }, extras: ['Frag Grenade', 'Fog Grenade'] },
+            { name: 'Trooper 1', class: 'Soldier',         slots: { rifle: 'Shotgun', melee: 'Breaching Axe' }, extras: ['Frag Grenade', 'Fog Grenade'] },
+            { name: 'Trooper 2', class: 'Soldier',         slots: { rifle: 'Shotgun', melee: 'Blade' }, extras: ['Frag Grenade', 'Fog Grenade'] },
+            { name: 'Trooper 3', class: 'Soldier',         slots: { rifle: 'Shotgun', melee: 'Blade' }, extras: ['Frag Grenade', 'Fog Grenade'] },
+            { name: 'Trooper 4', class: 'Soldier',         slots: { rifle: 'Shotgun', melee: 'Blade' }, extras: ['Frag Grenade', 'Fog Grenade'] }
         ]
     },
     'Weapon Team': {
         models: [
-            { name: 'Gunner',   class: 'Soldier', slots: { sidearm: 'Service Pistol', crewed_weapon: 'Laser Cannon', armor: 'None' }, extras: ['Morale +1'] },
-            { name: 'Loader 1', class: 'Soldier', slots: { sidearm: 'Service Pistol', armor: 'None' }, extras: ['Morale +1'] },
-            { name: 'Loader 2', class: 'Soldier', slots: { sidearm: 'Service Pistol', armor: 'None' }, extras: ['Morale +1'] }
+            { name: 'Gunner',   class: 'Soldier', slots: { sidearm: 'Service Pistol', crewed_weapon: 'Laser Cannon' }, extras: ['Morale +1'] },
+            { name: 'Loader 1', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Morale +1'] },
+            { name: 'Loader 2', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Morale +1'] }
         ]
     },
     'Minor Character': {
         models: [
-            { name: 'Character', class: 'Minor Character', slots: { sidearm: 'Hand Laser', melee: 'Glare Sword', armor: 'None' }, extras: ['Fog Grenade'] }
+            { name: 'Character', class: 'Minor Character', slots: { sidearm: 'Hand Laser', melee: 'Glare Sword' }, extras: ['Fog Grenade'] }
         ]
     },
     'Major Character': {
         models: [
-            { name: 'Character', class: 'Major Character', slots: { sidearm: 'Hand Laser', melee: 'Glare Sword', armor: 'None' }, extras: ['Fog Grenade'] }
+            { name: 'Character', class: 'Major Character', slots: { sidearm: 'Hand Laser', melee: 'Glare Sword' }, extras: ['Fog Grenade'] }
         ]
     },
     'Epic Character': {
         models: [
-            { name: 'Character', class: 'Epic Character', slots: { sidearm: 'Hand Laser', melee: 'Glare Sword', armor: 'None' }, extras: ['Fog Grenade'] }
+            { name: 'Character', class: 'Epic Character', slots: { sidearm: 'Hand Laser', melee: 'Glare Sword' }, extras: ['Fog Grenade'] }
         ]
     },
     'Tech': {
         models: [
-            { name: 'Tech', class: 'Soldier', slots: { sidearm: 'Service Pistol', armor: 'None' }, extras: ['Tech +1 (hacking, repairs, etc.)'] }
+            { name: 'Tech', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Tech +1 (hacking, repairs, etc.)'] }
         ]
     },
     'Sharpshooter': {
         models: [
-            { name: 'Sharpshooter', class: 'Soldier', slots: { rifle: 'Sniper Rifle', sidearm: 'Service Pistol', armor: 'None' }, extras: ['Sharpshooter +1 Hit'] }
+            { name: 'Sharpshooter', class: 'Soldier', slots: { rifle: 'Sniper Rifle', sidearm: 'Service Pistol' }, extras: ['Sharpshooter +1 Hit'] }
         ]
     },
     'Fire Section': {
         models: [
-            { name: 'Grenadier', class: 'Soldier', slots: { rifle: 'Plasma Rifle', sidearm: 'Service Pistol', armor: 'None' }, extras: ['Morale +1 (Fire Section)'] },
-            { name: 'Support',   class: 'Soldier', slots: { sidearm: 'Service Pistol', armor: 'None' }, extras: [] }
+            { name: 'Grenadier', class: 'Soldier', slots: { rifle: 'Plasma Rifle', sidearm: 'Service Pistol' }, extras: ['Morale +1 (Fire Section)'] },
+            { name: 'Support',   class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: [] }
         ]
     },
     'Comms': {
         models: [
-            { name: 'Comms', class: 'Soldier', slots: { sidearm: 'Service Pistol', armor: 'None' }, extras: ['Comms +1'] }
+            { name: 'Comms', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Comms +1'] }
         ]
     },
     'Medic': {
         models: [
-            { name: 'Medic', class: 'Soldier', slots: { sidearm: 'Service Pistol', armor: 'None' }, extras: ['Medic (Remove 1 suppression)'] }
+            { name: 'Medic', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Medic (Remove 1 suppression)'] }
         ]
     },
     'Scout': {
         models: [
-            { name: 'Scout', class: 'Soldier', slots: { rifle: 'Infantry Laser', armor: 'None' }, extras: ['Scout +1" Spd, +2 Obs'] }
+            { name: 'Scout', class: 'Soldier', slots: { rifle: 'Infantry Laser' }, extras: ['Scout +1" Spd, +2 Obs'] }
         ]
     },
     'Enforcers': {
         models: [
-            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Shotgun', armor: 'None' }, extras: ['Shock Grenade'] },
-            { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Shotgun', armor: 'None' }, extras: ['Shock Grenade'] },
-            { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Shotgun', armor: 'None' }, extras: ['Shock Grenade'] },
-            { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Shotgun', armor: 'None' }, extras: ['Shock Grenade'] },
-            { name: 'Trooper 4', class: 'Soldier', slots: { rifle: 'Shotgun', armor: 'None' }, extras: ['Shock Grenade'] },
+            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Shotgun' }, extras: ['Shock Grenade'] },
+            { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Shotgun' }, extras: ['Shock Grenade'] },
+            { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Shotgun' }, extras: ['Shock Grenade'] },
+            { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Shotgun' }, extras: ['Shock Grenade'] },
+            { name: 'Trooper 4', class: 'Soldier', slots: { rifle: 'Shotgun' }, extras: ['Shock Grenade'] },
         ]
     },
     'Militia': {
         models: [
-            { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Military Rifle', armor: 'None' }, extras: [] },
-            { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Military Rifle', armor: 'None' }, extras: [] },
-            { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Military Rifle', armor: 'None' }, extras: [] },
-            { name: 'Trooper 4', class: 'Soldier', slots: { rifle: 'Military Rifle', armor: 'None' }, extras: [] },
-            { name: 'Trooper 5', class: 'Soldier', slots: { rifle: 'Military Rifle', armor: 'None' }, extras: [] },
+            { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: [] },
+            { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: [] },
+            { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: [] },
+            { name: 'Trooper 4', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: [] },
+            { name: 'Trooper 5', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: [] },
         ]
     },
     'Pirate': {
         models: [
             { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Blaster' }, extras: [] },
-            { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Blaster', armor: 'None' }, extras: [] },
-            { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Blaster', armor: 'None' }, extras: [] },
-            { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Blaster', armor: 'None' }, extras: [] },
-            { name: 'Trooper 4', class: 'Soldier', slots: { support: 'Fusion Rifle', armor: 'None' }, extras: [] },
+            { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Blaster' }, extras: [] },
+            { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Blaster' }, extras: [] },
+            { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Blaster' }, extras: [] },
+            { name: 'Trooper 4', class: 'Soldier', slots: { support: 'Fusion Rifle' }, extras: [] },
         ]
     },
     'Cavalry': {
         models: [
-            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Military Rifle', melee: 'Blade', armor: 'None' }, extras: ['Cavalry'] },
-            { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade', armor: 'None' }, extras: ['Cavalry'] },
-            { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade', armor: 'None' }, extras: ['Cavalry'] },
-            { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade', armor: 'None' }, extras: ['Cavalry'] },
-            { name: 'Trooper 4', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade', armor: 'None' }, extras: ['Cavalry'] },
+            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Military Rifle', melee: 'Blade' }, extras: ['Cavalry'] },
+            { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade' }, extras: ['Cavalry'] },
+            { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade' }, extras: ['Cavalry'] },
+            { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade' }, extras: ['Cavalry'] },
+            { name: 'Trooper 4', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade' }, extras: ['Cavalry'] },
         ]
     },
 
@@ -251,12 +251,9 @@ const fireSectionOptions: UnitOptionDef[] = [
 const armorOptions: UnitOptionDef = {
     id: 'armor_selection',
     name: 'Armor',
-    type: 'slot',
-    slotName: 'armor',
     choices: [
-        { id: 'armor_none',    name: 'None' },
-        { id: 'armor_powered', name: 'Powered Armor' },
-        { id: 'armor_breach',  name: 'Breach Armor' }
+        { id: 'armor_powered', name: 'Powered Armor', modifications: [{ setSlot: { armor: 'Powered Armor' } }] },
+        { id: 'armor_breach',  name: 'Breach Armor', modifications: [{ setSlot: { armor: 'Breach Armor' } }] },
     ]
 }
 
