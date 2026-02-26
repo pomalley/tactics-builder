@@ -20,6 +20,34 @@ export const totalArmyPoints = computed(() => {
     }, 0)
 })
 
+const applyModifications = (models: Model[], modifications: Array<{
+    targetName?: string;
+    targetClass?: string;
+    clearSlot?: string;
+    setSlot?: Record<string, string>;
+    addExtras?: string[];
+}>) => {
+    for (const mod of modifications) {
+        for (const model of models) {
+            if (mod.targetName && model.name !== mod.targetName) continue;
+            if (mod.targetClass && model.class !== mod.targetClass) continue;
+            if (mod.clearSlot) delete model.slots[mod.clearSlot];
+            if (mod.setSlot) {
+                for (const [k, v] of Object.entries(mod.setSlot)) {
+                    model.slots[k] = v;
+                }
+            }
+            if (mod.addExtras) {
+                for (const extra of mod.addExtras) {
+                    if (!model.extras.includes(extra)) {
+                        model.extras.push(extra);
+                    }
+                }
+            }
+        }
+    }
+}
+
 const populateModels = (unit: Unit) => {
     const def = unitDefinitions[unit.type]
     unit.models = []
@@ -54,64 +82,19 @@ const populateModels = (unit: Unit) => {
 
                 // Also apply any additional modifications attached to this choice
                 if (choice.modifications) {
-                    for (const mod of choice.modifications) {
-                        for (const model of unit.models) {
-                            if (mod.targetName && model.name !== mod.targetName) continue;
-                            if (mod.targetClass && model.class !== mod.targetClass) continue;
-                            if (mod.clearSlot) delete model.slots[mod.clearSlot];
-                            if (mod.setSlot) {
-                                for (const [k, v] of Object.entries(mod.setSlot)) {
-                                    model.slots[k] = v;
-                                }
-                            }
-                            if (mod.addExtras) model.extras.push(...mod.addExtras);
-                        }
-                    }
+                    applyModifications(unit.models, choice.modifications);
                 }
             }
         } else {
             // Toggle option: apply parent modifications if active
             if (activeSelectedOptions.includes(optionDef.id) && optionDef.modifications) {
-                for (const mod of optionDef.modifications) {
-                    for (const model of unit.models) {
-                        if (mod.targetName && model.name !== mod.targetName) continue;
-                        if (mod.targetClass && model.class !== mod.targetClass) continue;
-
-                        if (mod.clearSlot) {
-                            delete model.slots[mod.clearSlot];
-                        }
-                        if (mod.setSlot) {
-                            for (const [slotName, weapon] of Object.entries(mod.setSlot)) {
-                                model.slots[slotName] = weapon;
-                            }
-                        }
-                        if (mod.addExtras) {
-                            model.extras.push(...mod.addExtras);
-                        }
-                    }
-                }
+                applyModifications(unit.models, optionDef.modifications);
             }
             // Dropdown option (has choices, each with modifications): apply the active choice
             if (optionDef.choices) {
-                const applyMods = (mods: typeof optionDef.modifications) => {
-                    if (!mods) return;
-                    for (const mod of mods) {
-                        for (const model of unit.models) {
-                            if (mod.targetName && model.name !== mod.targetName) continue;
-                            if (mod.targetClass && model.class !== mod.targetClass) continue;
-                            if (mod.clearSlot) delete model.slots[mod.clearSlot];
-                            if (mod.setSlot) {
-                                for (const [k, v] of Object.entries(mod.setSlot)) {
-                                    model.slots[k] = v;
-                                }
-                            }
-                            if (mod.addExtras) model.extras.push(...mod.addExtras);
-                        }
-                    }
-                };
                 for (const choice of optionDef.choices) {
                     if (activeSelectedOptions.includes(choice.id)) {
-                        applyMods(choice.modifications);
+                        applyModifications(unit.models, choice.modifications || []);
                     }
                 }
             }
