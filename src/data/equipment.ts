@@ -94,15 +94,162 @@ export const equipmentPoints = {
     'Improvised Armor': 10,
     'Defensive Measures': 5,
     // Misc Abilities
-    'Observation +1': 1,
-    'Morale +1': 0,
-    'Tech +1 (hacking, repairs, etc.)': 4,
-    'Sharpshooter +1 Hit': 4,
-    'Morale +1 (Fire Section)': 5,
-    'Comms +1': 9,
-    'Medic (Remove 1 suppression)': 9,
-    'Scout +1" Spd, +2 Obs': 6,
-    'Cavalry': 1,
+    'Observation +1': 1,                    // Recon squad (per soldier)
+    'Morale +1': 2,                         // Weapon team (whole squad)
+    'Tech +1 (hacking, repairs, etc.)': 4,  // Tech specialist
+    'Sharpshooter +1 Hit': 4,               // Sharpshooter specialist
+    'Morale +1 (Fire Section)': 5,          // Fire section (whole squad)
+    'Comms +1': 9,                          // Comms specialist
+    'Medic (Remove 1 suppression)': 9,      // Medic specialist
+    'Scout +1" Spd, +2 Obs': 6,             // Scout specialist
+    'Cavalry': 1,                           // Cavalry unit
 } as const;
 
 export type EquipmentName = keyof typeof equipmentPoints;
+
+export type EquipmentGroupLabel = 
+    | 'Rifles'
+    | 'Support Weapons'
+    | 'Melee'
+    | 'Sidearms'
+    | 'Grenades'
+    | 'Crewed Weapons'
+    | 'Armor'
+    | 'Individual Upgrades'
+    | 'Squad Veteran Skills'
+    | 'Sergeant Veteran Skills'
+    | 'Individual Veteran Skills'
+    | 'Gun Crew Veteran Skills'
+    | 'Vehicle Veteran Skills'
+    | 'Misc Abilities'
+    | 'None';
+
+const equipmentToGroup: Record<EquipmentName, EquipmentGroupLabel> = {
+    'None': 'None',
+    // Rifles
+    'Military Rifle': 'Rifles',
+    'Infantry Laser': 'Rifles',
+    'Precision Rifle': 'Rifles',
+    'Blaster': 'Rifles',
+    'Primitive Weapon': 'Rifles',
+    'Shotgun': 'Rifles',
+    // Support Weapons
+    'Light Machine Gun': 'Support Weapons',
+    'Flak Gun': 'Support Weapons',
+    'Grenade Launcher': 'Support Weapons',
+    'Fury Rifle': 'Support Weapons',
+    'Plasma Rifle': 'Support Weapons',
+    'Sniper Rifle': 'Support Weapons',
+    'Hyper Blaster': 'Support Weapons',
+    'Flame Projector': 'Support Weapons',
+    'Fusion Rifle': 'Support Weapons',
+    // Melee
+    'Blade': 'Melee',
+    'Glare Sword': 'Melee',
+    'Powered Claw': 'Melee',
+    'Breaching Axe': 'Melee',
+    'Suppression Maul': 'Melee',
+    'Ripper Sword': 'Melee',
+    // Sidearms
+    'Service Pistol': 'Sidearms',
+    'Hand Laser': 'Sidearms',
+    'Blast Pistol': 'Sidearms',
+    // Grenades
+    'Frag Grenade': 'Grenades',
+    'Penetrator Grenade': 'Grenades',
+    'Jinx Grenade': 'Grenades',
+    'Fog Grenade': 'Grenades',
+    'Cling-fire Grenade': 'Grenades',
+    'Shock Grenade': 'Grenades',
+    // Crewed Weapons
+    'Laser Cannon': 'Crewed Weapons',
+    'Pulse Laser': 'Crewed Weapons',
+    'Anti-tank Laser': 'Crewed Weapons',
+    'Anti-tank missile': 'Crewed Weapons',
+    '20mm Autocannon': 'Crewed Weapons',
+    '40mm Autocannon': 'Crewed Weapons',
+    'Infantry Mortar': 'Crewed Weapons',
+    'Heavy Plasma Gun': 'Crewed Weapons',
+    '75mm Cannon': 'Crewed Weapons',
+    '100mm Cannon': 'Crewed Weapons',
+    // Armor
+    'Powered Armor': 'Armor',
+    'Breach Armor': 'Armor',
+    // Individual Upgrades
+    'Hero': 'Individual Upgrades',
+    'Leader': 'Individual Upgrades',
+    // Squad Veteran Skills
+    'Brave': 'Squad Veteran Skills',
+    'Tank Hunters': 'Squad Veteran Skills',
+    'Keen Shots': 'Squad Veteran Skills',
+    'Die Hards': 'Squad Veteran Skills',
+    'Fire Drill': 'Squad Veteran Skills',
+    'Brawers': 'Squad Veteran Skills',
+    'Fearless': 'Squad Veteran Skills',
+    'Bombers': 'Squad Veteran Skills',
+    'Guerillas': 'Squad Veteran Skills',
+    'Quick': 'Squad Veteran Skills',
+    // Sergeant Veteran Skills
+    'Rugged': 'Sergeant Veteran Skills',
+    'Parry': 'Sergeant Veteran Skills',
+    'Motivator': 'Sergeant Veteran Skills',
+    'Fighter': 'Sergeant Veteran Skills',
+    'Survivor': 'Sergeant Veteran Skills',
+    'Tactics': 'Sergeant Veteran Skills',
+    'Experienced Eye': 'Sergeant Veteran Skills',
+    'Alert': 'Sergeant Veteran Skills',
+    // Individual Veteran Skills
+    'Gun-slinging': 'Individual Veteran Skills',
+    'Quick Feet': 'Individual Veteran Skills',
+    'Deadly Accuracy': 'Individual Veteran Skills',
+    'Lucky': 'Individual Veteran Skills',
+    'Skilled Leader': 'Individual Veteran Skills',
+    'Expert Fighter': 'Individual Veteran Skills',
+    // Gun Crew Veteran Skills
+    'Defend the Guns': 'Gun Crew Veteran Skills',
+    'Fortified Positions': 'Gun Crew Veteran Skills',
+    'Deploy Hidden': 'Gun Crew Veteran Skills',
+    'Gun Drill': 'Gun Crew Veteran Skills',
+    'Redeployment': 'Gun Crew Veteran Skills',
+    'Target Selection': 'Gun Crew Veteran Skills',
+    // Vehicle Veteran Skills
+    'Gunnery': 'Vehicle Veteran Skills',
+    'Command': 'Vehicle Veteran Skills',
+    'Driving': 'Vehicle Veteran Skills',
+    'Damage Control': 'Vehicle Veteran Skills',
+    'Improvised Armor': 'Vehicle Veteran Skills',
+    'Defensive Measures': 'Vehicle Veteran Skills',
+    // Misc Abilities
+    'Observation +1': 'Misc Abilities',
+    'Morale +1': 'Misc Abilities',
+    'Tech +1 (hacking, repairs, etc.)': 'Misc Abilities',
+    'Sharpshooter +1 Hit': 'Misc Abilities',
+    'Morale +1 (Fire Section)': 'Misc Abilities',
+    'Comms +1': 'Misc Abilities',
+    'Medic (Remove 1 suppression)': 'Misc Abilities',
+    'Scout +1" Spd, +2 Obs': 'Misc Abilities',
+    'Cavalry': 'Misc Abilities',
+};
+
+export const equipmentGroups = (
+    [
+        'Rifles',
+        'Support Weapons',
+        'Melee',
+        'Sidearms',
+        'Grenades',
+        'Crewed Weapons',
+        'Armor',
+        'Individual Upgrades',
+        'Squad Veteran Skills',
+        'Sergeant Veteran Skills',
+        'Individual Veteran Skills',
+        'Gun Crew Veteran Skills',
+        'Vehicle Veteran Skills',
+        'Misc Abilities',
+        'None'
+    ] as EquipmentGroupLabel[]
+).map(label => ({
+    label,
+    equipment: (Object.keys(equipmentPoints) as EquipmentName[]).filter(name => equipmentToGroup[name] === label)
+})).filter(group => group.equipment.length > 0);

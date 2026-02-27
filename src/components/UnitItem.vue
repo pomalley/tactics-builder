@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { Unit, UnitType, UnitOptionDef } from "../types";
-import { equipmentPoints, type EquipmentName } from "../data/equipment";
+import { equipmentPoints, equipmentGroups, type EquipmentName } from "../data/equipment";
 import { lifeformClassPoints, type Lifeform } from "../data/lifeforms";
 import { unitGroups, unitOptions } from "../data/units";
 import ModelItem from "./ModelItem.vue";
@@ -25,7 +25,6 @@ const props = defineProps<{
   unit: Unit;
 }>();
 
-const allEquipmentNames = Object.keys(equipmentPoints).sort() as EquipmentName[];
 const lifeformTypes = Object.keys(lifeformClassPoints) as Lifeform[];
 
 const addManualSlot = () => {
@@ -251,7 +250,9 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
         <span class="slot-name">{{ formatSlotName(slot as string) }}:</span>
         <template v-if="armyState.freeEdit">
           <select @change="(e) => addSlotToUnit(unit.id, slot as string, (e.target as HTMLSelectElement).value as EquipmentName)" class="mini-select">
-            <option v-for="name in allEquipmentNames" :key="name" :value="name" :selected="name === weapon">{{ name }}</option>
+            <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
+              <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === weapon">{{ name }}</option>
+            </optgroup>
           </select>
         </template>
         <template v-else>
@@ -267,7 +268,9 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
             removeExtraFromUnit(unit.id, index);
             addExtraToUnit(unit.id, (e.target as HTMLSelectElement).value as EquipmentName);
           }" class="mini-select">
-            <option v-for="name in allEquipmentNames" :key="name" :value="name" :selected="name === item">{{ name }}</option>
+            <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
+              <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === item">{{ name }}</option>
+            </optgroup>
           </select>
         </template>
         <template v-else>

@@ -11,7 +11,7 @@ import {
   removeExtraFromModel
 } from "../store";
 import { formatSlotName } from "../utils";
-import { EquipmentName, equipmentPoints } from "../data/equipment";
+import { EquipmentName, equipmentPoints, equipmentGroups } from "../data/equipment";
 import { lifeformClassPoints } from "../data/lifeforms";
 
 const props = defineProps<{
@@ -19,7 +19,6 @@ const props = defineProps<{
   unitId: string;
 }>();
 
-const allEquipmentNames = Object.keys(equipmentPoints).sort() as EquipmentName[];
 const modelClasses: ModelClass[] = ['Civilian', 'Soldier', 'Minor Character', 'Major Character', 'Epic Character', 'Vehicle'];
 
 const emit = defineEmits<{
@@ -88,7 +87,9 @@ const addManualSlot = () => {
           </div>
           <template v-if="armyState.freeEdit">
             <select @change="(e) => addSlotToModel(unitId, model.id, slotName as string, (e.target as HTMLSelectElement).value as EquipmentName)" class="mini-select">
-              <option v-for="name in allEquipmentNames" :key="name" :value="name" :selected="name === weapon">{{ name }}</option>
+              <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
+                <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === weapon">{{ name }}</option>
+              </optgroup>
             </select>
             <button @click="removeSlotFromModel(unitId, model.id, slotName as string)" class="mini-remove-btn">×</button>
           </template>
@@ -108,7 +109,9 @@ const addManualSlot = () => {
               removeExtraFromModel(unitId, model.id, index);
               addExtraToModel(unitId, model.id, (e.target as HTMLSelectElement).value as EquipmentName);
             }" class="mini-select">
-              <option v-for="name in allEquipmentNames" :key="name" :value="name" :selected="name === item">{{ name }}</option>
+              <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
+                <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === item">{{ name }}</option>
+              </optgroup>
             </select>
             <button @click="removeExtraFromModel(unitId, model.id, index)" class="mini-remove-btn">×</button>
           </template>
