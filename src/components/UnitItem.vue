@@ -227,11 +227,16 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
       </div>
     </div>
 
-    <div class="unit-equipment" v-if="Object.keys(unit.slots).length > 0">
+    <div class="unit-equipment" v-if="Object.keys(unit.slots).length > 0 || unit.extras.length > 0">
       <div v-for="(weapon, slot) in unit.slots" :key="slot" class="equipment-item">
         <span class="slot-name">{{ formatSlotName(slot as string) }}:</span>
         <span class="weapon-name">{{ weapon }}</span>
-        <span class="weapon-points">({{ weaponPoints[weapon] }} pts)</span>
+        <span class="weapon-points">[{{ weaponPoints[weapon] }}]</span>
+      </div>
+      <div v-for="(item, index) in unit.extras" :key="'unit-extra-' + index" class="equipment-item">
+        <span class="slot-name">+</span>
+        <span class="weapon-name">{{ item }}</span>
+        <span class="weapon-points">[{{ weaponPoints[item] }}]</span>
       </div>
     </div>
 

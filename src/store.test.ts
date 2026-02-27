@@ -90,4 +90,18 @@ describe('Army Store', () => {
         // Total: 11 * 3 + 20 = 53
         expect(calculateUnitPoints(unit)).toBe(53)
     })
+
+    it('should calculate unit points correctly with unit-level extras (Fire Section)', () => {
+        addUnit() // Add Infantry
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Fire Section')
+
+        // Fire Section:
+        // Unit Extras: 'Morale +1 (Fire Section)' (5 pts)
+        // Models:
+        // Grenadier: Human Soldier (10) + Plasma Rifle (8) + Service Pistol (1) = 19
+        // Support: Human Soldier (10) + Service Pistol (1) = 11
+        // Total: 5 + 19 + 11 = 35
+        expect(calculateUnitPoints(unit)).toBe(35)
+    })
 })

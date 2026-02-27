@@ -22,6 +22,7 @@ export interface Unit {
     selectedOptions: string[];
     models: Model[];
     slots: Record<string, EquipmentName>;
+    extras: EquipmentName[];
 }
 
 export interface UnitOptionDef {
@@ -38,6 +39,7 @@ export interface UnitOptionDef {
         clearUnitSlot?: string;                  // remove this slot from the unit entirely
         setUnitSlot?: Record<string, EquipmentName>; // override a unit-level slot value
         addExtras?: EquipmentName[];             // push items onto the model's extras
+        addUnitExtras?: EquipmentName[];         // push items onto the unit's extras
     }[];
 }
 

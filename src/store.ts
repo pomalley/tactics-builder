@@ -17,7 +17,8 @@ export const calculateModelPoints = (model: Model): number => {
 export const calculateUnitPoints = (unit: Unit): number => {
     const modelsPoints = unit.models.reduce((sum, m) => sum + calculateModelPoints(m), 0);
     const slotsPoints = Object.values(unit.slots).reduce((sum, weapon) => sum + (weaponPoints[weapon] || 0), 0);
-    return modelsPoints + slotsPoints;
+    const extrasPoints = unit.extras.reduce((sum, item) => sum + (weaponPoints[item] || 0), 0);
+    return modelsPoints + slotsPoints + extrasPoints;
 }
 
 export const totalArmyPoints = computed(() => {
@@ -34,12 +35,20 @@ const applyModifications = (unit: Unit, modifications: Array<{
     clearUnitSlot?: string;
     setUnitSlot?: Record<string, EquipmentName>;
     addExtras?: EquipmentName[];
+    addUnitExtras?: EquipmentName[];
 }>) => {
     for (const mod of modifications) {
         if (mod.clearUnitSlot) delete unit.slots[mod.clearUnitSlot];
         if (mod.setUnitSlot) {
             for (const [k, v] of Object.entries(mod.setUnitSlot)) {
                 unit.slots[k] = v;
+            }
+        }
+        if (mod.addUnitExtras) {
+            for (const extra of mod.addUnitExtras) {
+                if (!unit.extras.includes(extra)) {
+                    unit.extras.push(extra);
+                }
             }
         }
 
@@ -67,6 +76,7 @@ const populateModels = (unit: Unit) => {
     const def = unitDefinitions[unit.type]
     unit.models = []
     unit.slots = { ...def.slots } as Record<string, EquipmentName>
+    unit.extras = [ ...(def.extras || []) ]
 
     for (const modelDef of def.models) {
         unit.models.push({
@@ -132,7 +142,8 @@ export const addUnit = () => {
         lifeform: 'Human',
         selectedOptions: [],
         models: [],
-        slots: {}
+        slots: {},
+        extras: []
     }
     populateModels(newUnit)
     armyState.units.push(newUnit)
