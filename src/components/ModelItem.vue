@@ -10,8 +10,9 @@ import {
   addExtraToModel,
   removeExtraFromModel
 } from "../store";
-import { weaponPoints, lifeformClassPoints, type EquipmentName } from "../data";
 import { formatSlotName } from "../utils";
+import { EquipmentName, weaponPoints } from "../data/equipment";
+import { lifeformClassPoints } from "../data/lifeforms";
 
 const props = defineProps<{
   model: Model;
