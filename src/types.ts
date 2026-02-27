@@ -1,4 +1,6 @@
-import type { EquipmentName, UnitType, Lifeform } from './data'
+import type { EquipmentName } from './data/equipment'
+import type { UnitType } from './data/units'
+import type { Lifeform } from './data/lifeforms'
 export type { UnitType };
 
 export type ModelClass = 'Civilian' | 'Soldier' | 'Minor Character' | 'Major Character' | 'Epic Character' | 'Vehicle';
