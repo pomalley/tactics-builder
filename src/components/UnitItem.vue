@@ -308,10 +308,17 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
 .unit-item {
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+@media (min-width: 768px) {
+  .unit-item {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -323,11 +330,20 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
 
 .unit-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid #eee;
+}
+
+@media (min-width: 600px) {
+  .unit-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -338,10 +354,18 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
 
 .unit-settings {
   display: flex;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #eee;
+}
+
+@media (min-width: 600px) {
+  .unit-settings {
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -383,11 +407,17 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
 }
 
 .unit-name-input {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   border: none;
   background: transparent;
   flex: 1;
+}
+
+@media (min-width: 768px) {
+  .unit-name-input {
+    font-size: 1.5rem;
+  }
 }
 
 .unit-name-input:focus {

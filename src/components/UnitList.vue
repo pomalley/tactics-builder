@@ -37,8 +37,16 @@ import UnitItem from './UnitItem.vue'
 .army-builder {
   background: white;
   border-radius: 12px;
-  padding: 2rem;
+  padding: 1rem;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .army-builder {
+    padding: 2rem;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -50,18 +58,33 @@ import UnitItem from './UnitItem.vue'
 
 .army-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 3px solid #4CAF50;
+}
+
+@media (min-width: 600px) {
+  .army-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
 }
 
 .header-left {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  width: 60%;
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .header-left {
+    width: 60%;
+  }
 }
 
 .free-edit-toggle {
@@ -85,13 +108,20 @@ import UnitItem from './UnitItem.vue'
 }
 
 .army-name-input {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 800;
   border: none;
   background: transparent;
   color: #333;
   width: 100%;
 }
+
+@media (min-width: 768px) {
+  .army-name-input {
+    font-size: 2rem;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   .army-name-input {
     color: #eee;
@@ -104,13 +134,25 @@ import UnitItem from './UnitItem.vue'
 }
 
 .army-total {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: bold;
+}
+
+@media (min-width: 768px) {
+  .army-total {
+    font-size: 1.5rem;
+  }
 }
 
 .total-points {
   color: #4CAF50;
-  font-size: 2rem;
+  font-size: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .total-points {
+    font-size: 2rem;
+  }
 }
 
 .units-list {

@@ -167,9 +167,16 @@ const addManualSlot = () => {
 
 .model-details {
   display: grid;
-  grid-template-columns: 1fr 1fr 100px;
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+@media (min-width: 600px) {
+  .model-details {
+    grid-template-columns: 1fr 1fr 100px;
+    gap: 1rem;
+  }
 }
 
 .field {
