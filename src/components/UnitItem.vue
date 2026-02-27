@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import type { Unit, UnitType, Lifeform, UnitOptionDef } from "../types";
-import { unitOptions, weaponPoints, unitDefinitions, type EquipmentName } from "../data";
+import type { Unit, UnitType, UnitOptionDef } from "../types";
+import { unitOptions, weaponPoints, unitDefinitions, type EquipmentName, type Lifeform } from "../data";
 import ModelItem from "./ModelItem.vue";
 import {
   addModelToUnit,

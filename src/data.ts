@@ -1,4 +1,4 @@
-import type { Lifeform, ModelClass, UnitOptionDef } from './types'
+import type { ModelClass, UnitOptionDef } from './types'
 
 export const weaponPoints = {
     // Rifles
@@ -108,6 +108,45 @@ export const weaponPoints = {
 } as const;
 
 export type EquipmentName = keyof typeof weaponPoints;
+
+const _lifeformClassPoints: Record<string, Record<ModelClass, number>> = {
+    'Human': {
+        'Civilian': 5,
+        'Soldier': 10,
+        'Minor Character': 15,
+        'Major Character': 20,
+        'Epic Character': 30,
+        'Vehicle': NaN
+    },
+    'Feral': {
+        'Civilian': 6,
+        'Soldier': 12,
+        'Minor Character': 17,
+        'Major Character': 22,
+        'Epic Character': 32,
+        'Vehicle': NaN
+    },
+    'K\'Erin': {
+        'Civilian': 6,
+        'Soldier': 13,
+        'Minor Character': 20,
+        'Major Character': 25,
+        'Epic Character': 35,
+        'Vehicle': NaN
+    },
+    'None': {
+        'Civilian': 0,
+        'Soldier': 0,
+        'Minor Character': 0,
+        'Major Character': 0,
+        'Epic Character': 0,
+        'Vehicle': 0
+    }
+}
+
+export type Lifeform = keyof typeof _lifeformClassPoints;
+
+export const lifeformClassPoints: Record<Lifeform, Record<ModelClass, number>> = _lifeformClassPoints;
 
 export interface ModelDef {
     name: string;
@@ -368,41 +407,6 @@ const _unitDefinitions = {
 export type UnitType = keyof typeof _unitDefinitions;
 
 export const unitDefinitions: Record<UnitType, UnitTypeDef> = _unitDefinitions;
-
-export const lifeformClassPoints: Record<Lifeform, Record<ModelClass, number>> = {
-    'Human': {
-        'Civilian': 5,
-        'Soldier': 10,
-        'Minor Character': 15,
-        'Major Character': 20,
-        'Epic Character': 30,
-        'Vehicle': NaN
-    },
-    'Feral': {
-        'Civilian': 6,
-        'Soldier': 12,
-        'Minor Character': 17,
-        'Major Character': 22,
-        'Epic Character': 32,
-        'Vehicle': NaN
-    },
-    'K\'Erin': {
-        'Civilian': 6,
-        'Soldier': 13,
-        'Minor Character': 20,
-        'Major Character': 25,
-        'Epic Character': 35,
-        'Vehicle': NaN
-    },
-    'None': {
-        'Civilian': 0,
-        'Soldier': 0,
-        'Minor Character': 0,
-        'Major Character': 0,
-        'Epic Character': 0,
-        'Vehicle': 0
-    }
-}
 
 const techOptions: UnitOptionDef[] = [
     {

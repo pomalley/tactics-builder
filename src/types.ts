@@ -1,7 +1,6 @@
-import type { EquipmentName, UnitType } from './data'
+import type { EquipmentName, UnitType, Lifeform } from './data'
 export type { UnitType };
 
-export type Lifeform = 'Human' | 'Feral' | 'K\'Erin' | 'None';
 export type ModelClass = 'Civilian' | 'Soldier' | 'Minor Character' | 'Major Character' | 'Epic Character' | 'Vehicle';
 
 export interface Model {
