@@ -1,5 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { armyState, addUnit, toggleUnitOption, selectUnitOptionChoice, calculateModelPoints, totalArmyPoints } from './store'
+import { 
+    armyState, 
+    addUnit, 
+    toggleUnitOption, 
+    selectUnitOptionChoice, 
+    calculateModelPoints, 
+    totalArmyPoints,
+    changeUnitType,
+    calculateUnitPoints
+} from './store'
 
 describe('Army Store', () => {
     beforeEach(() => {
@@ -60,5 +69,25 @@ describe('Army Store', () => {
 
         addUnit()
         expect(totalArmyPoints.value).toBe(initialPoints * 2)
+    })
+
+    it('should calculate unit points correctly with unit-level slots', () => {
+        addUnit() // Add Infantry
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Weapon Team')
+        
+        // Initial state: Weapon Team has Laser Cannon (35 pts)
+        // Models:
+        // Gunner: Human Soldier (10) + Service Pistol (1) + Morale +1 (0) = 11
+        // Loader 1: Human Soldier (10) + Service Pistol (1) + Morale +1 (0) = 11
+        // Loader 2: Human Soldier (10) + Service Pistol (1) + Morale +1 (0) = 11
+        // Unit slot: Laser Cannon (35)
+        // Total: 11 * 3 + 35 = 68
+        expect(calculateUnitPoints(unit)).toBe(68)
+
+        // Select 20mm Auto Cannon (20 pts)
+        selectUnitOptionChoice(unit.id, 'weapteam_crew_weapon', 'wt_auto_cannon')
+        // Total: 11 * 3 + 20 = 53
+        expect(calculateUnitPoints(unit)).toBe(53)
     })
 })

@@ -14,21 +14,36 @@ export const calculateModelPoints = (model: Model): number => {
     return baseCost + slotsCost + extrasCost;
 }
 
+export const calculateUnitPoints = (unit: Unit): number => {
+    const modelsPoints = unit.models.reduce((sum, m) => sum + calculateModelPoints(m), 0);
+    const slotsPoints = Object.values(unit.slots).reduce((sum, weapon) => sum + (weaponPoints[weapon] || 0), 0);
+    return modelsPoints + slotsPoints;
+}
+
 export const totalArmyPoints = computed(() => {
     return armyState.units.reduce((acc, unit) => {
-        return acc + unit.models.reduce((unitAcc, model) => unitAcc + calculateModelPoints(model), 0)
+        return acc + calculateUnitPoints(unit)
     }, 0)
 })
 
-const applyModifications = (models: Model[], modifications: Array<{
+const applyModifications = (unit: Unit, modifications: Array<{
     targetName?: string;
     targetClass?: string;
     clearSlot?: string;
     setSlot?: Record<string, EquipmentName>;
+    clearUnitSlot?: string;
+    setUnitSlot?: Record<string, EquipmentName>;
     addExtras?: EquipmentName[];
 }>) => {
     for (const mod of modifications) {
-        for (const model of models) {
+        if (mod.clearUnitSlot) delete unit.slots[mod.clearUnitSlot];
+        if (mod.setUnitSlot) {
+            for (const [k, v] of Object.entries(mod.setUnitSlot)) {
+                unit.slots[k] = v;
+            }
+        }
+
+        for (const model of unit.models) {
             if (mod.targetName && model.name !== mod.targetName) continue;
             if (mod.targetClass && model.class !== mod.targetClass) continue;
             if (mod.clearSlot) delete model.slots[mod.clearSlot];
@@ -51,6 +66,7 @@ const applyModifications = (models: Model[], modifications: Array<{
 const populateModels = (unit: Unit) => {
     const def = unitDefinitions[unit.type]
     unit.models = []
+    unit.slots = { ...def.slots } as Record<string, EquipmentName>
 
     for (const modelDef of def.models) {
         unit.models.push({
@@ -73,6 +89,12 @@ const populateModels = (unit: Unit) => {
             const activeChoiceId = activeSelectedOptions.find(id => choiceIds.includes(id));
             if (activeChoiceId && optionDef.slotName) {
                 const choice = optionDef.choices!.find(c => c.id === activeChoiceId)!;
+                
+                // Check if it's a unit slot
+                if (optionDef.slotName in unit.slots) {
+                    unit.slots[optionDef.slotName] = choice.name as EquipmentName;
+                }
+
                 // Apply to every model that has this slot
                 for (const model of unit.models) {
                     if (optionDef.slotName in model.slots) {
@@ -82,19 +104,19 @@ const populateModels = (unit: Unit) => {
 
                 // Also apply any additional modifications attached to this choice
                 if (choice.modifications) {
-                    applyModifications(unit.models, choice.modifications);
+                    applyModifications(unit, choice.modifications);
                 }
             }
         } else {
             // Toggle option: apply parent modifications if active
             if (activeSelectedOptions.includes(optionDef.id) && optionDef.modifications) {
-                applyModifications(unit.models, optionDef.modifications);
+                applyModifications(unit, optionDef.modifications);
             }
             // Dropdown option (has choices, each with modifications): apply the active choice
             if (optionDef.choices) {
                 for (const choice of optionDef.choices) {
                     if (activeSelectedOptions.includes(choice.id)) {
-                        applyModifications(unit.models, choice.modifications || []);
+                        applyModifications(unit, choice.modifications || []);
                     }
                 }
             }
@@ -109,7 +131,8 @@ export const addUnit = () => {
         type: 'Infantry',
         lifeform: 'Human',
         selectedOptions: [],
-        models: []
+        models: [],
+        slots: {}
     }
     populateModels(newUnit)
     armyState.units.push(newUnit)

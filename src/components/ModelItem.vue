@@ -3,6 +3,7 @@
 import type { Model } from "../types";
 import { calculateModelPoints } from "../store";
 import { weaponPoints, lifeformClassPoints } from "../data";
+import { formatSlotName } from "../utils";
 
 const props = defineProps<{
   model: Model;
@@ -59,12 +60,7 @@ const handleRemove = () => {
           class="option-row"
         >
           <div class="readonly-text slot-name">
-            {{
-              (slotName as string)
-                .split("_")
-                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(" ")
-            }}:
+            {{ formatSlotName(slotName as string) }}:
           </div>
           <div class="readonly-text">
             {{ weapon }}

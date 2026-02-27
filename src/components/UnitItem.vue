@@ -6,12 +6,13 @@ import ModelItem from "./ModelItem.vue";
 import {
   addModelToUnit,
   removeModelFromUnit,
-  calculateModelPoints,
+  calculateUnitPoints,
   changeUnitType,
   changeUnitLifeform,
   toggleUnitOption,
   selectUnitOptionChoice,
 } from "../store";
+import { formatSlotName } from "../utils";
 
 const props = defineProps<{
   unit: Unit;
@@ -24,10 +25,7 @@ const emit = defineEmits<{
 }>();
 
 const unitPoints = computed(() => {
-  return props.unit.models.reduce(
-    (total, model) => total + calculateModelPoints(model),
-    0,
-  );
+  return calculateUnitPoints(props.unit);
 });
 
 const availableOptions = computed(() => unitOptions[props.unit.type] || []);
@@ -43,9 +41,27 @@ const onLifeformChange = (event: Event) => {
 };
 
 const getOptionDefaultLabel = (opt: UnitOptionDef) => {
+  // Check unit slots first
+  if (opt.type === "slot" && opt.slotName && props.unit.slots[opt.slotName]) {
+    const currentWeapon = props.unit.slots[opt.slotName];
+    const points = weaponPoints[currentWeapon as EquipmentName];
+    const pointsLabel = points !== undefined ? ` [${points}]` : "";
+    return `Default (${currentWeapon}${pointsLabel})`;
+  }
+
   // If the first choice's first modification targets a slot, find the current value of that slot
   const firstMod = opt.choices?.[0]?.modifications?.[0];
-  if (firstMod && (firstMod.setSlot || firstMod.clearSlot)) {
+  if (firstMod && (firstMod.setSlot || firstMod.clearSlot || firstMod.setUnitSlot || firstMod.clearUnitSlot)) {
+    if (firstMod.setUnitSlot || firstMod.clearUnitSlot) {
+        const slotName = firstMod.setUnitSlot ? Object.keys(firstMod.setUnitSlot)[0] : firstMod.clearUnitSlot!;
+        const currentWeapon = props.unit.slots[slotName];
+        if (currentWeapon) {
+            const points = weaponPoints[currentWeapon as EquipmentName];
+            const pointsLabel = points !== undefined ? ` [${points}]` : "";
+            return `Default (${currentWeapon}${pointsLabel})`;
+        }
+    }
+
     const slotName = firstMod.setSlot
       ? Object.keys(firstMod.setSlot)[0]
       : firstMod.clearSlot!;
@@ -89,6 +105,11 @@ const getChoicePointsLabel = (choice: any) => {
     for (const mod of choice.modifications) {
       if (mod.setSlot) {
         const weaponName = Object.values(mod.setSlot)[0] as string;
+        points = weaponPoints[weaponName as EquipmentName];
+        if (points !== undefined) break;
+      }
+      if (mod.setUnitSlot) {
+        const weaponName = Object.values(mod.setUnitSlot)[0] as string;
         points = weaponPoints[weaponName as EquipmentName];
         if (points !== undefined) break;
       }
@@ -203,6 +224,14 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
             </label>
           </div>
         </template>
+      </div>
+    </div>
+
+    <div class="unit-equipment" v-if="Object.keys(unit.slots).length > 0">
+      <div v-for="(weapon, slot) in unit.slots" :key="slot" class="equipment-item">
+        <span class="slot-name">{{ formatSlotName(slot as string) }}:</span>
+        <span class="weapon-name">{{ weapon }}</span>
+        <span class="weapon-points">({{ weaponPoints[weapon] }} pts)</span>
       </div>
     </div>
 
@@ -391,15 +420,44 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
   }
 }
 
-.unit-options h4 {
+.unit-options h4, .unit-equipment h4 {
   margin: 0 0 0.75rem 0;
   color: #666;
 }
 
 @media (prefers-color-scheme: dark) {
-  .unit-options h4 {
+  .unit-options h4, .unit-equipment h4 {
     color: #ccc;
   }
+}
+
+.unit-equipment {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+@media (prefers-color-scheme: dark) {
+  .unit-equipment {
+    border-bottom-color: #333;
+  }
+}
+
+.equipment-item {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.slot-name {
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.weapon-points {
+  color: #4caf50;
+  font-size: 0.85rem;
 }
 
 .option-item {

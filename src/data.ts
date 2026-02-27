@@ -69,6 +69,7 @@ export interface ModelDef {
 }
 
 export interface UnitTypeDef {
+    slots?: Record<string, EquipmentName>;
     models: ModelDef[];
 }
 
@@ -101,8 +102,9 @@ export const unitDefinitions: Record<UnitType, UnitTypeDef> = {
         ]
     },
     'Weapon Team': {
+        slots: { crewed_weapon: 'Laser Cannon' },
         models: [
-            { name: 'Gunner',   class: 'Soldier', slots: { sidearm: 'Service Pistol', crewed_weapon: 'Laser Cannon' }, extras: ['Morale +1'] },
+            { name: 'Gunner',   class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Morale +1'] },
             { name: 'Loader 1', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Morale +1'] },
             { name: 'Loader 2', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Morale +1'] }
         ]
