@@ -18,12 +18,17 @@ import {
   removeSlotFromUnit,
   addExtraToUnit,
   removeExtraFromUnit,
+  toggleUnitMinimized,
+  moveUnit,
 } from "../store";
 import { formatSlotName } from "../utils";
 
 const props = defineProps<{
   unit: Unit;
 }>();
+
+const isFirst = computed(() => armyState.units[0]?.id === props.unit.id);
+const isLast = computed(() => armyState.units[armyState.units.length - 1]?.id === props.unit.id);
 
 const lifeformTypes = Object.keys(lifeformClassPoints) as Lifeform[];
 
@@ -163,13 +168,40 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
 <template>
   <div class="unit-item">
     <div class="unit-header">
-      <input
-        type="text"
-        v-model="unit.name"
-        class="unit-name-input"
-        placeholder="Unit Name"
-      />
+      <div class="header-main">
+        <button 
+          @click="toggleUnitMinimized(unit.id)" 
+          class="toggle-btn"
+          :title="unit.minimized ? 'Expand' : 'Collapse'"
+        >
+          {{ unit.minimized ? '▶' : '▼' }}
+        </button>
+        <input
+          type="text"
+          v-model="unit.name"
+          class="unit-name-input"
+          placeholder="Unit Name"
+        />
+      </div>
       <div class="unit-actions">
+        <div class="move-btns">
+          <button 
+            @click="moveUnit(unit.id, 'up')" 
+            :disabled="isFirst" 
+            class="move-btn"
+            title="Move Up"
+          >
+            ↑
+          </button>
+          <button 
+            @click="moveUnit(unit.id, 'down')" 
+            :disabled="isLast" 
+            class="move-btn"
+            title="Move Down"
+          >
+            ↓
+          </button>
+        </div>
         <span class="unit-points">{{ unitPoints }} pts</span>
         <button @click="emit('remove', unit.id)" class="remove-btn">
           Delete Unit
@@ -177,129 +209,131 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
       </div>
     </div>
 
-    <div class="unit-settings">
-      <div class="setting-group">
-        <label>Type:</label>
-        <select :value="unit.type" @change="onTypeChange">
-          <optgroup
-            v-for="group in unitGroups"
-            :key="group.label"
-            :label="group.label"
-          >
-            <option v-for="type in group.types" :key="type" :value="type">
-              {{ type }}
-            </option>
-          </optgroup>
-        </select>
-      </div>
-      <div class="setting-group">
-        <label>Lifeform:</label>
-        <select :value="unit.lifeform" @change="onLifeformChange">
-          <option v-for="lf in lifeformTypes" :key="lf" :value="lf">
-            {{ lf }}
-          </option>
-        </select>
-      </div>
-    </div>
-
-    <div class="unit-options" v-if="availableOptions.length > 0">
-      <h4>Unit Options</h4>
-      <div
-        v-for="opt in availableOptions"
-        :key="opt.id"
-        class="option-item"
-      >
-        <template v-if="opt.choices">
-          <div class="option-select">
-            <label :for="opt.id">{{ opt.name }}:</label>
-            <select
-              :id="opt.id"
-              @change="(e) => selectUnitOptionChoice(unit.id, opt.id, (e.target as HTMLSelectElement).value || null)"
+    <div v-if="!unit.minimized" class="unit-body">
+      <div class="unit-settings">
+        <div class="setting-group">
+          <label>Type:</label>
+          <select :value="unit.type" @change="onTypeChange">
+            <optgroup
+              v-for="group in unitGroups"
+              :key="group.label"
+              :label="group.label"
             >
-              <option v-if="opt.type !== 'slot'" value="">
-                {{ getOptionDefaultLabel(opt) }}
+              <option v-for="type in group.types" :key="type" :value="type">
+                {{ type }}
               </option>
-              <option
-                v-for="choice in opt.choices"
-                :key="choice.id"
-                :value="choice.id"
-                :selected="unit.selectedOptions.includes(choice.id)"
+            </optgroup>
+          </select>
+        </div>
+        <div class="setting-group">
+          <label>Lifeform:</label>
+          <select :value="unit.lifeform" @change="onLifeformChange">
+            <option v-for="lf in lifeformTypes" :key="lf" :value="lf">
+              {{ lf }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="unit-options" v-if="availableOptions.length > 0">
+        <h4>Unit Options</h4>
+        <div
+          v-for="opt in availableOptions"
+          :key="opt.id"
+          class="option-item"
+        >
+          <template v-if="opt.choices">
+            <div class="option-select">
+              <label :for="opt.id">{{ opt.name }}:</label>
+              <select
+                :id="opt.id"
+                @change="(e) => selectUnitOptionChoice(unit.id, opt.id, (e.target as HTMLSelectElement).value || null)"
               >
-                {{ choice.name }}{{ getChoicePointsLabel(choice) }}
-              </option>
+                <option v-if="opt.type !== 'slot'" value="">
+                  {{ getOptionDefaultLabel(opt) }}
+                </option>
+                <option
+                  v-for="choice in opt.choices"
+                  :key="choice.id"
+                  :value="choice.id"
+                  :selected="unit.selectedOptions.includes(choice.id)"
+                >
+                  {{ choice.name }}{{ getChoicePointsLabel(choice) }}
+                </option>
+              </select>
+            </div>
+          </template>
+          <template v-else>
+            <div class="option-checkbox">
+              <label>
+                <input
+                  type="checkbox"
+                  :checked="unit.selectedOptions.includes(opt.id)"
+                  @change="toggleUnitOption(unit.id, opt.id)"
+                />
+                 {{ opt.name }}{{ getOptionPointsLabel(opt) }}
+              </label>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <div class="unit-equipment" v-if="Object.keys(unit.slots).length > 0 || unit.extras.length > 0 || armyState.freeEdit">
+        <div v-for="(weapon, slot) in unit.slots" :key="slot" class="equipment-item">
+          <span class="slot-name">{{ formatSlotName(slot as string) }}:</span>
+          <template v-if="armyState.freeEdit">
+            <select @change="(e) => addSlotToUnit(unit.id, slot as string, (e.target as HTMLSelectElement).value as EquipmentName)" class="mini-select">
+              <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
+                <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === weapon">{{ name }} [{{ equipmentPoints[name] }}]</option>
+              </optgroup>
             </select>
-          </div>
-        </template>
-        <template v-else>
-          <div class="option-checkbox">
-            <label>
-              <input
-                type="checkbox"
-                :checked="unit.selectedOptions.includes(opt.id)"
-                @change="toggleUnitOption(unit.id, opt.id)"
-              />
-               {{ opt.name }}{{ getOptionPointsLabel(opt) }}
-            </label>
-          </div>
-        </template>
-      </div>
-    </div>
+          </template>
+          <template v-else>
+            <span class="weapon-name">{{ weapon }}</span>
+          </template>
+          <span class="weapon-points">[{{ equipmentPoints[weapon] }}]</span>
+          <button v-if="armyState.freeEdit" @click="removeSlotFromUnit(unit.id, slot as string)" class="mini-remove-btn">×</button>
+        </div>
+        <div v-for="(item, index) in unit.extras" :key="'unit-extra-' + index" class="equipment-item">
+          <span class="slot-name">+</span>
+          <template v-if="armyState.freeEdit">
+            <select @change="(e) => {
+              removeExtraFromUnit(unit.id, index);
+              addExtraToUnit(unit.id, (e.target as HTMLSelectElement).value as EquipmentName);
+            }" class="mini-select">
+              <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
+                <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === item">{{ name }} [{{ equipmentPoints[name] }}]</option>
+              </optgroup>
+            </select>
+          </template>
+          <template v-else>
+            <span class="weapon-name">{{ item }}</span>
+          </template>
+          <span class="weapon-points">[{{ equipmentPoints[item] }}]</span>
+          <button v-if="armyState.freeEdit" @click="removeExtraFromUnit(unit.id, index)" class="mini-remove-btn">×</button>
+        </div>
 
-    <div class="unit-equipment" v-if="Object.keys(unit.slots).length > 0 || unit.extras.length > 0 || armyState.freeEdit">
-      <div v-for="(weapon, slot) in unit.slots" :key="slot" class="equipment-item">
-        <span class="slot-name">{{ formatSlotName(slot as string) }}:</span>
-        <template v-if="armyState.freeEdit">
-          <select @change="(e) => addSlotToUnit(unit.id, slot as string, (e.target as HTMLSelectElement).value as EquipmentName)" class="mini-select">
-            <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
-              <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === weapon">{{ name }} [{{ equipmentPoints[name] }}]</option>
-            </optgroup>
-          </select>
-        </template>
-        <template v-else>
-          <span class="weapon-name">{{ weapon }}</span>
-        </template>
-        <span class="weapon-points">[{{ equipmentPoints[weapon] }}]</span>
-        <button v-if="armyState.freeEdit" @click="removeSlotFromUnit(unit.id, slot as string)" class="mini-remove-btn">×</button>
-      </div>
-      <div v-for="(item, index) in unit.extras" :key="'unit-extra-' + index" class="equipment-item">
-        <span class="slot-name">+</span>
-        <template v-if="armyState.freeEdit">
-          <select @change="(e) => {
-            removeExtraFromUnit(unit.id, index);
-            addExtraToUnit(unit.id, (e.target as HTMLSelectElement).value as EquipmentName);
-          }" class="mini-select">
-            <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
-              <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === item">{{ name }} [{{ equipmentPoints[name] }}]</option>
-            </optgroup>
-          </select>
-        </template>
-        <template v-else>
-          <span class="weapon-name">{{ item }}</span>
-        </template>
-        <span class="weapon-points">[{{ equipmentPoints[item] }}]</span>
-        <button v-if="armyState.freeEdit" @click="removeExtraFromUnit(unit.id, index)" class="mini-remove-btn">×</button>
+        <div v-if="armyState.freeEdit" class="manual-add-controls">
+          <button @click="addManualSlot" class="add-manual-btn">+ Add Slot</button>
+          <button @click="addExtraToUnit(unit.id, 'None')" class="add-manual-btn">+ Add Extra</button>
+        </div>
       </div>
 
-      <div v-if="armyState.freeEdit" class="manual-add-controls">
-        <button @click="addManualSlot" class="add-manual-btn">+ Add Slot</button>
-        <button @click="addExtraToUnit(unit.id, 'None')" class="add-manual-btn">+ Add Extra</button>
+      <div class="models-container">
+        <h4 v-if="unit.models.length > 0">Models</h4>
+        <div class="models-list">
+          <ModelItem
+            v-for="model in unit.models"
+            :key="model.id"
+            :model="model"
+            :unitId="unit.id"
+            @remove="removeModelFromUnit(unit.id, $event)"
+          />
+        </div>
+        <button v-if="armyState.freeEdit" @click="addModelToUnit(unit.id)" class="add-model-btn">
+          + Add Model
+        </button>
       </div>
-    </div>
-
-    <div class="models-container">
-      <h4 v-if="unit.models.length > 0">Models</h4>
-      <div class="models-list">
-        <ModelItem
-          v-for="model in unit.models"
-          :key="model.id"
-          :model="model"
-          :unitId="unit.id"
-          @remove="removeModelFromUnit(unit.id, $event)"
-        />
-      </div>
-      <button v-if="armyState.freeEdit" @click="addModelToUnit(unit.id)" class="add-model-btn">
-        + Add Model
-      </button>
     </div>
   </div>
 </template>
@@ -344,6 +378,37 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
     align-items: center;
     margin-bottom: 1.5rem;
   }
+}
+
+.header-main {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.toggle-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.25rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .toggle-btn {
+    color: #aaa;
+  }
+}
+
+.toggle-btn:hover {
+  color: #4caf50;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -429,6 +494,44 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.move-btns {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.move-btn {
+  background: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #666;
+}
+
+@media (prefers-color-scheme: dark) {
+  .move-btn {
+    background: #333;
+    border-color: #555;
+    color: #ccc;
+  }
+}
+
+.move-btn:hover:not(:disabled) {
+  background: #4caf50;
+  color: white;
+  border-color: #4caf50;
+}
+
+.move-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .unit-points {

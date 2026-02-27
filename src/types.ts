@@ -24,6 +24,7 @@ export interface Unit {
     models: Model[];
     slots: Record<string, EquipmentName>;
     extras: EquipmentName[];
+    minimized?: boolean;
 }
 
 export interface UnitOptionDef {

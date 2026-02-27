@@ -191,6 +191,17 @@ export const removeUnit = (unitId: string) => {
     }
 }
 
+export const moveUnit = (unitId: string, direction: 'up' | 'down') => {
+    const index = armyState.units.findIndex(u => u.id === unitId);
+    if (index === -1) return;
+
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= armyState.units.length) return;
+
+    const [unit] = armyState.units.splice(index, 1);
+    armyState.units.splice(newIndex, 0, unit);
+}
+
 export const changeUnitType = (unitId: string, newType: UnitType) => {
     const unit = armyState.units.find(u => u.id === unitId)
     if (unit) {
@@ -243,6 +254,13 @@ export const toggleUnitOption = (unitId: string, optionId: string) => {
             unit.selectedOptions.splice(index, 1);
         }
         populateModels(unit);
+    }
+}
+
+export const toggleUnitMinimized = (unitId: string) => {
+    const unit = armyState.units.find(u => u.id === unitId);
+    if (unit) {
+        unit.minimized = !unit.minimized;
     }
 }
 
