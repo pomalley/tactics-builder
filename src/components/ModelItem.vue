@@ -11,7 +11,7 @@ import {
   removeExtraFromModel
 } from "../store";
 import { formatSlotName } from "../utils";
-import { EquipmentName, weaponPoints } from "../data/equipment";
+import { EquipmentName, equipmentPoints } from "../data/equipment";
 import { lifeformClassPoints } from "../data/lifeforms";
 
 const props = defineProps<{
@@ -19,7 +19,7 @@ const props = defineProps<{
   unitId: string;
 }>();
 
-const allEquipmentNames = Object.keys(weaponPoints).sort() as EquipmentName[];
+const allEquipmentNames = Object.keys(equipmentPoints).sort() as EquipmentName[];
 const modelClasses: ModelClass[] = ['Civilian', 'Soldier', 'Minor Character', 'Major Character', 'Epic Character', 'Vehicle'];
 
 const emit = defineEmits<{
@@ -94,7 +94,7 @@ const addManualSlot = () => {
           </template>
           <div v-else class="readonly-text">
             {{ weapon }}
-            <span class="point-badge">[{{ weaponPoints[weapon] || 0 }}]</span>
+            <span class="point-badge">[{{ equipmentPoints[weapon] || 0 }}]</span>
           </div>
         </div>
         <div
@@ -114,7 +114,7 @@ const addManualSlot = () => {
           </template>
           <div v-else class="readonly-text">
             {{ item }}
-            <span class="point-badge">[{{ weaponPoints[item] || 0 }}]</span>
+            <span class="point-badge">[{{ equipmentPoints[item] || 0 }}]</span>
           </div>
         </div>
 

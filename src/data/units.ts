@@ -860,3 +860,62 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
     ],
     'CIM-APP': []
 }
+
+type UnitGroupLabel =
+  | "Squads"
+  | "Individuals"
+  | "Specialists"
+  | "Alternate Squad Types"
+  | "Vehicles";
+
+const unitTypeToGroup: Record<UnitType, UnitGroupLabel> = {
+  Infantry: "Squads",
+  Recon: "Squads",
+  Storm: "Squads",
+  "Weapon Team": "Squads",
+  "Minor Character": "Individuals",
+  "Major Character": "Individuals",
+  "Epic Character": "Individuals",
+  Tech: "Specialists",
+  Sharpshooter: "Specialists",
+  "Fire Section": "Specialists",
+  Comms: "Specialists",
+  Medic: "Specialists",
+  Scout: "Specialists",
+  Enforcers: "Alternate Squad Types",
+  Militia: "Alternate Squad Types",
+  Pirate: "Alternate Squad Types",
+  Cavalry: "Alternate Squad Types",
+  "Nomad Bike": "Vehicles",
+  Scouter: "Vehicles",
+  Lancer: "Vehicles",
+  "Frontier Trike": "Vehicles",
+  "Raider Trike": "Vehicles",
+  "Armored Car": "Vehicles",
+  APC: "Vehicles",
+  "APC - Grav": "Vehicles",
+  IFV: "Vehicles",
+  "IFV - Grav": "Vehicles",
+  "Light Tank": "Vehicles",
+  "Light Tank - Grav": "Vehicles",
+  "Medium Tank": "Vehicles",
+  "Medium Tank - Grav": "Vehicles",
+  "Heavy Tank": "Vehicles",
+  "Light Walker": "Vehicles",
+  "Heavy Walker": "Vehicles",
+  "CIM-L": "Vehicles",
+  "CIM-APP": "Vehicles",
+};
+
+export const unitGroups = (
+  [
+    "Squads",
+    "Individuals",
+    "Specialists",
+    "Alternate Squad Types",
+    "Vehicles",
+  ] as UnitGroupLabel[]
+).map((label) => ({
+  label,
+  types: (Object.keys(unitDefinitions) as UnitType[]).filter((type) => unitTypeToGroup[type] === label),
+}));

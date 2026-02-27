@@ -1,4 +1,4 @@
-export const weaponPoints = {
+export const equipmentPoints = {
     'None': 0,
     // Rifles
     'Military Rifle': 3,
@@ -105,4 +105,4 @@ export const weaponPoints = {
     'Cavalry': 1,
 } as const;
 
-export type EquipmentName = keyof typeof weaponPoints;
+export type EquipmentName = keyof typeof equipmentPoints;

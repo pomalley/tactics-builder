@@ -1,7 +1,7 @@
 import { reactive, computed } from 'vue'
 import type { Army, Unit, Model, UnitType } from './types'
 import { Lifeform, lifeformClassPoints } from './data/lifeforms';
-import { EquipmentName, weaponPoints } from './data/equipment';
+import { EquipmentName, equipmentPoints } from './data/equipment';
 import { unitDefinitions, unitOptions } from './data/units';
 
 export const armyState = reactive<Army>({
@@ -18,15 +18,15 @@ export const calculateModelPoints = (model: Model): number => {
     const baseCost = model.basePoints !== undefined 
         ? model.basePoints 
         : (lifeformClassPoints[model.lifeform]?.[model.class] || 0);
-    const slotsCost = Object.values(model.slots).reduce((sum, weapon) => sum + (weaponPoints[weapon] || 0), 0);
-    const extrasCost = model.extras.reduce((sum, item) => sum + (weaponPoints[item] || 0), 0);
+    const slotsCost = Object.values(model.slots).reduce((sum, weapon) => sum + (equipmentPoints[weapon] || 0), 0);
+    const extrasCost = model.extras.reduce((sum, item) => sum + (equipmentPoints[item] || 0), 0);
     return baseCost + slotsCost + extrasCost;
 }
 
 export const calculateUnitPoints = (unit: Unit): number => {
     const modelsPoints = unit.models.reduce((sum, m) => sum + calculateModelPoints(m), 0);
-    const slotsPoints = Object.values(unit.slots).reduce((sum, weapon) => sum + (weaponPoints[weapon] || 0), 0);
-    const extrasPoints = unit.extras.reduce((sum, item) => sum + (weaponPoints[item] || 0), 0);
+    const slotsPoints = Object.values(unit.slots).reduce((sum, weapon) => sum + (equipmentPoints[weapon] || 0), 0);
+    const extrasPoints = unit.extras.reduce((sum, item) => sum + (equipmentPoints[item] || 0), 0);
     return modelsPoints + slotsPoints + extrasPoints;
 }
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { Unit, UnitType, UnitOptionDef } from "../types";
-import { weaponPoints, type EquipmentName } from "../data/equipment";
+import { equipmentPoints, type EquipmentName } from "../data/equipment";
 import { lifeformClassPoints, type Lifeform } from "../data/lifeforms";
-import { unitDefinitions, unitOptions } from "../data/units";
+import { unitGroups, unitOptions } from "../data/units";
 import ModelItem from "./ModelItem.vue";
 import {
   armyState,
@@ -25,68 +25,8 @@ const props = defineProps<{
   unit: Unit;
 }>();
 
-const allEquipmentNames = Object.keys(weaponPoints).sort() as EquipmentName[];
-const unitTypes = Object.keys(unitDefinitions) as UnitType[];
+const allEquipmentNames = Object.keys(equipmentPoints).sort() as EquipmentName[];
 const lifeformTypes = Object.keys(lifeformClassPoints) as Lifeform[];
-
-type UnitGroupLabel =
-  | "Squads"
-  | "Individuals"
-  | "Specialists"
-  | "Alternate Squad Types"
-  | "Vehicles";
-
-const unitTypeToGroup: Record<UnitType, UnitGroupLabel> = {
-  Infantry: "Squads",
-  Recon: "Squads",
-  Storm: "Squads",
-  "Weapon Team": "Squads",
-  "Minor Character": "Individuals",
-  "Major Character": "Individuals",
-  "Epic Character": "Individuals",
-  Tech: "Specialists",
-  Sharpshooter: "Specialists",
-  "Fire Section": "Specialists",
-  Comms: "Specialists",
-  Medic: "Specialists",
-  Scout: "Specialists",
-  Enforcers: "Alternate Squad Types",
-  Militia: "Alternate Squad Types",
-  Pirate: "Alternate Squad Types",
-  Cavalry: "Alternate Squad Types",
-  "Nomad Bike": "Vehicles",
-  Scouter: "Vehicles",
-  Lancer: "Vehicles",
-  "Frontier Trike": "Vehicles",
-  "Raider Trike": "Vehicles",
-  "Armored Car": "Vehicles",
-  APC: "Vehicles",
-  "APC - Grav": "Vehicles",
-  IFV: "Vehicles",
-  "IFV - Grav": "Vehicles",
-  "Light Tank": "Vehicles",
-  "Light Tank - Grav": "Vehicles",
-  "Medium Tank": "Vehicles",
-  "Medium Tank - Grav": "Vehicles",
-  "Heavy Tank": "Vehicles",
-  "Light Walker": "Vehicles",
-  "Heavy Walker": "Vehicles",
-  "CIM-L": "Vehicles",
-  "CIM-APP": "Vehicles",
-};
-
-const unitGroups = (
-  [
-    "Squads",
-    "Individuals",
-    "Specialists",
-    "Alternate Squad Types",
-    "Vehicles",
-  ] as UnitGroupLabel[]
-).map((label) => ({
-  label,
-  types: unitTypes.filter((type) => unitTypeToGroup[type] === label),
-}));
 
 const addManualSlot = () => {
   const name = window.prompt("Slot Name (e.g. turret, sidearm):");
@@ -117,7 +57,7 @@ const getOptionDefaultLabel = (opt: UnitOptionDef) => {
   // Check unit slots first
   if (opt.type === "slot" && opt.slotName && props.unit.slots[opt.slotName]) {
     const currentWeapon = props.unit.slots[opt.slotName];
-    const points = weaponPoints[currentWeapon as EquipmentName];
+    const points = equipmentPoints[currentWeapon as EquipmentName];
     const pointsLabel = points !== undefined ? ` [${points}]` : "";
     return `Default (${currentWeapon}${pointsLabel})`;
   }
@@ -129,7 +69,7 @@ const getOptionDefaultLabel = (opt: UnitOptionDef) => {
         const slotName = firstMod.setUnitSlot ? Object.keys(firstMod.setUnitSlot)[0] : firstMod.clearUnitSlot!;
         const currentWeapon = props.unit.slots[slotName];
         if (currentWeapon) {
-            const points = weaponPoints[currentWeapon as EquipmentName];
+            const points = equipmentPoints[currentWeapon as EquipmentName];
             const pointsLabel = points !== undefined ? ` [${points}]` : "";
             return `Default (${currentWeapon}${pointsLabel})`;
         }
@@ -149,7 +89,7 @@ const getOptionDefaultLabel = (opt: UnitOptionDef) => {
 
     if (targetModel) {
       const currentWeapon = targetModel.slots[slotName];
-      const points = weaponPoints[currentWeapon as EquipmentName];
+      const points = equipmentPoints[currentWeapon as EquipmentName];
       const pointsLabel = points !== undefined ? ` [${points}]` : "";
       return `Default (${currentWeapon}${pointsLabel})`;
     }
@@ -160,7 +100,7 @@ const getOptionDefaultLabel = (opt: UnitOptionDef) => {
     const targetModel = props.unit.models.find((m) => m.slots[opt.slotName!]);
     if (targetModel) {
       const currentWeapon = targetModel.slots[opt.slotName!];
-      const points = weaponPoints[currentWeapon as EquipmentName];
+      const points = equipmentPoints[currentWeapon as EquipmentName];
       const pointsLabel = points !== undefined ? ` [${points}]` : "";
       return `Default (${currentWeapon}${pointsLabel})`;
     }
@@ -171,19 +111,19 @@ const getOptionDefaultLabel = (opt: UnitOptionDef) => {
 
 const getChoicePointsLabel = (choice: any) => {
   // Try weapon name directly first
-  let points = weaponPoints[choice.name as EquipmentName];
+  let points = equipmentPoints[choice.name as EquipmentName];
 
   // If not found, check modifications
   if (points === undefined && choice.modifications) {
     for (const mod of choice.modifications) {
       if (mod.setSlot) {
         const weaponName = Object.values(mod.setSlot)[0] as string;
-        points = weaponPoints[weaponName as EquipmentName];
+        points = equipmentPoints[weaponName as EquipmentName];
         if (points !== undefined) break;
       }
       if (mod.setUnitSlot) {
         const weaponName = Object.values(mod.setUnitSlot)[0] as string;
-        points = weaponPoints[weaponName as EquipmentName];
+        points = equipmentPoints[weaponName as EquipmentName];
         if (points !== undefined) break;
       }
     }
@@ -199,7 +139,7 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
     for (const mod of opt.modifications) {
       if (mod.addExtras) {
         total += mod.addExtras.reduce(
-          (sum, item) => sum + (weaponPoints[item as EquipmentName] || 0),
+          (sum, item) => sum + (equipmentPoints[item as EquipmentName] || 0),
           0,
         );
         found = true;
@@ -208,7 +148,7 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
         // For toggles that set a slot (like "Replace X with Y"),
         // finding net change is hard without context, but we can show the weapon cost
         const weaponName = Object.values(mod.setSlot)[0] as string;
-        const wp = weaponPoints[weaponName as EquipmentName];
+        const wp = equipmentPoints[weaponName as EquipmentName];
         if (wp !== undefined) {
           total += wp;
           found = true;
@@ -317,7 +257,7 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
         <template v-else>
           <span class="weapon-name">{{ weapon }}</span>
         </template>
-        <span class="weapon-points">[{{ weaponPoints[weapon] }}]</span>
+        <span class="weapon-points">[{{ equipmentPoints[weapon] }}]</span>
         <button v-if="armyState.freeEdit" @click="removeSlotFromUnit(unit.id, slot as string)" class="mini-remove-btn">×</button>
       </div>
       <div v-for="(item, index) in unit.extras" :key="'unit-extra-' + index" class="equipment-item">
@@ -333,7 +273,7 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
         <template v-else>
           <span class="weapon-name">{{ item }}</span>
         </template>
-        <span class="weapon-points">[{{ weaponPoints[item] }}]</span>
+        <span class="weapon-points">[{{ equipmentPoints[item] }}]</span>
         <button v-if="armyState.freeEdit" @click="removeExtraFromUnit(unit.id, index)" class="mini-remove-btn">×</button>
       </div>
 
