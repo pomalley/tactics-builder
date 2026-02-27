@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { Unit, UnitType, UnitOptionDef } from "../types";
-import { unitOptions, weaponPoints, unitDefinitions, type EquipmentName, type Lifeform } from "../data";
+import {
+  unitOptions,
+  weaponPoints,
+  unitDefinitions,
+  lifeformClassPoints,
+  type EquipmentName,
+  type Lifeform,
+} from "../data";
 import ModelItem from "./ModelItem.vue";
 import {
   addModelToUnit,
@@ -19,6 +26,7 @@ const props = defineProps<{
 }>();
 
 const unitTypes = Object.keys(unitDefinitions) as UnitType[];
+const lifeformTypes = Object.keys(lifeformClassPoints) as Lifeform[];
 
 const emit = defineEmits<{
   (e: "remove", unitId: string): void;
@@ -177,9 +185,9 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
       <div class="setting-group">
         <label>Lifeform:</label>
         <select :value="unit.lifeform" @change="onLifeformChange">
-          <option value="Human">Human</option>
-          <option value="Feral">Feral</option>
-          <option value="K'Erin">K'Erin</option>
+          <option v-for="lf in lifeformTypes" :key="lf" :value="lf">
+            {{ lf }}
+          </option>
         </select>
       </div>
     </div>
