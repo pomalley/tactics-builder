@@ -1,6 +1,8 @@
 import { reactive, computed } from 'vue'
 import type { Army, Unit, Model, UnitType } from './types'
-import { unitDefinitions, lifeformClassPoints, weaponPoints, unitOptions, type EquipmentName, type Lifeform } from './data'
+import { Lifeform, lifeformClassPoints } from './data/lifeforms';
+import { EquipmentName, weaponPoints } from './data/equipment';
+import { unitDefinitions, unitOptions } from './data/units';
 
 export const armyState = reactive<Army>({
     name: 'New Army',
