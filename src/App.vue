@@ -18,17 +18,23 @@ const message = ref("Tactics Army Builder");
 
 <style scoped>
 .app-container {
-  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
   padding: 2rem;
   font-family: "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 .header {
   text-align: center;
   margin-bottom: 2rem;
 }
 h1 {
-  color: #2c3e50;
+  color: #f0c444;
   font-size: 2.5rem;
 }
 </style>
