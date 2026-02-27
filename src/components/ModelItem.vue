@@ -34,7 +34,7 @@ const handleRemove = () => {
     </div>
 
     <div class="model-details">
-      <div class="field">
+      <div class="field" v-if="model.class !== 'Vehicle'">
         <label>Lifeform</label>
         <div class="readonly-text">{{ model.lifeform }}</div>
       </div>
@@ -42,7 +42,8 @@ const handleRemove = () => {
         <label>Class</label>
         <div class="readonly-text">
           {{ model.class }}
-          <span class="point-badge">[{{ lifeformClassPoints[model.lifeform]?.[model.class] || 0 }}]</span>
+          <span class="point-badge" v-if="model.basePoints === undefined">[{{ lifeformClassPoints[model.lifeform]?.[model.class] || 0 }}]</span>
+          <span class="point-badge" v-else>[{{ model.basePoints }}]</span>
         </div>
       </div>
       <div class="field points-field">

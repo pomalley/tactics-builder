@@ -8,7 +8,9 @@ export const armyState = reactive<Army>({
 })
 
 export const calculateModelPoints = (model: Model): number => {
-    const baseCost = lifeformClassPoints[model.lifeform][model.class] || 0;
+    const baseCost = model.basePoints !== undefined 
+        ? model.basePoints 
+        : (lifeformClassPoints[model.lifeform]?.[model.class] || 0);
     const slotsCost = Object.values(model.slots).reduce((sum, weapon) => sum + (weaponPoints[weapon] || 0), 0);
     const extrasCost = model.extras.reduce((sum, item) => sum + (weaponPoints[item] || 0), 0);
     return baseCost + slotsCost + extrasCost;
@@ -36,6 +38,7 @@ const applyModifications = (unit: Unit, modifications: Array<{
     setUnitSlot?: Record<string, EquipmentName>;
     addExtras?: EquipmentName[];
     addUnitExtras?: EquipmentName[];
+    setBasePoints?: number;
 }>) => {
     for (const mod of modifications) {
         if (mod.clearUnitSlot) delete unit.slots[mod.clearUnitSlot];
@@ -68,6 +71,9 @@ const applyModifications = (unit: Unit, modifications: Array<{
                     }
                 }
             }
+            if (mod.setBasePoints !== undefined) {
+                model.basePoints = mod.setBasePoints;
+            }
         }
     }
 }
@@ -82,8 +88,9 @@ const populateModels = (unit: Unit) => {
         unit.models.push({
             id: crypto.randomUUID(),
             name: modelDef.name,
-            lifeform: unit.lifeform,
+            lifeform: modelDef.class === 'Vehicle' ? 'None' : unit.lifeform,
             class: modelDef.class,
+            basePoints: modelDef.basePoints,
             slots: { ...modelDef.slots } as Record<string, EquipmentName>,
             extras: [...modelDef.extras]
         });

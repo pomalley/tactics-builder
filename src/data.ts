@@ -64,6 +64,7 @@ export type EquipmentName = keyof typeof weaponPoints;
 export interface ModelDef {
     name: string;
     class: ModelClass;
+    basePoints?: number;
     slots: Record<string, EquipmentName>;
     extras: EquipmentName[];
 }
@@ -77,35 +78,35 @@ export interface UnitTypeDef {
 export const unitDefinitions: Record<UnitType, UnitTypeDef> = {
     'Infantry': {
         models: [
-            { name: 'Sergeant',  class: 'Minor Character', slots: { rifle: 'Military Rifle' },      extras: ['Frag Grenade'] },
-            { name: 'Trooper 1', class: 'Soldier',         slots: { rifle: 'Military Rifle' },      extras: ['Frag Grenade'] },
-            { name: 'Trooper 2', class: 'Soldier',         slots: { rifle: 'Military Rifle' },      extras: ['Frag Grenade'] },
-            { name: 'Trooper 3', class: 'Soldier',         slots: { rifle: 'Military Rifle' },      extras: ['Frag Grenade'] },
-            { name: 'Trooper 4', class: 'Soldier',         slots: { support: 'Light Machine Gun' }, extras: ['Frag Grenade'] }
+            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Military Rifle' }, extras: ['Frag Grenade'] },
+            { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: ['Frag Grenade'] },
+            { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: ['Frag Grenade'] },
+            { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: ['Frag Grenade'] },
+            { name: 'Trooper 4', class: 'Soldier', slots: { support: 'Light Machine Gun' }, extras: ['Frag Grenade'] }
         ]
     },
     'Recon': {
         models: [
-            { name: 'Sergeant',  class: 'Minor Character', slots: { rifle: 'Military Rifle' },    extras: ['Observation +1'] },
-            { name: 'Trooper 1', class: 'Soldier',         slots: { rifle: 'Military Rifle' },    extras: ['Observation +1'] },
-            { name: 'Trooper 2', class: 'Soldier',         slots: { rifle: 'Military Rifle' },    extras: ['Observation +1'] },
-            { name: 'Trooper 3', class: 'Soldier',         slots: { rifle: 'Military Rifle' },    extras: ['Observation +1'] },
-            { name: 'Trooper 4', class: 'Soldier',         slots: { support: 'Precision Rifle' }, extras: ['Observation +1'] }
+            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Military Rifle' }, extras: ['Observation +1'] },
+            { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: ['Observation +1'] },
+            { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: ['Observation +1'] },
+            { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: ['Observation +1'] },
+            { name: 'Trooper 4', class: 'Soldier', slots: { support: 'Precision Rifle' }, extras: ['Observation +1'] }
         ]
     },
     'Storm': {
         models: [
-            { name: 'Sergeant',  class: 'Minor Character', slots: { rifle: 'Shotgun', sgt_melee: 'Blade' }, extras: ['Frag Grenade', 'Fog Grenade'] },
-            { name: 'Trooper 1', class: 'Soldier',         slots: { rifle: 'Shotgun', melee: 'Breaching Axe' }, extras: ['Frag Grenade', 'Fog Grenade'] },
-            { name: 'Trooper 2', class: 'Soldier',         slots: { rifle: 'Shotgun', melee: 'Blade' }, extras: ['Frag Grenade', 'Fog Grenade'] },
-            { name: 'Trooper 3', class: 'Soldier',         slots: { rifle: 'Shotgun', melee: 'Blade' }, extras: ['Frag Grenade', 'Fog Grenade'] },
-            { name: 'Trooper 4', class: 'Soldier',         slots: { rifle: 'Shotgun', melee: 'Blade' }, extras: ['Frag Grenade', 'Fog Grenade'] }
+            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Shotgun', sgt_melee: 'Blade' }, extras: ['Frag Grenade', 'Fog Grenade'] },
+            { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Shotgun', melee: 'Breaching Axe' }, extras: ['Frag Grenade', 'Fog Grenade'] },
+            { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Shotgun', melee: 'Blade' }, extras: ['Frag Grenade', 'Fog Grenade'] },
+            { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Shotgun', melee: 'Blade' }, extras: ['Frag Grenade', 'Fog Grenade'] },
+            { name: 'Trooper 4', class: 'Soldier', slots: { rifle: 'Shotgun', melee: 'Blade' }, extras: ['Frag Grenade', 'Fog Grenade'] }
         ]
     },
     'Weapon Team': {
         slots: { crewed_weapon: 'Laser Cannon' },
         models: [
-            { name: 'Gunner',   class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Morale +1'] },
+            { name: 'Gunner', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Morale +1'] },
             { name: 'Loader 1', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Morale +1'] },
             { name: 'Loader 2', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Morale +1'] }
         ]
@@ -139,7 +140,7 @@ export const unitDefinitions: Record<UnitType, UnitTypeDef> = {
         extras: ['Morale +1 (Fire Section)'],
         models: [
             { name: 'Grenadier', class: 'Soldier', slots: { rifle: 'Plasma Rifle', sidearm: 'Service Pistol' }, extras: [] },
-            { name: 'Support',   class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: [] }
+            { name: 'Support', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: [] }
         ]
     },
     'Comms': {
@@ -193,6 +194,11 @@ export const unitDefinitions: Record<UnitType, UnitTypeDef> = {
             { name: 'Trooper 4', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade' }, extras: ['Cavalry'] },
         ]
     },
+    'Nomad Bike': {
+        models: [
+            { name: 'Nomad Bike', class: 'Vehicle', basePoints: 15, slots: { forward: 'None' }, extras: [] }
+        ]
+    }
 }
 
 export const lifeformClassPoints: Record<Lifeform, Record<ModelClass, number>> = {
@@ -201,21 +207,32 @@ export const lifeformClassPoints: Record<Lifeform, Record<ModelClass, number>> =
         'Soldier': 10,
         'Minor Character': 15,
         'Major Character': 20,
-        'Epic Character': 30
+        'Epic Character': 30,
+        'Vehicle': NaN
     },
     'Feral': {
         'Civilian': 6,
         'Soldier': 12,
         'Minor Character': 17,
         'Major Character': 22,
-        'Epic Character': 32
+        'Epic Character': 32,
+        'Vehicle': NaN
     },
     'K\'Erin': {
         'Civilian': 6,
         'Soldier': 13,
         'Minor Character': 20,
         'Major Character': 25,
-        'Epic Character': 35
+        'Epic Character': 35,
+        'Vehicle': NaN
+    },
+    'None': {
+        'Civilian': 0,
+        'Soldier': 0,
+        'Minor Character': 0,
+        'Major Character': 0,
+        'Epic Character': 0,
+        'Vehicle': 0
     }
 }
 
@@ -227,7 +244,7 @@ const techOptions: UnitOptionDef[] = [
         slotName: 'sidearm',
         choices: [
             { id: 'tech_pistol', name: 'Service Pistol' },
-            { id: 'tech_laser',  name: 'Hand Laser' }
+            { id: 'tech_laser', name: 'Hand Laser' }
         ]
     },
     {
@@ -244,11 +261,11 @@ const fireSectionOptions: UnitOptionDef[] = [
         type: 'slot',
         slotName: 'rifle',
         choices: [
-            { id: 'fs_plasma',   name: 'Plasma Rifle' },
-            { id: 'fs_lmg',      name: 'Light Machine Gun' },
-            { id: 'fs_grenade',  name: 'Grenade Launcher', modifications: [{ targetName: 'Grenadier', addExtras: ['Frag Grenade', 'Fog Grenade'] }] },
-            { id: 'fs_fury',     name: 'Fury Rifle' },
-            { id: 'fs_hyper',    name: 'Hyper Blaster' }
+            { id: 'fs_plasma', name: 'Plasma Rifle' },
+            { id: 'fs_lmg', name: 'Light Machine Gun' },
+            { id: 'fs_grenade', name: 'Grenade Launcher', modifications: [{ targetName: 'Grenadier', addExtras: ['Frag Grenade', 'Fog Grenade'] }] },
+            { id: 'fs_fury', name: 'Fury Rifle' },
+            { id: 'fs_hyper', name: 'Hyper Blaster' }
         ]
     }
 ]
@@ -258,7 +275,7 @@ const armorOptions: UnitOptionDef = {
     name: 'Armor',
     choices: [
         { id: 'armor_powered', name: 'Powered Armor', modifications: [{ setSlot: { armor: 'Powered Armor' } }] },
-        { id: 'armor_breach',  name: 'Breach Armor', modifications: [{ setSlot: { armor: 'Breach Armor' } }] },
+        { id: 'armor_breach', name: 'Breach Armor', modifications: [{ setSlot: { armor: 'Breach Armor' } }] },
     ]
 }
 
@@ -270,8 +287,8 @@ const characterOptions: UnitOptionDef[] = [
         type: 'slot',
         slotName: 'sidearm',
         choices: [
-            { id: 'char_sidearm_laser',  name: 'Hand Laser' },
-            { id: 'char_sidearm_blast',  name: 'Blast Pistol' }
+            { id: 'char_sidearm_laser', name: 'Hand Laser' },
+            { id: 'char_sidearm_blast', name: 'Blast Pistol' }
         ]
     },
     {
@@ -280,8 +297,8 @@ const characterOptions: UnitOptionDef[] = [
         type: 'slot',
         slotName: 'melee',
         choices: [
-            { id: 'char_melee_glare',   name: 'Glare Sword' },
-            { id: 'char_melee_ripper',  name: 'Ripper Sword' },
+            { id: 'char_melee_glare', name: 'Glare Sword' },
+            { id: 'char_melee_ripper', name: 'Ripper Sword' },
             { id: 'char_melee_powered', name: 'Powered Claw' }
         ]
     },
@@ -340,7 +357,7 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
             slotName: 'rifle',
             choices: [
                 { id: 'rifle_military', name: 'Military Rifle' },
-                { id: 'rifle_laser',    name: 'Infantry Laser' }
+                { id: 'rifle_laser', name: 'Infantry Laser' }
             ]
         },
         {
@@ -349,11 +366,11 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
             type: 'slot',
             slotName: 'support',
             choices: [
-                { id: 'support_lmg',              name: 'Light Machine Gun' },
-                { id: 'support_hyper_blaster',    name: 'Hyper Blaster' },
-                { id: 'support_fury_rifle',        name: 'Fury Rifle' },
+                { id: 'support_lmg', name: 'Light Machine Gun' },
+                { id: 'support_hyper_blaster', name: 'Hyper Blaster' },
+                { id: 'support_fury_rifle', name: 'Fury Rifle' },
                 { id: 'support_grenade_launcher', name: 'Grenade Launcher', modifications: [{ targetName: 'Trooper 4', addExtras: ['Fog Grenade'] }] },
-                { id: 'support_plasma_rifle',     name: 'Plasma Rifle' }
+                { id: 'support_plasma_rifle', name: 'Plasma Rifle' }
             ]
         },
         {
@@ -385,7 +402,7 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
             slotName: 'rifle',
             choices: [
                 { id: 'recon_rifle_military', name: 'Military Rifle' },
-                { id: 'recon_rifle_laser',    name: 'Infantry Laser' }
+                { id: 'recon_rifle_laser', name: 'Infantry Laser' }
             ]
         },
         {
@@ -437,18 +454,18 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
             id: 'storm_support_1',
             name: 'Support Weapon (1st)',
             choices: [
-                { id: 'storm_s1_flak',   name: 'Flak Gun',        modifications: [{ targetName: 'Trooper 2', setSlot: { rifle: 'Flak Gun' } }] },
-                { id: 'storm_s1_flame',  name: 'Flame Projector', modifications: [{ targetName: 'Trooper 2', setSlot: { rifle: 'Flame Projector' } }] },
-                { id: 'storm_s1_fusion', name: 'Fusion Rifle',    modifications: [{ targetName: 'Trooper 2', setSlot: { rifle: 'Fusion Rifle' } }] }
+                { id: 'storm_s1_flak', name: 'Flak Gun', modifications: [{ targetName: 'Trooper 2', setSlot: { rifle: 'Flak Gun' } }] },
+                { id: 'storm_s1_flame', name: 'Flame Projector', modifications: [{ targetName: 'Trooper 2', setSlot: { rifle: 'Flame Projector' } }] },
+                { id: 'storm_s1_fusion', name: 'Fusion Rifle', modifications: [{ targetName: 'Trooper 2', setSlot: { rifle: 'Fusion Rifle' } }] }
             ]
         },
         {
             id: 'storm_support_2',
             name: 'Support Weapon (2nd)',
             choices: [
-                { id: 'storm_s2_flak',   name: 'Flak Gun',        modifications: [{ targetName: 'Trooper 3', setSlot: { rifle: 'Flak Gun' } }] },
-                { id: 'storm_s2_flame',  name: 'Flame Projector', modifications: [{ targetName: 'Trooper 3', setSlot: { rifle: 'Flame Projector' } }] },
-                { id: 'storm_s2_fusion', name: 'Fusion Rifle',    modifications: [{ targetName: 'Trooper 3', setSlot: { rifle: 'Fusion Rifle' } }] }
+                { id: 'storm_s2_flak', name: 'Flak Gun', modifications: [{ targetName: 'Trooper 3', setSlot: { rifle: 'Flak Gun' } }] },
+                { id: 'storm_s2_flame', name: 'Flame Projector', modifications: [{ targetName: 'Trooper 3', setSlot: { rifle: 'Flame Projector' } }] },
+                { id: 'storm_s2_fusion', name: 'Fusion Rifle', modifications: [{ targetName: 'Trooper 3', setSlot: { rifle: 'Fusion Rifle' } }] }
             ]
         },
         // Penetrator grenades for the whole squad
@@ -469,8 +486,8 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
             slotName: 'crewed_weapon',
             choices: [
                 { id: 'wt_laser_cannon', name: 'Laser Cannon' },
-                { id: 'wt_auto_cannon',  name: '20mm Auto Cannon' },
-                { id: 'wt_mortar',       name: 'Infantry Mortar' }
+                { id: 'wt_auto_cannon', name: '20mm Auto Cannon' },
+                { id: 'wt_mortar', name: 'Infantry Mortar' }
             ]
         }
     ],
@@ -497,8 +514,8 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
             id: 'enforcer_support',
             name: 'Support Weapon',
             choices: [
-                { id: 'enforcer_flak',   name: 'Flak Gun',        modifications: [{ targetName: 'Trooper 1', setSlot: { rifle: 'Flak Gun' } }] },
-                { id: 'enforcer_grenade',  name: 'Grenade Launcher', modifications: [{ targetName: 'Trooper 1', setSlot: { rifle: 'Grenade Launcher' } }] }
+                { id: 'enforcer_flak', name: 'Flak Gun', modifications: [{ targetName: 'Trooper 1', setSlot: { rifle: 'Flak Gun' } }] },
+                { id: 'enforcer_grenade', name: 'Grenade Launcher', modifications: [{ targetName: 'Trooper 1', setSlot: { rifle: 'Grenade Launcher' } }] }
             ]
         },
     ],
@@ -515,8 +532,8 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
             id: 'militia_support',
             name: 'Support Weapon',
             choices: [
-              { id: 'militia_precision',   name: 'Precision Rifle', modifications: [{ targetName: 'Trooper 1', setSlot: { rifle: 'Precision Rifle' } }] },
-              { id: 'militia_light_machine_gun', name: 'Light Machine Gun', modifications: [{ targetName: 'Trooper 1', setSlot: { rifle: 'Light Machine Gun' } }] }
+                { id: 'militia_precision', name: 'Precision Rifle', modifications: [{ targetName: 'Trooper 1', setSlot: { rifle: 'Precision Rifle' } }] },
+                { id: 'militia_light_machine_gun', name: 'Light Machine Gun', modifications: [{ targetName: 'Trooper 1', setSlot: { rifle: 'Light Machine Gun' } }] }
             ]
         }
     ],
@@ -563,5 +580,17 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
             ]
         }
     ],
-    'Cavalry': [armorOptions]
+    'Cavalry': [armorOptions],
+    'Nomad Bike': [
+        {
+            id: 'nomad_forward_slot',
+            name: 'Forward',
+            type: 'slot',
+            slotName: 'forward',
+            choices: [
+                {id: 'nomad_none', name: 'None'},
+                {id: 'nomad_lmg', name: 'Light Machine Gun'}
+            ]
+        }
+    ]
 }

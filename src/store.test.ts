@@ -104,4 +104,14 @@ describe('Army Store', () => {
         // Total: 5 + 19 + 11 = 35
         expect(calculateUnitPoints(unit)).toBe(35)
     })
+
+    it('should calculate unit points correctly for vehicles using basePoints', () => {
+        addUnit() // Add Infantry
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Nomad Bike')
+        selectUnitOptionChoice(unit.id, 'nomad_forward_slot', 'nomad_lmg')
+        // basePoints: 25
+        // slots: forward: 'Light Machine Gun' (10)
+        expect(calculateUnitPoints(unit)).toBe(25)
+    })
 })
