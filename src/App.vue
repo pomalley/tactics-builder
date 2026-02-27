@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import UnitList from "./components/UnitList.vue";
 
-const message = ref("Tactics Army Builder");
+const message = ref("5PFH: Tactics Army Builder");
 </script>
 
 <template>
