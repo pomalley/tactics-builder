@@ -1,14 +1,34 @@
-import { reactive, computed } from 'vue'
+import { reactive, computed, watch } from 'vue'
 import type { Army, Unit, Model, UnitType } from './types'
 import { Lifeform, lifeformClassPoints } from './data/lifeforms';
 import { EquipmentName, equipmentPoints } from './data/equipment';
 import { unitDefinitions, unitOptions } from './data/units';
 
-export const armyState = reactive<Army>({
+const STORAGE_KEY = 'tactics-army-builder-state'
+
+const getDefaultState = (): Army => ({
     name: 'New Army',
     units: [],
     freeEdit: false
 })
+
+const loadState = (): Army => {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+        try {
+            return JSON.parse(saved)
+        } catch (e) {
+            console.error('Failed to load state from localStorage', e)
+        }
+    }
+    return getDefaultState()
+}
+
+export const armyState = reactive<Army>(loadState())
+
+watch(armyState, (newState) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newState))
+}, { deep: true })
 
 export const setFreeEdit = (val: boolean) => {
     armyState.freeEdit = val;
