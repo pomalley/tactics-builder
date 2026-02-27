@@ -85,7 +85,7 @@ describe('Army Store', () => {
         // Total: 11 * 3 + 35 = 68
         expect(calculateUnitPoints(unit)).toBe(68)
 
-        // Select 20mm Auto Cannon (20 pts)
+        // Select 20mm Autocannon (20 pts)
         selectUnitOptionChoice(unit.id, 'weapteam_crew_weapon', 'wt_auto_cannon')
         // Total: 11 * 3 + 20 = 53
         expect(calculateUnitPoints(unit)).toBe(53)
@@ -110,8 +110,222 @@ describe('Army Store', () => {
         const unit = armyState.units[0]
         changeUnitType(unit.id, 'Nomad Bike')
         selectUnitOptionChoice(unit.id, 'nomad_forward_slot', 'nomad_lmg')
-        // basePoints: 25
+        // basePoints: 15 (fixed comment)
         // slots: forward: 'Light Machine Gun' (10)
         expect(calculateUnitPoints(unit)).toBe(25)
+    })
+
+    it('should calculate unit points correctly for Scouter', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Scouter')
+        // Scouter: basePoints: 25 + LMG (10) = 35
+        expect(calculateUnitPoints(unit)).toBe(35)
+    })
+
+    it('should calculate unit points correctly for Lancer and its weapon swap', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Lancer')
+        // Lancer: basePoints: 22 + Plasma Rifle (8) = 30
+        expect(calculateUnitPoints(unit)).toBe(30)
+
+        // Swap to Fury Rifle (15 pts)
+        selectUnitOptionChoice(unit.id, 'lancer_forward_slot', 'lancer_fury')
+        // 22 + 15 = 37
+        expect(calculateUnitPoints(unit)).toBe(37)
+    })
+
+    it('should calculate unit points correctly for Frontier Trike', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Frontier Trike')
+        // Frontier Trike: basePoints: 25 + LMG (10) = 35
+        expect(calculateUnitPoints(unit)).toBe(35)
+    })
+
+    it('should calculate unit points correctly for Raider Trike and its weapon swap', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Raider Trike')
+        // Raider Trike: basePoints: 25 + LMG (10) = 35
+        expect(calculateUnitPoints(unit)).toBe(35)
+
+        // Swap to Fury Rifle (15 pts)
+        selectUnitOptionChoice(unit.id, 'raider_forward_side_slot', 'raider_fury')
+        // 25 + 15 = 40
+        expect(calculateUnitPoints(unit)).toBe(40)
+    })
+
+    it('should calculate unit points correctly for Armored Car', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Armored Car')
+        // Armored Car: basePoints: 40 + 20mm Autocannon (20) = 60
+        expect(calculateUnitPoints(unit)).toBe(60)
+    })
+
+    it('should calculate unit points correctly for APC', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'APC')
+        // APC: basePoints: 40 + LMG (10) = 50
+        expect(calculateUnitPoints(unit)).toBe(50)
+    })
+
+    it('should calculate unit points correctly for APC - Grav', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'APC - Grav')
+        // APC - Grav: basePoints: 45 + LMG (10) = 55
+        expect(calculateUnitPoints(unit)).toBe(55)
+    })
+
+    it('should calculate unit points correctly for IFV and its turret swap', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'IFV')
+        // IFV: base 40 + LMG (10) + 20mm (20) = 70
+        expect(calculateUnitPoints(unit)).toBe(70)
+
+        // Swap to Heavy Plasma Gun (20 pts)
+        selectUnitOptionChoice(unit.id, 'ifv_turret_slot', 'ifv_heavy_plasma')
+        // 40 + 10 + 20 = 70 (same cost)
+        expect(calculateUnitPoints(unit)).toBe(70)
+    })
+
+    it('should calculate unit points correctly for IFV - Grav and its turret swap', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'IFV - Grav')
+        // IFV - Grav: base 45 + LMG (10) + 20mm (20) = 75
+        expect(calculateUnitPoints(unit)).toBe(75)
+
+        // Swap to Heavy Plasma Gun (20 pts)
+        selectUnitOptionChoice(unit.id, 'ifv_turret_slot', 'ifv_heavy_plasma')
+        // 45 + 10 + 20 = 75 (same cost)
+        expect(calculateUnitPoints(unit)).toBe(75)
+    })
+
+    it('should calculate unit points correctly for Light Tank and its turret swap', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Light Tank')
+        // Light Tank: base 55 + LMG (10) + Coaxial LMG (10) + 40mm (25) = 100
+        expect(calculateUnitPoints(unit)).toBe(100)
+
+        // Swap to Pulse Laser (35 pts)
+        selectUnitOptionChoice(unit.id, 'light_tank_turret_slot', 'light_tank_pulse')
+        // 55 + 10 + 10 + 35 = 110
+        expect(calculateUnitPoints(unit)).toBe(110)
+    })
+
+    it('should calculate unit points correctly for Light Tank - Grav and its turret swap', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Light Tank - Grav')
+        // Light Tank - Grav: base 70 + LMG (10) + Coaxial LMG (10) + 40mm (25) = 115
+        expect(calculateUnitPoints(unit)).toBe(115)
+
+        // Swap to Pulse Laser (35 pts)
+        selectUnitOptionChoice(unit.id, 'light_tank_turret_slot', 'light_tank_pulse')
+        // 70 + 10 + 10 + 35 = 125
+        expect(calculateUnitPoints(unit)).toBe(125)
+    })
+
+    it('should calculate unit points correctly for Medium Tank and its swaps', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Medium Tank')
+        // Medium Tank: base 65 + LMG (10) + Coaxial LMG (10) + 100mm (55) = 140
+        expect(calculateUnitPoints(unit)).toBe(140)
+
+        // Swap coax to Heavy Plasma (20 pts)
+        selectUnitOptionChoice(unit.id, 'medium_tank_coax_slot', 'medium_tank_heavy_plasma')
+        // 140 - 10 + 20 = 150
+        expect(calculateUnitPoints(unit)).toBe(150)
+
+        // Swap turret to AT Laser (45 pts)
+        selectUnitOptionChoice(unit.id, 'medium_tank_turret_slot', 'medium_tank_at_laser')
+        // 150 - 55 + 45 = 140
+        expect(calculateUnitPoints(unit)).toBe(140)
+    })
+
+    it('should calculate unit points correctly for Medium Tank - Grav and its swaps', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Medium Tank - Grav')
+        // Medium Tank - Grav: base 75 + LMG (10) + Coaxial LMG (10) + 100mm (55) = 150
+        expect(calculateUnitPoints(unit)).toBe(150)
+
+        // Swap coax to Heavy Plasma (20 pts)
+        selectUnitOptionChoice(unit.id, 'medium_tank_coax_slot', 'medium_tank_heavy_plasma')
+        // 150 - 10 + 20 = 160
+        expect(calculateUnitPoints(unit)).toBe(160)
+
+        // Swap turret to AT Laser (45 pts)
+        selectUnitOptionChoice(unit.id, 'medium_tank_turret_slot', 'medium_tank_at_laser')
+        // 160 - 55 + 45 = 150
+        expect(calculateUnitPoints(unit)).toBe(150)
+    })
+
+    it('should calculate unit points correctly for Heavy Tank and its swaps', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Heavy Tank')
+        // Heavy Tank: base 125 + LMG (10) + Coaxial LMG (10) + 100mm (55) = 200
+        expect(calculateUnitPoints(unit)).toBe(200)
+
+        // Swap front to Heavy Plasma (20 pts)
+        selectUnitOptionChoice(unit.id, 'heavy_tank_front_slot', 'heavy_front_plasma')
+        // 200 - 10 + 20 = 210
+        expect(calculateUnitPoints(unit)).toBe(210)
+
+        // Swap coax to Heavy Plasma (20 pts)
+        selectUnitOptionChoice(unit.id, 'heavy_tank_coax_slot', 'heavy_coax_plasma')
+        // 210 - 10 + 20 = 220
+        expect(calculateUnitPoints(unit)).toBe(220)
+    })
+
+    it('should calculate unit points correctly for Light Walker and its swap', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Light Walker')
+        // Light Walker: base 44 + 20mm (20) + Flame Projector (6) = 70
+        expect(calculateUnitPoints(unit)).toBe(70)
+
+        // Swap to Fusion Rifle (10 pts)
+        selectUnitOptionChoice(unit.id, 'walker_arm2_slot', 'walker_fusion')
+        // 44 + 20 + 10 = 74
+        expect(calculateUnitPoints(unit)).toBe(74)
+    })
+
+    it('should calculate unit points correctly for Heavy Walker', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Heavy Walker')
+        // Heavy Walker: base 55 + Pulse Laser (35) + LMG (10) = 100
+        expect(calculateUnitPoints(unit)).toBe(100)
+    })
+
+    it('should calculate unit points correctly for CIM-L and its swap', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'CIM-L')
+        // CIM-L: base 21 + Hyper Blaster (14) = 35
+        expect(calculateUnitPoints(unit)).toBe(35)
+
+        // Swap to Fury Rifle (15 pts)
+        selectUnitOptionChoice(unit.id, 'ciml_weapon_slot', 'ciml_fury')
+        // 21 + 15 = 36
+        expect(calculateUnitPoints(unit)).toBe(36)
+    })
+
+    it('should calculate unit points correctly for CIM-APP', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'CIM-APP')
+        // CIM-APP: base 25 + 20mm Autocannon (20) = 45
+        expect(calculateUnitPoints(unit)).toBe(45)
     })
 })

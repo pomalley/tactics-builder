@@ -38,8 +38,15 @@ export const weaponPoints = {
     'Shock Grenade': 1,
     // Crewed Weapons
     'Laser Cannon': 35,
-    '20mm Auto Cannon': 20,
+    'Pulse Laser': 35,
+    'Anti-tank Laser': 45,
+    'Anti-tank missile': 30,
+    '20mm Autocannon': 20,
+    '40mm Autocannon': 25,
     'Infantry Mortar': 15,
+    'Heavy Plasma Gun': 20,
+    '75mm Cannon': 45,
+    '100mm Cannon': 55,
     // Upgrades
     'Hero': 5,
     'Leader': 10,
@@ -198,6 +205,96 @@ export const unitDefinitions: Record<UnitType, UnitTypeDef> = {
         models: [
             { name: 'Nomad Bike', class: 'Vehicle', basePoints: 15, slots: { forward: 'None' }, extras: [] }
         ]
+    },
+    'Scouter': {
+        models: [
+            { name: 'Scouter', class: 'Vehicle', basePoints: 25, slots: { forward: 'Light Machine Gun' }, extras: [] }
+        ]
+    },
+    'Lancer': {
+        models: [
+            { name: 'Lancer', class: 'Vehicle', basePoints: 22, slots: { forward: 'Plasma Rifle' }, extras: [] }
+        ]
+    },
+    'Frontier Trike': {
+        models: [
+            { name: 'Frontier Trike', class: 'Vehicle', basePoints: 25, slots: { 'Forward/Side': 'Light Machine Gun' }, extras: [] }
+        ]
+    },
+    'Raider Trike': {
+        models: [
+            { name: 'Raider Trike', class: 'Vehicle', basePoints: 25, slots: { 'Forward/Side': 'Light Machine Gun' }, extras: [] }
+        ]
+    },
+    'Armored Car': {
+        models: [
+            { name: 'Armored Car', class: 'Vehicle', basePoints: 40, slots: { turret: '20mm Autocannon' }, extras: [] }
+        ]
+    },
+    'APC': {
+        models: [
+            { name: 'APC', class: 'Vehicle', basePoints: 40, slots: { turret: 'Light Machine Gun' }, extras: [] }
+        ]
+    },
+    'APC - Grav': {
+        models: [
+            { name: 'APC - Grav', class: 'Vehicle', basePoints: 45, slots: { turret: 'Light Machine Gun' }, extras: [] }
+        ]
+    },
+    'IFV': {
+        models: [
+            { name: 'IFV', class: 'Vehicle', basePoints: 40, slots: { front: 'Light Machine Gun', turret: '20mm Autocannon' }, extras: [] }
+        ]
+    },
+    'IFV - Grav': {
+        models: [
+            { name: 'IFV - Grav', class: 'Vehicle', basePoints: 45, slots: { front: 'Light Machine Gun', turret: '20mm Autocannon' }, extras: [] }
+        ]
+    },
+    'Light Tank': {
+        models: [
+            { name: 'Light Tank', class: 'Vehicle', basePoints: 55, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '40mm Autocannon' }, extras: [] }
+        ]
+    },
+    'Light Tank - Grav': {
+        models: [
+            { name: 'Light Tank - Grav', class: 'Vehicle', basePoints: 70, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '40mm Autocannon' }, extras: [] }
+        ]
+    },
+    'Medium Tank': {
+        models: [
+            { name: 'Medium Tank', class: 'Vehicle', basePoints: 65, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '100mm Cannon' }, extras: [] }
+        ]
+    },
+    'Medium Tank - Grav': {
+        models: [
+            { name: 'Medium Tank - Grav', class: 'Vehicle', basePoints: 75, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '100mm Cannon' }, extras: [] }
+        ]
+    },
+    'Heavy Tank': {
+        models: [
+            { name: 'Heavy Tank', class: 'Vehicle', basePoints: 125, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '100mm Cannon' }, extras: [] }
+        ]
+    },
+    'Light Walker': {
+        models: [
+            { name: 'Light Walker', class: 'Vehicle', basePoints: 44, slots: { arm1: '20mm Autocannon', arm2: 'Flame Projector' }, extras: [] }
+        ]
+    },
+    'Heavy Walker': {
+        models: [
+            { name: 'Heavy Walker', class: 'Vehicle', basePoints: 55, slots: { shoulder: 'Pulse Laser', arm: 'Light Machine Gun' }, extras: [] }
+        ]
+    },
+    'CIM-L': {
+        models: [
+            { name: 'CIM-L', class: 'Vehicle', basePoints: 21, slots: { weapon: 'Hyper Blaster' }, extras: [] }
+        ]
+    },
+    'CIM-APP': {
+        models: [
+            { name: 'CIM-APP', class: 'Vehicle', basePoints: 25, slots: { weapon: '20mm Autocannon' }, extras: [] }
+        ]
     }
 }
 
@@ -347,6 +444,55 @@ const characterOptions: UnitOptionDef[] = [
     }
 ]
 
+const mediumTankOptions: UnitOptionDef[] = [
+    {
+        id: 'medium_tank_coax_slot',
+        name: 'Coaxial',
+        type: 'slot',
+        slotName: 'coaxial',
+        choices: [
+            { id: 'medium_tank_lmg', name: 'Light Machine Gun' },
+            { id: 'medium_tank_heavy_plasma', name: 'Heavy Plasma Gun' }
+        ]
+    },
+    {
+        id: 'medium_tank_turret_slot',
+        name: 'Turret',
+        type: 'slot',
+        slotName: 'turret',
+        choices: [
+            { id: 'medium_tank_100mm', name: '100mm Cannon' },
+            { id: 'medium_tank_at_laser', name: 'Anti-tank Laser' }
+        ]
+    }
+]
+
+const lightTankOptions: UnitOptionDef[] = [
+    {
+        id: 'light_tank_turret_slot',
+        name: 'Turret',
+        type: 'slot',
+        slotName: 'turret',
+        choices: [
+            { id: 'light_tank_40mm', name: '40mm Autocannon' },
+            { id: 'light_tank_pulse', name: 'Pulse Laser' }
+        ]
+    }
+]
+
+const ifvOptions: UnitOptionDef[] = [
+    {
+        id: 'ifv_turret_slot',
+        name: 'Turret',
+        type: 'slot',
+        slotName: 'turret',
+        choices: [
+            { id: 'ifv_20mm', name: '20mm Autocannon' },
+            { id: 'ifv_heavy_plasma', name: 'Heavy Plasma Gun' }
+        ]
+    }
+]
+
 export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
     'Infantry': [
         armorOptions,
@@ -486,7 +632,7 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
             slotName: 'crewed_weapon',
             choices: [
                 { id: 'wt_laser_cannon', name: 'Laser Cannon' },
-                { id: 'wt_auto_cannon', name: '20mm Auto Cannon' },
+                { id: 'wt_auto_cannon', name: '20mm Autocannon' },
                 { id: 'wt_mortar', name: 'Infantry Mortar' }
             ]
         }
@@ -592,5 +738,88 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
                 {id: 'nomad_lmg', name: 'Light Machine Gun'}
             ]
         }
-    ]
+    ],
+    'Scouter': [],
+    'Lancer': [
+        {
+            id: 'lancer_forward_slot',
+            name: 'Forward',
+            type: 'slot',
+            slotName: 'forward',
+            choices: [
+                { id: 'lancer_plasma', name: 'Plasma Rifle' },
+                { id: 'lancer_fury', name: 'Fury Rifle' }
+            ]
+        }
+    ],
+    'Frontier Trike': [],
+    'Raider Trike': [
+        {
+            id: 'raider_forward_side_slot',
+            name: 'Forward/Side',
+            type: 'slot',
+            slotName: 'Forward/Side',
+            choices: [
+                { id: 'raider_lmg', name: 'Light Machine Gun' },
+                { id: 'raider_fury', name: 'Fury Rifle' }
+            ]
+        }
+    ],
+    'Armored Car': [],
+    'APC': [],
+    'APC - Grav': [],
+    'IFV': ifvOptions,
+    'IFV - Grav': ifvOptions,
+    'Light Tank': lightTankOptions,
+    'Light Tank - Grav': lightTankOptions,
+    'Medium Tank': mediumTankOptions,
+    'Medium Tank - Grav': mediumTankOptions,
+    'Heavy Tank': [
+        {
+            id: 'heavy_tank_front_slot',
+            name: 'Front Weapon',
+            type: 'slot',
+            slotName: 'front',
+            choices: [
+                { id: 'heavy_front_lmg', name: 'Light Machine Gun' },
+                { id: 'heavy_front_plasma', name: 'Heavy Plasma Gun' }
+            ]
+        },
+        {
+            id: 'heavy_tank_coax_slot',
+            name: 'Coaxial Weapon',
+            type: 'slot',
+            slotName: 'coaxial',
+            choices: [
+                { id: 'heavy_coax_lmg', name: 'Light Machine Gun' },
+                { id: 'heavy_coax_plasma', name: 'Heavy Plasma Gun' }
+            ]
+        }
+    ],
+    'Light Walker': [
+        {
+            id: 'walker_arm2_slot',
+            name: 'Arm 2 Weapon',
+            type: 'slot',
+            slotName: 'arm2',
+            choices: [
+                { id: 'walker_flame', name: 'Flame Projector' },
+                { id: 'walker_fusion', name: 'Fusion Rifle' }
+            ]
+        }
+    ],
+    'Heavy Walker': [],
+    'CIM-L': [
+        {
+            id: 'ciml_weapon_slot',
+            name: 'Weapon',
+            type: 'slot',
+            slotName: 'weapon',
+            choices: [
+                { id: 'ciml_hyper', name: 'Hyper Blaster' },
+                { id: 'ciml_fury', name: 'Fury Rifle' }
+            ]
+        }
+    ],
+    'CIM-APP': []
 }
