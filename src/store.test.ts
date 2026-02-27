@@ -328,4 +328,72 @@ describe('Army Store', () => {
         // CIM-APP: base 25 + 20mm Autocannon (20) = 45
         expect(calculateUnitPoints(unit)).toBe(45)
     })
+
+    it('should calculate unit points correctly for Recon with veteran skill', () => {
+        addUnit() // Add Infantry
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Recon')
+
+        // Initial Recon points (sum of models' base points + weapons/extras)
+        // Recon models: 5 models. Sergeant (Minor Character 15), 4 Troopers (Soldier 10 each).
+        // Weapons: Sergeant rifle (Military Rifle 3), Troopers 1-3 rifle (Military Rifle 3), Trooper 4 support (Precision Rifle 6)
+        // Extras: 5x Observation +1 (1 each)
+        // Total: (15 + 3 + 1) + 3*(10 + 3 + 1) + (10 + 6 + 1) = 19 + 3*14 + 17 = 19 + 42 + 17 = 78
+        expect(calculateUnitPoints(unit)).toBe(78)
+
+        // Add Tank Hunters (15 pts)
+        selectUnitOptionChoice(unit.id, 'squad_veteran_skill', 'squad_veteran_skill_tank_hunters')
+        // 78 + 15 = 93
+        expect(calculateUnitPoints(unit)).toBe(93)
+    })
+
+    it('should calculate unit points correctly for Infantry Sergeant with veteran skill', () => {
+        addUnit() // Default is Infantry (82 pts)
+        const unit = armyState.units[0]
+        expect(calculateUnitPoints(unit)).toBe(82)
+
+        // Add Rugged to Sergeant (5 pts)
+        selectUnitOptionChoice(unit.id, 'sergeant_veteran_skill', 'sergeant_veteran_skill_rugged')
+        // 82 + 5 = 87
+        expect(calculateUnitPoints(unit)).toBe(87)
+    })
+
+    it('should calculate unit points correctly for Minor Character with veteran skill', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Minor Character')
+        // Human Minor Character (15) + Hand Laser (2) + Glare Sword (2) + Fog Grenade (1) = 20
+        expect(calculateUnitPoints(unit)).toBe(20)
+
+        // Add Lucky (5 pts)
+        selectUnitOptionChoice(unit.id, 'character_veteran_skill', 'character_veteran_skill_lucky')
+        // 20 + 5 = 25
+        expect(calculateUnitPoints(unit)).toBe(25)
+    })
+
+    it('should calculate unit points correctly for Weapon Team with veteran skill', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Weapon Team')
+        // Default Weapon Team: 11*3 + 35 = 68
+        expect(calculateUnitPoints(unit)).toBe(68)
+
+        // Add Gun Drill (10 pts)
+        selectUnitOptionChoice(unit.id, 'gun_crew_veteran_skill', 'gun_crew_veteran_skill_drill')
+        // 68 + 10 = 78
+        expect(calculateUnitPoints(unit)).toBe(78)
+    })
+
+    it('should calculate unit points correctly for vehicle with veteran skill', () => {
+        addUnit()
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'APC')
+        // APC: base 40 + turret LMG (10) = 50
+        expect(calculateUnitPoints(unit)).toBe(50)
+
+        // Add Gunnery (15 pts)
+        selectUnitOptionChoice(unit.id, 'vehicle_veteran_skill', 'vehicle_veteran_skill_gunnery')
+        // 50 + 15 = 65
+        expect(calculateUnitPoints(unit)).toBe(65)
+    })
 })

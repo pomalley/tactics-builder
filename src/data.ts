@@ -63,7 +63,48 @@ export const weaponPoints = {
     // Armor
     'None': 0,
     'Powered Armor': 2,
-    'Breach Armor': 4
+    'Breach Armor': 4,
+    // Squad Veteran Skill
+    'Brave': 10,
+    'Tank Hunters': 15,
+    'Keen Shots': 10,
+    'Die Hards': 5,
+    'Fire Drill': 10,
+    'Brawers': 5,
+    'Fearless': 5,
+    'Bombers': 5,
+    'Guerillas': 10,
+    'Quick': 10,
+    // Sergeant Veteran Skill
+    'Rugged': 5,
+    'Parry': 5,
+    'Motivator': 5,
+    'Fighter': 5,
+    'Survivor': 5,
+    'Tactics': 10,
+    'Experienced Eye': 5,
+    'Alert': 5,
+    // Individual Veteran Skills
+    'Gun-slinging': 5,
+    'Quick Feet': 5,
+    'Deadly Accuracy': 5,
+    'Lucky': 5,
+    'Skilled Leader': 5,
+    'Expert Fighter': 5,
+    // Gun Crew Veteran Skill
+    'Defend the Guns': 5,
+    'Fortified Positions': 5,
+    'Deploy Hidden': 5,
+    'Gun Drill': 10,
+    'Redeployment': 5,
+    'Target Selection': 5,
+    // Vehicle Veteran Skill
+    'Gunnery': 15,
+    'Command': 10,
+    'Driving': 10,
+    'Damage Control': 5,
+    'Improvised Armor': 10,
+    'Defensive Measures': 5,
 } as const;
 
 export type EquipmentName = keyof typeof weaponPoints;
@@ -84,8 +125,9 @@ export interface UnitTypeDef {
 
 const _unitDefinitions = {
     'Infantry': {
+        slots: { squad_veteran_skill: 'None' },
         models: [
-            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Military Rifle' }, extras: ['Frag Grenade'] },
+            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Military Rifle', veteran_skills: 'None' }, extras: ['Frag Grenade'] },
             { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: ['Frag Grenade'] },
             { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: ['Frag Grenade'] },
             { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: ['Frag Grenade'] },
@@ -93,8 +135,9 @@ const _unitDefinitions = {
         ]
     },
     'Recon': {
+        slots: { squad_veteran_skill: 'None' },
         models: [
-            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Military Rifle' }, extras: ['Observation +1'] },
+            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Military Rifle', veteran_skills: 'None' }, extras: ['Observation +1'] },
             { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: ['Observation +1'] },
             { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: ['Observation +1'] },
             { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: ['Observation +1'] },
@@ -102,8 +145,9 @@ const _unitDefinitions = {
         ]
     },
     'Storm': {
+        slots: { squad_veteran_skill: 'None' },
         models: [
-            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Shotgun', sgt_melee: 'Blade' }, extras: ['Frag Grenade', 'Fog Grenade'] },
+            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Shotgun', sgt_melee: 'Blade', veteran_skills: 'None' }, extras: ['Frag Grenade', 'Fog Grenade'] },
             { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Shotgun', melee: 'Breaching Axe' }, extras: ['Frag Grenade', 'Fog Grenade'] },
             { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Shotgun', melee: 'Blade' }, extras: ['Frag Grenade', 'Fog Grenade'] },
             { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Shotgun', melee: 'Blade' }, extras: ['Frag Grenade', 'Fog Grenade'] },
@@ -111,7 +155,7 @@ const _unitDefinitions = {
         ]
     },
     'Weapon Team': {
-        slots: { crewed_weapon: 'Laser Cannon' },
+        slots: { crewed_weapon: 'Laser Cannon', veteran_skill: 'None' },
         models: [
             { name: 'Gunner', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Morale +1'] },
             { name: 'Loader 1', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Morale +1'] },
@@ -120,17 +164,17 @@ const _unitDefinitions = {
     },
     'Minor Character': {
         models: [
-            { name: 'Character', class: 'Minor Character', slots: { sidearm: 'Hand Laser', melee: 'Glare Sword' }, extras: ['Fog Grenade'] }
+            { name: 'Character', class: 'Minor Character', slots: { sidearm: 'Hand Laser', melee: 'Glare Sword', veteran_skill: 'None' }, extras: ['Fog Grenade'] }
         ]
     },
     'Major Character': {
         models: [
-            { name: 'Character', class: 'Major Character', slots: { sidearm: 'Hand Laser', melee: 'Glare Sword' }, extras: ['Fog Grenade'] }
+            { name: 'Character', class: 'Major Character', slots: { sidearm: 'Hand Laser', melee: 'Glare Sword', veteran_skill: 'None' }, extras: ['Fog Grenade'] }
         ]
     },
     'Epic Character': {
         models: [
-            { name: 'Character', class: 'Epic Character', slots: { sidearm: 'Hand Laser', melee: 'Glare Sword' }, extras: ['Fog Grenade'] }
+            { name: 'Character', class: 'Epic Character', slots: { sidearm: 'Hand Laser', melee: 'Glare Sword', veteran_skill: 'None' }, extras: ['Fog Grenade'] }
         ]
     },
     'Tech': {
@@ -166,8 +210,9 @@ const _unitDefinitions = {
         ]
     },
     'Enforcers': {
+        slots: { squad_veteran_skill: 'None' },
         models: [
-            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Shotgun' }, extras: ['Shock Grenade'] },
+            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Shotgun', veteran_skills: 'None' }, extras: ['Shock Grenade'] },
             { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Shotgun' }, extras: ['Shock Grenade'] },
             { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Shotgun' }, extras: ['Shock Grenade'] },
             { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Shotgun' }, extras: ['Shock Grenade'] },
@@ -175,6 +220,7 @@ const _unitDefinitions = {
         ]
     },
     'Militia': {
+        slots: { squad_veteran_skill: 'None' },
         models: [
             { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: [] },
             { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Military Rifle' }, extras: [] },
@@ -184,8 +230,9 @@ const _unitDefinitions = {
         ]
     },
     'Pirate': {
+        slots: { squad_veteran_skill: 'None' },
         models: [
-            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Blaster' }, extras: [] },
+            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Blaster', veteran_skills: 'None' }, extras: [] },
             { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Blaster' }, extras: [] },
             { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Blaster' }, extras: [] },
             { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Blaster' }, extras: [] },
@@ -193,8 +240,9 @@ const _unitDefinitions = {
         ]
     },
     'Cavalry': {
+        slots: { squad_veteran_skill: 'None' },
         models: [
-            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Military Rifle', melee: 'Blade' }, extras: ['Cavalry'] },
+            { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Military Rifle', melee: 'Blade', veteran_skills: 'None' }, extras: ['Cavalry'] },
             { name: 'Trooper 1', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade' }, extras: ['Cavalry'] },
             { name: 'Trooper 2', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade' }, extras: ['Cavalry'] },
             { name: 'Trooper 3', class: 'Soldier', slots: { rifle: 'Military Rifle', melee: 'Blade' }, extras: ['Cavalry'] },
@@ -202,96 +250,115 @@ const _unitDefinitions = {
         ]
     },
     'Nomad Bike': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'Nomad Bike', class: 'Vehicle', basePoints: 15, slots: { forward: 'None' }, extras: [] }
         ]
     },
     'Scouter': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'Scouter', class: 'Vehicle', basePoints: 25, slots: { forward: 'Light Machine Gun' }, extras: [] }
         ]
     },
     'Lancer': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'Lancer', class: 'Vehicle', basePoints: 22, slots: { forward: 'Plasma Rifle' }, extras: [] }
         ]
     },
     'Frontier Trike': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'Frontier Trike', class: 'Vehicle', basePoints: 25, slots: { 'Forward/Side': 'Light Machine Gun' }, extras: [] }
         ]
     },
     'Raider Trike': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'Raider Trike', class: 'Vehicle', basePoints: 25, slots: { 'Forward/Side': 'Light Machine Gun' }, extras: [] }
         ]
     },
     'Armored Car': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'Armored Car', class: 'Vehicle', basePoints: 40, slots: { turret: '20mm Autocannon' }, extras: [] }
         ]
     },
     'APC': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'APC', class: 'Vehicle', basePoints: 40, slots: { turret: 'Light Machine Gun' }, extras: [] }
         ]
     },
     'APC - Grav': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'APC - Grav', class: 'Vehicle', basePoints: 45, slots: { turret: 'Light Machine Gun' }, extras: [] }
         ]
     },
     'IFV': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'IFV', class: 'Vehicle', basePoints: 40, slots: { front: 'Light Machine Gun', turret: '20mm Autocannon' }, extras: [] }
         ]
     },
     'IFV - Grav': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'IFV - Grav', class: 'Vehicle', basePoints: 45, slots: { front: 'Light Machine Gun', turret: '20mm Autocannon' }, extras: [] }
         ]
     },
     'Light Tank': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'Light Tank', class: 'Vehicle', basePoints: 55, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '40mm Autocannon' }, extras: [] }
         ]
     },
     'Light Tank - Grav': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'Light Tank - Grav', class: 'Vehicle', basePoints: 70, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '40mm Autocannon' }, extras: [] }
         ]
     },
     'Medium Tank': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'Medium Tank', class: 'Vehicle', basePoints: 65, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '100mm Cannon' }, extras: [] }
         ]
     },
     'Medium Tank - Grav': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'Medium Tank - Grav', class: 'Vehicle', basePoints: 75, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '100mm Cannon' }, extras: [] }
         ]
     },
     'Heavy Tank': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'Heavy Tank', class: 'Vehicle', basePoints: 125, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '100mm Cannon' }, extras: [] }
         ]
     },
     'Light Walker': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'Light Walker', class: 'Vehicle', basePoints: 44, slots: { arm1: '20mm Autocannon', arm2: 'Flame Projector' }, extras: [] }
         ]
     },
     'Heavy Walker': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'Heavy Walker', class: 'Vehicle', basePoints: 55, slots: { shoulder: 'Pulse Laser', arm: 'Light Machine Gun' }, extras: [] }
         ]
     },
     'CIM-L': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'CIM-L', class: 'Vehicle', basePoints: 21, slots: { weapon: 'Hyper Blaster' }, extras: [] }
         ]
     },
     'CIM-APP': {
+        slots: { veteran_skill: 'None' },
         models: [
             { name: 'CIM-APP', class: 'Vehicle', basePoints: 25, slots: { weapon: '20mm Autocannon' }, extras: [] }
         ]
@@ -371,6 +438,92 @@ const fireSectionOptions: UnitOptionDef[] = [
     }
 ]
 
+const squadVeteranSkills: UnitOptionDef = {
+    id: 'squad_veteran_skill',
+    name: 'Squad Veteran Skill',
+    type: 'slot',
+    slotName: 'squad_veteran_skill',
+    choices: [
+        { id: 'squad_veteran_skill_none', name: 'None' },
+        { id: 'squad_veteran_skill_brave', name: 'Brave' },
+        { id: 'squad_veteran_skill_tank_hunters', name: 'Tank Hunters' },
+        { id: 'squad_veteran_skill_keen_shots', name: 'Keen Shots' },
+        { id: 'squad_veteran_skill_die_hards', name: 'Die Hards' },
+        { id: 'squad_veteran_skill_fire_drill', name: 'Fire Drill' },
+        { id: 'squad_veteran_skill_brawers', name: 'Brawers' },
+        { id: 'squad_veteran_skill_fearless', name: 'Fearless' },
+        { id: 'squad_veteran_skill_bombers', name: 'Bombers' },
+        { id: 'squad_veteran_skill_guerillas', name: 'Guerillas' },
+        { id: 'squad_veteran_skill_quick', name: 'Quick' }
+    ]
+}
+
+const sergeantVeteranSkills: UnitOptionDef = {
+    id: 'sergeant_veteran_skill',
+    name: 'Sergeant Veteran Skill',
+    type: 'slot',
+    slotName: 'veteran_skills',
+    choices: [
+        { id: 'sergeant_veteran_skill_none', name: 'None' },
+        { id: 'sergeant_veteran_skill_rugged', name: 'Rugged' },
+        { id: 'sergeant_veteran_skill_parry', name: 'Parry' },
+        { id: 'sergeant_veteran_skill_motivator', name: 'Motivator' },
+        { id: 'sergeant_veteran_skill_fighter', name: 'Fighter' },
+        { id: 'sergeant_veteran_skill_survivor', name: 'Survivor' },
+        { id: 'sergeant_veteran_skill_tactics', name: 'Tactics' },
+        { id: 'sergeant_veteran_skill_experienced_eye', name: 'Experienced Eye' },
+        { id: 'sergeant_veteran_skill_alert', name: 'Alert' }
+    ]
+}
+
+const characterVeteranSkills: UnitOptionDef = {
+    id: 'character_veteran_skill',
+    name: 'Veteran Skill',
+    type: 'slot',
+    slotName: 'veteran_skill',
+    choices: [
+        { id: 'character_veteran_skill_none', name: 'None' },
+        { id: 'character_veteran_skill_gun_slinging', name: 'Gun-slinging' },
+        { id: 'character_veteran_skill_quick_feet', name: 'Quick Feet' },
+        { id: 'character_veteran_skill_deadly_accuracy', name: 'Deadly Accuracy' },
+        { id: 'character_veteran_skill_lucky', name: 'Lucky' },
+        { id: 'character_veteran_skill_skilled_leader', name: 'Skilled Leader' },
+        { id: 'character_veteran_skill_expert_fighter', name: 'Expert Fighter' }
+    ]
+}
+
+const gunCrewVeteranSkill: UnitOptionDef = {
+    id: 'gun_crew_veteran_skill',
+    name: 'Gun Crew Veteran Skill',
+    type: 'slot',
+    slotName: 'veteran_skill',
+    choices: [
+        { id: 'gun_crew_veteran_skill_none', name: 'None' },
+        { id: 'gun_crew_veteran_skill_defend', name: 'Defend the Guns' },
+        { id: 'gun_crew_veteran_skill_fortified', name: 'Fortified Positions' },
+        { id: 'gun_crew_veteran_skill_hidden', name: 'Deploy Hidden' },
+        { id: 'gun_crew_veteran_skill_drill', name: 'Gun Drill' },
+        { id: 'gun_crew_veteran_skill_redeploy', name: 'Redeployment' },
+        { id: 'gun_crew_veteran_skill_target', name: 'Target Selection' }
+    ]
+}
+
+const vehicleVeteranSkill: UnitOptionDef = {
+    id: 'vehicle_veteran_skill',
+    name: 'Vehicle Veteran Skill',
+    type: 'slot',
+    slotName: 'veteran_skill',
+    choices: [
+        { id: 'vehicle_veteran_skill_none', name: 'None' },
+        { id: 'vehicle_veteran_skill_gunnery', name: 'Gunnery' },
+        { id: 'vehicle_veteran_skill_command', name: 'Command' },
+        { id: 'vehicle_veteran_skill_driving', name: 'Driving' },
+        { id: 'vehicle_veteran_skill_damage_control', name: 'Damage Control' },
+        { id: 'vehicle_veteran_skill_armor', name: 'Improvised Armor' },
+        { id: 'vehicle_veteran_skill_defensive', name: 'Defensive Measures' }
+    ]
+}
+
 const armorOptions: UnitOptionDef = {
     id: 'armor_selection',
     name: 'Armor',
@@ -382,6 +535,7 @@ const armorOptions: UnitOptionDef = {
 
 const characterOptions: UnitOptionDef[] = [
     armorOptions,
+    characterVeteranSkills,
     {
         id: 'char_sidearm',
         name: 'Sidearm',
@@ -449,6 +603,7 @@ const characterOptions: UnitOptionDef[] = [
 ]
 
 const mediumTankOptions: UnitOptionDef[] = [
+    vehicleVeteranSkill,
     {
         id: 'medium_tank_coax_slot',
         name: 'Coaxial',
@@ -472,6 +627,7 @@ const mediumTankOptions: UnitOptionDef[] = [
 ]
 
 const lightTankOptions: UnitOptionDef[] = [
+    vehicleVeteranSkill,
     {
         id: 'light_tank_turret_slot',
         name: 'Turret',
@@ -485,6 +641,7 @@ const lightTankOptions: UnitOptionDef[] = [
 ]
 
 const ifvOptions: UnitOptionDef[] = [
+    vehicleVeteranSkill,
     {
         id: 'ifv_turret_slot',
         name: 'Turret',
@@ -497,9 +654,12 @@ const ifvOptions: UnitOptionDef[] = [
     }
 ]
 
+
 export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
     'Infantry': [
         armorOptions,
+        squadVeteranSkills,
+        sergeantVeteranSkills,
         {
             id: 'infantry_rifle_slot',
             name: 'Rifle',
@@ -545,6 +705,8 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
     ],
     'Recon': [
         armorOptions,
+        squadVeteranSkills,
+        sergeantVeteranSkills,
         {
             id: 'recon_rifle_slot',
             name: 'Rifle',
@@ -576,6 +738,8 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
     ],
     'Storm': [
         armorOptions,
+        squadVeteranSkills,
+        sergeantVeteranSkills,
         // Primary Weapon selection
         {
             id: 'storm_rifle_slot',
@@ -629,6 +793,7 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
     ],
     'Weapon Team': [
         armorOptions,
+        gunCrewVeteranSkill,
         {
             id: 'weapteam_crew_weapon',
             name: 'Crewed Weapon',
@@ -652,6 +817,8 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
     'Scout': [armorOptions],
     'Enforcers': [
         armorOptions,
+        squadVeteranSkills,
+        sergeantVeteranSkills,
         {
             id: 'enforcer_sgt_maul',
             name: 'Sergeant: Suppression Maul',
@@ -671,6 +838,7 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
     ],
     'Militia': [
         armorOptions,
+        squadVeteranSkills,
         {
             id: 'militia_grenade',
             name: 'Penetrator Grenade (one soldier)',
@@ -689,6 +857,8 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
     ],
     'Pirate': [
         armorOptions,
+        squadVeteranSkills,
+        sergeantVeteranSkills,
         {
             id: 'pirate_support_slot',
             name: 'Support Weapon',
@@ -730,8 +900,9 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
             ]
         }
     ],
-    'Cavalry': [armorOptions],
+    'Cavalry': [armorOptions, squadVeteranSkills, sergeantVeteranSkills],
     'Nomad Bike': [
+        vehicleVeteranSkill,
         {
             id: 'nomad_forward_slot',
             name: 'Forward',
@@ -743,8 +914,9 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
             ]
         }
     ],
-    'Scouter': [],
+    'Scouter': [vehicleVeteranSkill],
     'Lancer': [
+        vehicleVeteranSkill,
         {
             id: 'lancer_forward_slot',
             name: 'Forward',
@@ -756,8 +928,9 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
             ]
         }
     ],
-    'Frontier Trike': [],
+    'Frontier Trike': [vehicleVeteranSkill],
     'Raider Trike': [
+        vehicleVeteranSkill,
         {
             id: 'raider_forward_side_slot',
             name: 'Forward/Side',
@@ -769,9 +942,9 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
             ]
         }
     ],
-    'Armored Car': [],
-    'APC': [],
-    'APC - Grav': [],
+    'Armored Car': [vehicleVeteranSkill],
+    'APC': [vehicleVeteranSkill],
+    'APC - Grav': [vehicleVeteranSkill],
     'IFV': ifvOptions,
     'IFV - Grav': ifvOptions,
     'Light Tank': lightTankOptions,
@@ -779,6 +952,7 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
     'Medium Tank': mediumTankOptions,
     'Medium Tank - Grav': mediumTankOptions,
     'Heavy Tank': [
+        vehicleVeteranSkill,
         {
             id: 'heavy_tank_front_slot',
             name: 'Front Weapon',
@@ -801,6 +975,7 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
         }
     ],
     'Light Walker': [
+        vehicleVeteranSkill,
         {
             id: 'walker_arm2_slot',
             name: 'Arm 2 Weapon',
@@ -812,8 +987,9 @@ export const unitOptions: Record<UnitType, UnitOptionDef[]> = {
             ]
         }
     ],
-    'Heavy Walker': [],
+    'Heavy Walker': [vehicleVeteranSkill],
     'CIM-L': [
+        vehicleVeteranSkill,
         {
             id: 'ciml_weapon_slot',
             name: 'Weapon',
