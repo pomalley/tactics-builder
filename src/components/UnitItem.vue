@@ -28,6 +28,65 @@ const props = defineProps<{
 const unitTypes = Object.keys(unitDefinitions) as UnitType[];
 const lifeformTypes = Object.keys(lifeformClassPoints) as Lifeform[];
 
+type UnitGroupLabel =
+  | "Squads"
+  | "Individuals"
+  | "Specialists"
+  | "Alternate Squad Types"
+  | "Vehicles";
+
+const unitTypeToGroup: Record<UnitType, UnitGroupLabel> = {
+  Infantry: "Squads",
+  Recon: "Squads",
+  Storm: "Squads",
+  "Weapon Team": "Squads",
+  "Minor Character": "Individuals",
+  "Major Character": "Individuals",
+  "Epic Character": "Individuals",
+  Tech: "Specialists",
+  Sharpshooter: "Specialists",
+  "Fire Section": "Specialists",
+  Comms: "Specialists",
+  Medic: "Specialists",
+  Scout: "Specialists",
+  Enforcers: "Alternate Squad Types",
+  Militia: "Alternate Squad Types",
+  Pirate: "Alternate Squad Types",
+  Cavalry: "Alternate Squad Types",
+  "Nomad Bike": "Vehicles",
+  Scouter: "Vehicles",
+  Lancer: "Vehicles",
+  "Frontier Trike": "Vehicles",
+  "Raider Trike": "Vehicles",
+  "Armored Car": "Vehicles",
+  APC: "Vehicles",
+  "APC - Grav": "Vehicles",
+  IFV: "Vehicles",
+  "IFV - Grav": "Vehicles",
+  "Light Tank": "Vehicles",
+  "Light Tank - Grav": "Vehicles",
+  "Medium Tank": "Vehicles",
+  "Medium Tank - Grav": "Vehicles",
+  "Heavy Tank": "Vehicles",
+  "Light Walker": "Vehicles",
+  "Heavy Walker": "Vehicles",
+  "CIM-L": "Vehicles",
+  "CIM-APP": "Vehicles",
+};
+
+const unitGroups = (
+  [
+    "Squads",
+    "Individuals",
+    "Specialists",
+    "Alternate Squad Types",
+    "Vehicles",
+  ] as UnitGroupLabel[]
+).map((label) => ({
+  label,
+  types: unitTypes.filter((type) => unitTypeToGroup[type] === label),
+}));
+
 const emit = defineEmits<{
   (e: "remove", unitId: string): void;
 }>();
@@ -177,9 +236,15 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
       <div class="setting-group">
         <label>Type:</label>
         <select :value="unit.type" @change="onTypeChange">
-          <option v-for="type in unitTypes" :key="type" :value="type">
-            {{ type }}
-          </option>
+          <optgroup
+            v-for="group in unitGroups"
+            :key="group.label"
+            :label="group.label"
+          >
+            <option v-for="type in group.types" :key="type" :value="type">
+              {{ type }}
+            </option>
+          </optgroup>
         </select>
       </div>
       <div class="setting-group">
