@@ -46,4 +46,5 @@ export interface UnitOptionDef {
 export interface Army {
     name: string;
     units: Unit[];
+    freeEdit: boolean;
 }

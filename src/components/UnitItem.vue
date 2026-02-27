@@ -11,6 +11,7 @@ import {
 } from "../data";
 import ModelItem from "./ModelItem.vue";
 import {
+  armyState,
   addModelToUnit,
   removeModelFromUnit,
   calculateUnitPoints,
@@ -18,6 +19,10 @@ import {
   changeUnitLifeform,
   toggleUnitOption,
   selectUnitOptionChoice,
+  addSlotToUnit,
+  removeSlotFromUnit,
+  addExtraToUnit,
+  removeExtraFromUnit,
 } from "../store";
 import { formatSlotName } from "../utils";
 
@@ -25,6 +30,7 @@ const props = defineProps<{
   unit: Unit;
 }>();
 
+const allEquipmentNames = Object.keys(weaponPoints).sort() as EquipmentName[];
 const unitTypes = Object.keys(unitDefinitions) as UnitType[];
 const lifeformTypes = Object.keys(lifeformClassPoints) as Lifeform[];
 
@@ -86,6 +92,11 @@ const unitGroups = (
   label,
   types: unitTypes.filter((type) => unitTypeToGroup[type] === label),
 }));
+
+const addManualSlot = () => {
+  const name = window.prompt("Slot Name (e.g. turret, sidearm):");
+  if (name) addSlotToUnit(props.unit.id, name, "None");
+};
 
 const emit = defineEmits<{
   (e: "remove", unitId: string): void;
@@ -300,16 +311,40 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
       </div>
     </div>
 
-    <div class="unit-equipment" v-if="Object.keys(unit.slots).length > 0 || unit.extras.length > 0">
+    <div class="unit-equipment" v-if="Object.keys(unit.slots).length > 0 || unit.extras.length > 0 || armyState.freeEdit">
       <div v-for="(weapon, slot) in unit.slots" :key="slot" class="equipment-item">
         <span class="slot-name">{{ formatSlotName(slot as string) }}:</span>
-        <span class="weapon-name">{{ weapon }}</span>
+        <template v-if="armyState.freeEdit">
+          <select @change="(e) => addSlotToUnit(unit.id, slot as string, (e.target as HTMLSelectElement).value as EquipmentName)" class="mini-select">
+            <option v-for="name in allEquipmentNames" :key="name" :value="name" :selected="name === weapon">{{ name }}</option>
+          </select>
+        </template>
+        <template v-else>
+          <span class="weapon-name">{{ weapon }}</span>
+        </template>
         <span class="weapon-points">[{{ weaponPoints[weapon] }}]</span>
+        <button v-if="armyState.freeEdit" @click="removeSlotFromUnit(unit.id, slot as string)" class="mini-remove-btn">×</button>
       </div>
       <div v-for="(item, index) in unit.extras" :key="'unit-extra-' + index" class="equipment-item">
         <span class="slot-name">+</span>
-        <span class="weapon-name">{{ item }}</span>
+        <template v-if="armyState.freeEdit">
+          <select @change="(e) => {
+            removeExtraFromUnit(unit.id, index);
+            addExtraToUnit(unit.id, (e.target as HTMLSelectElement).value as EquipmentName);
+          }" class="mini-select">
+            <option v-for="name in allEquipmentNames" :key="name" :value="name" :selected="name === item">{{ name }}</option>
+          </select>
+        </template>
+        <template v-else>
+          <span class="weapon-name">{{ item }}</span>
+        </template>
         <span class="weapon-points">[{{ weaponPoints[item] }}]</span>
+        <button v-if="armyState.freeEdit" @click="removeExtraFromUnit(unit.id, index)" class="mini-remove-btn">×</button>
+      </div>
+
+      <div v-if="armyState.freeEdit" class="manual-add-controls">
+        <button @click="addManualSlot" class="add-manual-btn">+ Add Slot</button>
+        <button @click="addExtraToUnit(unit.id, 'None')" class="add-manual-btn">+ Add Extra</button>
       </div>
     </div>
 
@@ -324,7 +359,7 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
           @remove="removeModelFromUnit(unit.id, $event)"
         />
       </div>
-      <button @click="addModelToUnit(unit.id)" class="add-model-btn">
+      <button v-if="armyState.freeEdit" @click="addModelToUnit(unit.id)" class="add-model-btn">
         + Add Model
       </button>
     </div>
@@ -588,5 +623,57 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.95rem;
+}
+
+.mini-remove-btn {
+  background: #ff5252;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  width: 1.2rem;
+  height: 1.2rem;
+  line-height: 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mini-select {
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.85rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .mini-select {
+    background-color: #333;
+    color: white;
+    border-color: #555;
+  }
+}
+
+.manual-add-controls {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.add-manual-btn {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.add-manual-btn:hover {
+  background: #45a049;
 }
 </style>

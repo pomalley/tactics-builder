@@ -6,7 +6,15 @@ import UnitItem from './UnitItem.vue'
 <template>
   <div class="army-builder">
     <div class="army-header">
-      <input type="text" v-model="armyState.name" class="army-name-input" placeholder="Army Name" />
+      <div class="header-left">
+        <input type="text" v-model="armyState.name" class="army-name-input" placeholder="Army Name" />
+        <div class="free-edit-toggle">
+          <label>
+            <input type="checkbox" v-model="armyState.freeEdit" />
+            Free Edit Mode
+          </label>
+        </div>
+      </div>
       <div class="army-total">
         Total: <span class="total-points">{{ totalArmyPoints }} pts</span>
       </div>
@@ -49,13 +57,40 @@ import UnitItem from './UnitItem.vue'
   border-bottom: 3px solid #4CAF50;
 }
 
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 60%;
+}
+
+.free-edit-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.free-edit-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-weight: bold;
+  color: #666;
+}
+
+@media (prefers-color-scheme: dark) {
+  .free-edit-toggle label {
+    color: #aaa;
+  }
+}
+
 .army-name-input {
   font-size: 2rem;
   font-weight: 800;
   border: none;
   background: transparent;
   color: #333;
-  width: 60%;
+  width: 100%;
 }
 @media (prefers-color-scheme: dark) {
   .army-name-input {

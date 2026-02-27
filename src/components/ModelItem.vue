@@ -1,8 +1,16 @@
 <script setup lang="ts">
-
-import type { Model } from "../types";
-import { calculateModelPoints } from "../store";
-import { weaponPoints, lifeformClassPoints } from "../data";
+import type { Model, ModelClass } from "../types";
+import { 
+  calculateModelPoints, 
+  armyState,
+  updateModelClass,
+  updateModelBasePoints,
+  addSlotToModel,
+  removeSlotFromModel,
+  addExtraToModel,
+  removeExtraFromModel
+} from "../store";
+import { weaponPoints, lifeformClassPoints, type EquipmentName } from "../data";
 import { formatSlotName } from "../utils";
 
 const props = defineProps<{
@@ -10,12 +18,20 @@ const props = defineProps<{
   unitId: string;
 }>();
 
+const allEquipmentNames = Object.keys(weaponPoints).sort() as EquipmentName[];
+const modelClasses: ModelClass[] = ['Civilian', 'Soldier', 'Minor Character', 'Major Character', 'Epic Character', 'Vehicle'];
+
 const emit = defineEmits<{
   (e: "remove", modelId: string): void;
 }>();
 
 const handleRemove = () => {
   emit("remove", props.model.id);
+};
+
+const addManualSlot = () => {
+  const name = window.prompt("Slot Name:");
+  if (name) addSlotToModel(props.unitId, props.model.id, name, "None");
 };
 </script>
 
@@ -28,7 +44,7 @@ const handleRemove = () => {
         placeholder="Model Name"
         class="model-name-input"
       />
-      <button @click="handleRemove" class="remove-btn" title="Remove Model">
+      <button v-if="armyState.freeEdit" @click="handleRemove" class="remove-btn" title="Remove Model">
         ✕
       </button>
     </div>
@@ -40,7 +56,13 @@ const handleRemove = () => {
       </div>
       <div class="field">
         <label>Class</label>
-        <div class="readonly-text">
+        <template v-if="armyState.freeEdit">
+          <select :value="model.class" @change="(e) => updateModelClass(unitId, model.id, (e.target as HTMLSelectElement).value as ModelClass)" class="inline-select">
+            <option v-for="cls in modelClasses" :key="cls" :value="cls">{{ cls }}</option>
+          </select>
+          <input type="number" :value="model.basePoints" @input="(e) => updateModelBasePoints(unitId, model.id, parseInt((e.target as HTMLInputElement).value) || undefined)" class="mini-pts-input" placeholder="Base Points" />
+        </template>
+        <div v-else class="readonly-text">
           {{ model.class }}
           <span class="point-badge" v-if="model.basePoints === undefined">[{{ lifeformClassPoints[model.lifeform]?.[model.class] || 0 }}]</span>
           <span class="point-badge" v-else>[{{ model.basePoints }}]</span>
@@ -52,18 +74,24 @@ const handleRemove = () => {
       </div>
     </div>
 
-    <div class="model-options" v-if="Object.keys(model.slots).length > 0 || model.extras.length > 0">
+    <div class="model-options" v-if="Object.keys(model.slots).length > 0 || model.extras.length > 0 || armyState.freeEdit">
       <label>Equipment</label>
-      <div class="readonly-options">
+      <div class="equipment-list">
         <div
           v-for="(weapon, slotName) in model.slots"
           :key="slotName"
           class="option-row"
         >
-          <div class="readonly-text slot-name">
+          <div class="slot-label">
             {{ formatSlotName(slotName as string) }}:
           </div>
-          <div class="readonly-text">
+          <template v-if="armyState.freeEdit">
+            <select @change="(e) => addSlotToModel(unitId, model.id, slotName as string, (e.target as HTMLSelectElement).value as EquipmentName)" class="mini-select">
+              <option v-for="name in allEquipmentNames" :key="name" :value="name" :selected="name === weapon">{{ name }}</option>
+            </select>
+            <button @click="removeSlotFromModel(unitId, model.id, slotName as string)" class="mini-remove-btn">×</button>
+          </template>
+          <div v-else class="readonly-text">
             {{ weapon }}
             <span class="point-badge">[{{ weaponPoints[weapon] || 0 }}]</span>
           </div>
@@ -73,11 +101,25 @@ const handleRemove = () => {
           :key="'extra-' + index"
           class="option-row"
         >
-          <div class="readonly-text slot-name">+</div>
-          <div class="readonly-text">
+          <div class="slot-label">+</div>
+          <template v-if="armyState.freeEdit">
+            <select @change="(e) => {
+              removeExtraFromModel(unitId, model.id, index);
+              addExtraToModel(unitId, model.id, (e.target as HTMLSelectElement).value as EquipmentName);
+            }" class="mini-select">
+              <option v-for="name in allEquipmentNames" :key="name" :value="name" :selected="name === item">{{ name }}</option>
+            </select>
+            <button @click="removeExtraFromModel(unitId, model.id, index)" class="mini-remove-btn">×</button>
+          </template>
+          <div v-else class="readonly-text">
             {{ item }}
             <span class="point-badge">[{{ weaponPoints[item] || 0 }}]</span>
           </div>
+        </div>
+
+        <div v-if="armyState.freeEdit" class="manual-add-controls">
+          <button @click="addManualSlot" class="add-manual-btn">+ Add Slot</button>
+          <button @click="addExtraToModel(unitId, model.id, 'None')" class="add-manual-btn">+ Add Extra</button>
         </div>
       </div>
     </div>
@@ -195,15 +237,21 @@ input {
   margin-bottom: 0.2rem;
 }
 
-.readonly-options {
+.equipment-list {
   background-color: transparent;
 }
 
-.slot-name {
+.slot-label {
   min-width: 4rem;
   font-size: 0.8rem;
   color: #999;
   text-transform: capitalize;
+}
+
+@media (prefers-color-scheme: dark) {
+  .slot-label {
+    color: #666;
+  }
 }
 
 .point-badge {
@@ -213,9 +261,66 @@ input {
   font-weight: bold;
 }
 
+.mini-select {
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.85rem;
+  flex: 1;
+}
+
+.mini-remove-btn {
+  background: #ff5252;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  width: 1.1rem;
+  height: 1.1rem;
+  line-height: 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inline-select {
+  padding: 0.2rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+
+.mini-pts-input {
+  padding: 0.2rem;
+  width: 60px;
+  font-size: 0.9rem;
+}
+
+.manual-add-controls {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.add-manual-btn {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 @media (prefers-color-scheme: dark) {
-  .slot-name {
-    color: #666;
+  .mini-select, .inline-select, .mini-pts-input {
+    background-color: #333;
+    color: white;
+    border-color: #555;
   }
 }
 </style>

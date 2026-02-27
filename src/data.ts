@@ -1,6 +1,7 @@
 import type { ModelClass, UnitOptionDef } from './types'
 
 export const weaponPoints = {
+    'None': 0,
     // Rifles
     'Military Rifle': 3,
     'Infantry Laser': 4,
@@ -47,24 +48,13 @@ export const weaponPoints = {
     'Heavy Plasma Gun': 20,
     '75mm Cannon': 45,
     '100mm Cannon': 55,
-    // Upgrades
-    'Hero': 5,
-    'Leader': 10,
-    // Abilities
-    'Observation +1': 1,
-    'Morale +1': 0,
-    'Tech +1 (hacking, repairs, etc.)': 4,
-    'Sharpshooter +1 Hit': 4,
-    'Morale +1 (Fire Section)': 5,
-    'Comms +1': 9,
-    'Medic (Remove 1 suppression)': 9,
-    'Scout +1" Spd, +2 Obs': 6,
-    'Cavalry': 1,
     // Armor
-    'None': 0,
     'Powered Armor': 2,
     'Breach Armor': 4,
-    // Squad Veteran Skill
+    // Individual Upgrades
+    'Hero': 5,
+    'Leader': 10,
+    // Squad Veteran Skills
     'Brave': 10,
     'Tank Hunters': 15,
     'Keen Shots': 10,
@@ -75,7 +65,7 @@ export const weaponPoints = {
     'Bombers': 5,
     'Guerillas': 10,
     'Quick': 10,
-    // Sergeant Veteran Skill
+    // Sergeant Veteran Skills
     'Rugged': 5,
     'Parry': 5,
     'Motivator': 5,
@@ -91,20 +81,30 @@ export const weaponPoints = {
     'Lucky': 5,
     'Skilled Leader': 5,
     'Expert Fighter': 5,
-    // Gun Crew Veteran Skill
+    // Gun Crew Veteran Skills
     'Defend the Guns': 5,
     'Fortified Positions': 5,
     'Deploy Hidden': 5,
     'Gun Drill': 10,
     'Redeployment': 5,
     'Target Selection': 5,
-    // Vehicle Veteran Skill
+    // Vehicle Veteran Skills
     'Gunnery': 15,
     'Command': 10,
     'Driving': 10,
     'Damage Control': 5,
     'Improvised Armor': 10,
     'Defensive Measures': 5,
+    // Misc Abilities
+    'Observation +1': 1,
+    'Morale +1': 0,
+    'Tech +1 (hacking, repairs, etc.)': 4,
+    'Sharpshooter +1 Hit': 4,
+    'Morale +1 (Fire Section)': 5,
+    'Comms +1': 9,
+    'Medic (Remove 1 suppression)': 9,
+    'Scout +1" Spd, +2 Obs': 6,
+    'Cavalry': 1,
 } as const;
 
 export type EquipmentName = keyof typeof weaponPoints;
