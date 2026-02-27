@@ -48,10 +48,11 @@ const _unitDefinitions = {
     },
     'Weapon Team': {
         slots: { crewed_weapon: 'Laser Cannon', veteran_skill: 'None' },
+        extras: ['Morale +1 (Weapon Team)'],
         models: [
-            { name: 'Gunner', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Morale +1'] },
-            { name: 'Loader 1', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Morale +1'] },
-            { name: 'Loader 2', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: ['Morale +1'] }
+            { name: 'Gunner', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: [] },
+            { name: 'Loader 1', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: [] },
+            { name: 'Loader 2', class: 'Soldier', slots: { sidearm: 'Service Pistol' }, extras: [] }
         ]
     },
     'Minor Character': {

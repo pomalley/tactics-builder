@@ -95,10 +95,10 @@ export const equipmentPoints = {
     'Defensive Measures': 5,
     // Misc Abilities
     'Observation +1': 1,                    // Recon squad (per soldier)
-    'Morale +1': 2,                         // Weapon team (whole squad)
+    'Morale +1 (Weapon Team)': 2,           // Weapon team (whole squad)
+    'Morale +1 (Fire Section)': 5,          // Fire section (whole squad)
     'Tech +1 (hacking, repairs, etc.)': 4,  // Tech specialist
     'Sharpshooter +1 Hit': 4,               // Sharpshooter specialist
-    'Morale +1 (Fire Section)': 5,          // Fire section (whole squad)
     'Comms +1': 9,                          // Comms specialist
     'Medic (Remove 1 suppression)': 9,      // Medic specialist
     'Scout +1" Spd, +2 Obs': 6,             // Scout specialist
@@ -221,10 +221,10 @@ const equipmentToGroup: Record<EquipmentName, EquipmentGroupLabel> = {
     'Defensive Measures': 'Vehicle Veteran Skills',
     // Misc Abilities
     'Observation +1': 'Misc Abilities',
-    'Morale +1': 'Misc Abilities',
+    'Morale +1 (Weapon Team)': 'Misc Abilities',
+    'Morale +1 (Fire Section)': 'Misc Abilities',
     'Tech +1 (hacking, repairs, etc.)': 'Misc Abilities',
     'Sharpshooter +1 Hit': 'Misc Abilities',
-    'Morale +1 (Fire Section)': 'Misc Abilities',
     'Comms +1': 'Misc Abilities',
     'Medic (Remove 1 suppression)': 'Misc Abilities',
     'Scout +1" Spd, +2 Obs': 'Misc Abilities',
