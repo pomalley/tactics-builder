@@ -209,7 +209,10 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
       </div>
     </div>
 
-    <div v-if="!unit.minimized" class="unit-body">
+    <div v-if="unit.minimized" class="unit-body unit-summary">
+      {{ unit.type }} - {{ unit.lifeform }}
+    </div>
+    <div v-else="!unit.minimized" class="unit-body">
       <div class="unit-settings">
         <div class="setting-group">
           <label>Type:</label>
@@ -746,5 +749,17 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
 
 .add-manual-btn:hover {
   background: #45a049;
+}
+
+.unit-summary {
+  font-weight: bold;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .unit-summary {
+    color: #ccc;
+  }
 }
 </style>

@@ -8,12 +8,9 @@
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "test": "vitest",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "test": "vitest"
   },
   "dependencies": {
-    "gh-pages": "^6.3.0",
     "vue": "^3.4.21"
   },
   "devDependencies": {
