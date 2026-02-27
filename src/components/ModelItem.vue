@@ -88,7 +88,7 @@ const addManualSlot = () => {
           <template v-if="armyState.freeEdit">
             <select @change="(e) => addSlotToModel(unitId, model.id, slotName as string, (e.target as HTMLSelectElement).value as EquipmentName)" class="mini-select">
               <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
-                <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === weapon">{{ name }}</option>
+                <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === weapon">{{ name }} [{{ equipmentPoints[name] }}]</option>
               </optgroup>
             </select>
             <button @click="removeSlotFromModel(unitId, model.id, slotName as string)" class="mini-remove-btn">×</button>
@@ -110,7 +110,7 @@ const addManualSlot = () => {
               addExtraToModel(unitId, model.id, (e.target as HTMLSelectElement).value as EquipmentName);
             }" class="mini-select">
               <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
-                <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === item">{{ name }}</option>
+                <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === item">{{ name }} [{{ equipmentPoints[name] }}]</option>
               </optgroup>
             </select>
             <button @click="removeExtraFromModel(unitId, model.id, index)" class="mini-remove-btn">×</button>

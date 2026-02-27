@@ -251,7 +251,7 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
         <template v-if="armyState.freeEdit">
           <select @change="(e) => addSlotToUnit(unit.id, slot as string, (e.target as HTMLSelectElement).value as EquipmentName)" class="mini-select">
             <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
-              <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === weapon">{{ name }}</option>
+              <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === weapon">{{ name }} [{{ equipmentPoints[name] }}]</option>
             </optgroup>
           </select>
         </template>
@@ -269,7 +269,7 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
             addExtraToUnit(unit.id, (e.target as HTMLSelectElement).value as EquipmentName);
           }" class="mini-select">
             <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
-              <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === item">{{ name }}</option>
+              <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === item">{{ name }} [{{ equipmentPoints[name] }}]</option>
             </optgroup>
           </select>
         </template>
