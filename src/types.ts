@@ -1,8 +1,7 @@
-import type { EquipmentName } from './data'
+import type { EquipmentName, UnitType } from './data'
+export type { UnitType };
 
 export type Lifeform = 'Human' | 'Feral' | 'K\'Erin' | 'None';
-// TODO: Refactor UnitType to be dynamically generated from Object.keys(unitDefinitions)
-export type UnitType = 'Infantry' | 'Recon' | 'Storm' | 'Weapon Team' | 'Minor Character' | 'Major Character' | 'Epic Character' | 'Tech' | 'Sharpshooter' | 'Fire Section' | 'Comms' | 'Medic' | 'Scout' | 'Enforcers' | 'Militia' | 'Pirate' | 'Cavalry' | 'Nomad Bike' | 'Scouter' | 'Lancer' | 'Frontier Trike' | 'Raider Trike' | 'Armored Car' | 'APC' | 'APC - Grav' | 'IFV' | 'IFV - Grav' | 'Light Tank' | 'Light Tank - Grav' | 'Medium Tank' | 'Medium Tank - Grav' | 'Heavy Tank' | 'Light Walker' | 'Heavy Walker' | 'CIM-L' | 'CIM-APP';
 export type ModelClass = 'Civilian' | 'Soldier' | 'Minor Character' | 'Major Character' | 'Epic Character' | 'Vehicle';
 
 export interface Model {

@@ -1,4 +1,4 @@
-import type { UnitType, Lifeform, ModelClass, UnitOptionDef } from './types'
+import type { Lifeform, ModelClass, UnitOptionDef } from './types'
 
 export const weaponPoints = {
     // Rifles
@@ -72,17 +72,17 @@ export interface ModelDef {
     name: string;
     class: ModelClass;
     basePoints?: number;
-    slots: Record<string, EquipmentName>;
+    slots: Partial<Record<string, EquipmentName>>;
     extras: EquipmentName[];
 }
 
 export interface UnitTypeDef {
-    slots?: Record<string, EquipmentName>;
+    slots?: Partial<Record<string, EquipmentName>>;
     extras?: EquipmentName[];
     models: ModelDef[];
 }
 
-export const unitDefinitions: Record<UnitType, UnitTypeDef> = {
+const _unitDefinitions = {
     'Infantry': {
         models: [
             { name: 'Sergeant', class: 'Minor Character', slots: { rifle: 'Military Rifle' }, extras: ['Frag Grenade'] },
@@ -296,7 +296,11 @@ export const unitDefinitions: Record<UnitType, UnitTypeDef> = {
             { name: 'CIM-APP', class: 'Vehicle', basePoints: 25, slots: { weapon: '20mm Autocannon' }, extras: [] }
         ]
     }
-}
+} satisfies Record<string, UnitTypeDef>;
+
+export type UnitType = keyof typeof _unitDefinitions;
+
+export const unitDefinitions: Record<UnitType, UnitTypeDef> = _unitDefinitions;
 
 export const lifeformClassPoints: Record<Lifeform, Record<ModelClass, number>> = {
     'Human': {
