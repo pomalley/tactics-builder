@@ -33,7 +33,6 @@ const message = ref("5PFH: Tactics Army Builder");
 @media (min-width: 768px) {
   .app-container {
     padding: 2rem;
-    justify-content: center;
   }
 }
 
