@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import UnitItem from './UnitItem.vue'
-import { armyState, addUnit } from '../store'
+import { armyState, addUnit, resetStore } from '../store'
 
 // Mock crypto.randomUUID for jsdom
 vi.stubGlobal('crypto', {
@@ -10,7 +10,15 @@ vi.stubGlobal('crypto', {
 
 describe('UnitItem Component', () => {
     beforeEach(() => {
-        armyState.units = []
+        resetStore({
+            armies: [{
+                id: 'test-army-id',
+                name: 'Test Army',
+                units: [],
+                freeEdit: false
+            }],
+            currentArmyId: 'test-army-id'
+        })
         addUnit() // Adds an Infantry unit
     })
 

@@ -47,7 +47,13 @@ export interface UnitOptionDef {
 }
 
 export interface Army {
+    id: string;
     name: string;
     units: Unit[];
     freeEdit: boolean;
+}
+
+export interface AppState {
+    armies: Army[];
+    currentArmyId: string | null;
 }

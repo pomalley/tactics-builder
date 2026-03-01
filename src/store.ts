@@ -1,22 +1,45 @@
 import { reactive, computed, watch } from 'vue'
-import type { Army, Unit, Model, UnitType } from './types'
+import type { Army, Unit, Model, UnitType, AppState } from './types'
 import { Lifeform, lifeformClassPoints } from './data/lifeforms';
 import { EquipmentName, equipmentPoints } from './data/equipment';
 import { unitDefinitions, unitOptions } from './data/units';
 
 const STORAGE_KEY = 'tactics-army-builder-state'
 
-const getDefaultState = (): Army => ({
+const getDefaultArmy = (): Army => ({
+    id: crypto.randomUUID(),
     name: 'New Army',
     units: [],
     freeEdit: false
 })
 
-const loadState = (): Army => {
+const getDefaultState = (): AppState => {
+    const defaultArmy = getDefaultArmy();
+    return {
+        armies: [defaultArmy],
+        currentArmyId: defaultArmy.id
+    }
+}
+
+const loadState = (): AppState => {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
         try {
-            return JSON.parse(saved)
+            const data = JSON.parse(saved)
+            // Migration: if it's the old Army structure
+            if (data.units && !data.armies) {
+                const legacyArmy: Army = {
+                    id: crypto.randomUUID(),
+                    name: data.name || 'New Army',
+                    units: data.units,
+                    freeEdit: !!data.freeEdit
+                }
+                return {
+                    armies: [legacyArmy],
+                    currentArmyId: legacyArmy.id
+                }
+            }
+            return data as AppState
         } catch (e) {
             console.error('Failed to load state from localStorage', e)
         }
@@ -24,11 +47,73 @@ const loadState = (): Army => {
     return getDefaultState()
 }
 
-export const armyState = reactive<Army>(loadState())
+// Using shallowReactive for the top-level state to avoid nested proxy overhead
+// but keeping the internal arrays reactive as needed via resetStore.
+export const appState = reactive<AppState>(loadState())
 
-watch(armyState, (newState) => {
+export const resetStore = (initialState?: AppState) => {
+    const next = initialState || getDefaultState();
+    appState.armies = next.armies;
+    appState.currentArmyId = next.currentArmyId;
+}
+
+// Internal computed for finding current army
+const currentArmy = computed(() => {
+    const current = appState.armies.find(a => a.id === appState.currentArmyId);
+    if (current) return current;
+    if (appState.armies.length > 0) return appState.armies[0];
+    const fresh = getDefaultArmy();
+    appState.armies.push(fresh);
+    appState.currentArmyId = fresh.id;
+    return fresh;
+})
+
+// armyState is a reactive proxy that always delegates to currentArmy.value
+export const armyState = reactive(new Proxy({} as Army, {
+    get(_, prop) {
+        return (currentArmy.value as any)[prop];
+    },
+    set(_, prop, value) {
+        (currentArmy.value as any)[prop] = value;
+        return true;
+    },
+    ownKeys() {
+        return Reflect.ownKeys(currentArmy.value);
+    },
+    getOwnPropertyDescriptor(_, prop) {
+        return Reflect.getOwnPropertyDescriptor(currentArmy.value, prop);
+    }
+}))
+
+watch(appState, (newState) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newState))
 }, { deep: true })
+
+export const addArmy = () => {
+    const newArmy = getDefaultArmy();
+    appState.armies.push(newArmy);
+    appState.currentArmyId = newArmy.id;
+}
+
+export const selectArmy = (id: string) => {
+    appState.currentArmyId = id;
+}
+
+export const removeArmy = (id: string) => {
+    if (appState.armies.length <= 1) return;
+    const index = appState.armies.findIndex(a => a.id === id);
+    if (index !== -1) {
+        appState.armies.splice(index, 1);
+        if (appState.currentArmyId === id) {
+            appState.currentArmyId = appState.armies[0].id;
+        }
+    }
+}
+
+export const updateArmyName = (id: string, name: string) => {
+    const army = appState.armies.find(a => a.id === id);
+    if (army) army.name = name;
+}
 
 export const setFreeEdit = (val: boolean) => {
     armyState.freeEdit = val;
