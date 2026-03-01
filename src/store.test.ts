@@ -1,7 +1,21 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { nextTick } from 'vue'
 import { 
     armyState, 
     addUnit, 
+    removeUnit,
+    moveUnit,
+    updateUnitName,
+    changeUnitLifeform,
+    addModelToUnit,
+    removeModelFromUnit,
+    updateModelName,
+    updateModelClass,
+    updateModelBasePoints,
+    addSlotToModel,
+    removeSlotFromModel,
+    addExtraToModel,
+    removeExtraFromModel,
     toggleUnitOption, 
     selectUnitOptionChoice, 
     calculateModelPoints, 
@@ -78,17 +92,18 @@ describe('Army Store', () => {
         
         // Initial state: Weapon Team has Laser Cannon (35 pts)
         // Models:
-        // Gunner: Human Soldier (10) + Service Pistol (1) + Morale +1 (0) = 11
-        // Loader 1: Human Soldier (10) + Service Pistol (1) + Morale +1 (0) = 11
-        // Loader 2: Human Soldier (10) + Service Pistol (1) + Morale +1 (0) = 11
+        // Gunner: Human Soldier (10) + Service Pistol (1) = 11
+        // Loader 1: Human Soldier (10) + Service Pistol (1) = 11
+        // Loader 2: Human Soldier (10) + Service Pistol (1) = 11
         // Unit slot: Laser Cannon (35)
-        // Total: 11 * 3 + 35 = 68
-        expect(calculateUnitPoints(unit)).toBe(68)
+        // Unit extra: Morale +1 (Weapon Team) (2)
+        // Total: 11 * 3 + 35 + 2 = 70
+        expect(calculateUnitPoints(unit)).toBe(70)
 
         // Select 20mm Autocannon (20 pts)
         selectUnitOptionChoice(unit.id, 'weapteam_crew_weapon', 'wt_auto_cannon')
-        // Total: 11 * 3 + 20 = 53
-        expect(calculateUnitPoints(unit)).toBe(53)
+        // Total: 11 * 3 + 20 + 2 = 55
+        expect(calculateUnitPoints(unit)).toBe(55)
     })
 
     it('should calculate unit points correctly with unit-level extras (Fire Section)', () => {
@@ -375,13 +390,13 @@ describe('Army Store', () => {
         addUnit()
         const unit = armyState.units[0]
         changeUnitType(unit.id, 'Weapon Team')
-        // Default Weapon Team: 11*3 + 35 = 68
-        expect(calculateUnitPoints(unit)).toBe(68)
+        // Default Weapon Team: 11*3 + 35 + 2 = 70
+        expect(calculateUnitPoints(unit)).toBe(70)
 
         // Add Gun Drill (10 pts)
         selectUnitOptionChoice(unit.id, 'gun_crew_veteran_skill', 'gun_crew_veteran_skill_drill')
-        // 68 + 10 = 78
-        expect(calculateUnitPoints(unit)).toBe(78)
+        // 70 + 10 = 80
+        expect(calculateUnitPoints(unit)).toBe(80)
     })
 
     it('should calculate unit points correctly for vehicle with veteran skill', () => {
@@ -395,5 +410,108 @@ describe('Army Store', () => {
         selectUnitOptionChoice(unit.id, 'vehicle_veteran_skill', 'vehicle_veteran_skill_gunnery')
         // 50 + 15 = 65
         expect(calculateUnitPoints(unit)).toBe(65)
+    })
+
+    describe('Unit and Model Management', () => {
+        it('should remove a unit', () => {
+            addUnit()
+            addUnit()
+            const idToRemove = armyState.units[0].id
+            removeUnit(idToRemove)
+            expect(armyState.units.length).toBe(1)
+            expect(armyState.units[0].id).not.toBe(idToRemove)
+        })
+
+        it('should move units up and down', () => {
+            addUnit()
+            armyState.units[0].name = 'Unit 1'
+            addUnit()
+            armyState.units[1].name = 'Unit 2'
+            
+            const id2 = armyState.units[1].id
+            moveUnit(id2, 'up')
+            expect(armyState.units[0].name).toBe('Unit 2')
+            expect(armyState.units[1].name).toBe('Unit 1')
+
+            moveUnit(id2, 'down')
+            expect(armyState.units[0].name).toBe('Unit 1')
+            expect(armyState.units[1].name).toBe('Unit 2')
+        })
+
+        it('should update unit name', () => {
+            addUnit()
+            updateUnitName(armyState.units[0].id, 'New Name')
+            expect(armyState.units[0].name).toBe('New Name')
+        })
+
+        it('should change unit lifeform and propagate to models', () => {
+            addUnit() // Default Human
+            const unit = armyState.units[0]
+            expect(unit.lifeform).toBe('Human')
+            expect(unit.models[0].lifeform).toBe('Human')
+
+            changeUnitLifeform(unit.id, 'Greys')
+            expect(unit.lifeform).toBe('Greys')
+            expect(unit.models[0].lifeform).toBe('Greys')
+        })
+
+        it('should add and remove models from unit', () => {
+            addUnit()
+            const unit = armyState.units[0]
+            const initialCount = unit.models.length
+            
+            addModelToUnit(unit.id)
+            expect(unit.models.length).toBe(initialCount + 1)
+            expect(unit.models[unit.models.length - 1].name).toBe('New Model')
+
+            const modelId = unit.models[unit.models.length - 1].id
+            removeModelFromUnit(unit.id, modelId)
+            expect(unit.models.length).toBe(initialCount)
+        })
+
+        it('should update model details', () => {
+            addUnit()
+            const unit = armyState.units[0]
+            const model = unit.models[0]
+
+            updateModelName(unit.id, model.id, 'Special Sergeant')
+            expect(model.name).toBe('Special Sergeant')
+
+            updateModelClass(unit.id, model.id, 'Major Character')
+            expect(model.class).toBe('Major Character')
+
+            updateModelBasePoints(unit.id, model.id, 50)
+            expect(model.basePoints).toBe(50)
+            expect(calculateModelPoints(model)).toBe(50 + 3 + 1) // Base + rifle(3) + grenade(1)
+        })
+
+        it('should add/remove slots and extras from models', () => {
+            addUnit()
+            const unit = armyState.units[0]
+            const model = unit.models[0]
+
+            addSlotToModel(unit.id, model.id, 'extra_gun', 'Military Rifle')
+            expect(model.slots.extra_gun).toBe('Military Rifle')
+
+            removeSlotFromModel(unit.id, model.id, 'extra_gun')
+            expect(model.slots.extra_gun).toBeUndefined()
+
+            addExtraToModel(unit.id, model.id, 'Shock Grenade')
+            expect(model.extras).toContain('Shock Grenade')
+
+            const index = model.extras.indexOf('Shock Grenade')
+            removeExtraFromModel(unit.id, model.id, index)
+            expect(model.extras).not.toContain('Shock Grenade')
+        })
+    })
+
+    describe('Persistence', () => {
+        it('should save to localStorage when state changes', async () => {
+            const setItemSpy = vi.spyOn(Storage.prototype, 'setItem')
+            addUnit()
+            await nextTick()
+            expect(setItemSpy).toHaveBeenCalled()
+            setItemSpy.mockRestore()
+        })
     })
 })
