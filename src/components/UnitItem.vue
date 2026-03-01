@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import type { Unit, UnitType, UnitOptionDef } from "../types";
-import { equipmentPoints, equipmentGroups, type EquipmentName } from "../data/equipment";
+import type { Unit, UnitType } from "../types";
 import { lifeformClassPoints, type Lifeform } from "../data/lifeforms";
 import { unitGroups, unitOptions } from "../data/units";
 import ModelItem from "./ModelItem.vue";
@@ -21,7 +20,9 @@ import {
   toggleUnitMinimized,
   moveUnit,
 } from "../store";
-import { formatSlotName } from "../utils";
+
+import EquipmentManager from "./EquipmentManager.vue";
+import { getOptionDefaultLabel, getChoicePointsLabel, getOptionPointsLabel } from "../logic";
 
 const props = defineProps<{
   unit: Unit;
@@ -31,11 +32,6 @@ const isFirst = computed(() => armyState.units[0]?.id === props.unit.id);
 const isLast = computed(() => armyState.units[armyState.units.length - 1]?.id === props.unit.id);
 
 const lifeformTypes = Object.keys(lifeformClassPoints) as Lifeform[];
-
-const addManualSlot = () => {
-  const name = window.prompt("Slot Name (e.g. turret, sidearm):");
-  if (name) addSlotToUnit(props.unit.id, name, "None");
-};
 
 const emit = defineEmits<{
   (e: "remove", unitId: string): void;
@@ -55,113 +51,6 @@ const onTypeChange = (event: Event) => {
 const onLifeformChange = (event: Event) => {
   const target = event.target as HTMLSelectElement;
   changeUnitLifeform(props.unit.id, target.value as Lifeform);
-};
-
-const getOptionDefaultLabel = (opt: UnitOptionDef) => {
-  // Check unit slots first
-  if (opt.type === "slot" && opt.slotName && props.unit.slots[opt.slotName]) {
-    const currentWeapon = props.unit.slots[opt.slotName];
-    const points = equipmentPoints[currentWeapon as EquipmentName];
-    const pointsLabel = points !== undefined ? ` [${points}]` : "";
-    return `Default (${currentWeapon}${pointsLabel})`;
-  }
-
-  // If the first choice's first modification targets a slot, find the current value of that slot
-  const firstMod = opt.choices?.[0]?.modifications?.[0];
-  if (firstMod && (firstMod.setSlot || firstMod.clearSlot || firstMod.setUnitSlot || firstMod.clearUnitSlot)) {
-    if (firstMod.setUnitSlot || firstMod.clearUnitSlot) {
-        const slotName = firstMod.setUnitSlot ? Object.keys(firstMod.setUnitSlot)[0] : firstMod.clearUnitSlot!;
-        const currentWeapon = props.unit.slots[slotName];
-        if (currentWeapon) {
-            const points = equipmentPoints[currentWeapon as EquipmentName];
-            const pointsLabel = points !== undefined ? ` [${points}]` : "";
-            return `Default (${currentWeapon}${pointsLabel})`;
-        }
-    }
-
-    const slotName = firstMod.setSlot
-      ? Object.keys(firstMod.setSlot)[0]
-      : firstMod.clearSlot!;
-
-    // Find a model this option targets
-    const targetModel = props.unit.models.find((m) => {
-      const nameMatch = !firstMod.targetName || m.name === firstMod.targetName;
-      const classMatch =
-        !firstMod.targetClass || m.class === firstMod.targetClass;
-      return nameMatch && classMatch && m.slots[slotName];
-    });
-
-    if (targetModel) {
-      const currentWeapon = targetModel.slots[slotName];
-      const points = equipmentPoints[currentWeapon as EquipmentName];
-      const pointsLabel = points !== undefined ? ` [${points}]` : "";
-      return `Default (${currentWeapon}${pointsLabel})`;
-    }
-  }
-
-  // If the option itself is a slot type
-  if (opt.type === "slot" && opt.slotName) {
-    const targetModel = props.unit.models.find((m) => m.slots[opt.slotName!]);
-    if (targetModel) {
-      const currentWeapon = targetModel.slots[opt.slotName!];
-      const points = equipmentPoints[currentWeapon as EquipmentName];
-      const pointsLabel = points !== undefined ? ` [${points}]` : "";
-      return `Default (${currentWeapon}${pointsLabel})`;
-    }
-  }
-
-  return "(Default / None)";
-};
-
-const getChoicePointsLabel = (choice: any) => {
-  // Try weapon name directly first
-  let points = equipmentPoints[choice.name as EquipmentName];
-
-  // If not found, check modifications
-  if (points === undefined && choice.modifications) {
-    for (const mod of choice.modifications) {
-      if (mod.setSlot) {
-        const weaponName = Object.values(mod.setSlot)[0] as string;
-        points = equipmentPoints[weaponName as EquipmentName];
-        if (points !== undefined) break;
-      }
-      if (mod.setUnitSlot) {
-        const weaponName = Object.values(mod.setUnitSlot)[0] as string;
-        points = equipmentPoints[weaponName as EquipmentName];
-        if (points !== undefined) break;
-      }
-    }
-  }
-
-  return points !== undefined ? ` [${points}]` : "";
-};
-
-const getOptionPointsLabel = (opt: UnitOptionDef) => {
-  if (!opt.choices && opt.modifications) {
-    let total = 0;
-    let found = false;
-    for (const mod of opt.modifications) {
-      if (mod.addExtras) {
-        total += mod.addExtras.reduce(
-          (sum, item) => sum + (equipmentPoints[item as EquipmentName] || 0),
-          0,
-        );
-        found = true;
-      }
-      if (mod.setSlot) {
-        // For toggles that set a slot (like "Replace X with Y"),
-        // finding net change is hard without context, but we can show the weapon cost
-        const weaponName = Object.values(mod.setSlot)[0] as string;
-        const wp = equipmentPoints[weaponName as EquipmentName];
-        if (wp !== undefined) {
-          total += wp;
-          found = true;
-        }
-      }
-    }
-    if (found) return ` [${total}]`;
-  }
-  return "";
 };
 </script>
 
@@ -253,7 +142,7 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
                 @change="(e) => selectUnitOptionChoice(unit.id, opt.id, (e.target as HTMLSelectElement).value || null)"
               >
                 <option v-if="opt.type !== 'slot'" value="">
-                  {{ getOptionDefaultLabel(opt) }}
+                  {{ getOptionDefaultLabel(opt, unit) }}
                 </option>
                 <option
                   v-for="choice in opt.choices"
@@ -281,45 +170,14 @@ const getOptionPointsLabel = (opt: UnitOptionDef) => {
         </div>
       </div>
 
-      <div class="unit-equipment" v-if="Object.keys(unit.slots).length > 0 || unit.extras.length > 0 || armyState.freeEdit">
-        <div v-for="(weapon, slot) in unit.slots" :key="slot" class="equipment-item">
-          <span class="slot-name">{{ formatSlotName(slot as string) }}:</span>
-          <template v-if="armyState.freeEdit">
-            <select @change="(e) => addSlotToUnit(unit.id, slot as string, (e.target as HTMLSelectElement).value as EquipmentName)" class="mini-select">
-              <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
-                <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === weapon">{{ name }} [{{ equipmentPoints[name] }}]</option>
-              </optgroup>
-            </select>
-          </template>
-          <template v-else>
-            <span class="weapon-name">{{ weapon }}</span>
-          </template>
-          <span class="weapon-points">[{{ equipmentPoints[weapon] }}]</span>
-          <button v-if="armyState.freeEdit" @click="removeSlotFromUnit(unit.id, slot as string)" class="mini-remove-btn">×</button>
-        </div>
-        <div v-for="(item, index) in unit.extras" :key="'unit-extra-' + index" class="equipment-item">
-          <span class="slot-name">+</span>
-          <template v-if="armyState.freeEdit">
-            <select @change="(e) => {
-              removeExtraFromUnit(unit.id, index);
-              addExtraToUnit(unit.id, (e.target as HTMLSelectElement).value as EquipmentName);
-            }" class="mini-select">
-              <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
-                <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === item">{{ name }} [{{ equipmentPoints[name] }}]</option>
-              </optgroup>
-            </select>
-          </template>
-          <template v-else>
-            <span class="weapon-name">{{ item }}</span>
-          </template>
-          <span class="weapon-points">[{{ equipmentPoints[item] }}]</span>
-          <button v-if="armyState.freeEdit" @click="removeExtraFromUnit(unit.id, index)" class="mini-remove-btn">×</button>
-        </div>
-
-        <div v-if="armyState.freeEdit" class="manual-add-controls">
-          <button @click="addManualSlot" class="add-manual-btn">+ Add Slot</button>
-          <button @click="addExtraToUnit(unit.id, 'None')" class="add-manual-btn">+ Add Extra</button>
-        </div>
+      <div class="unit-equipment-container">
+        <EquipmentManager
+          :target="unit"
+          @add-slot="(name, weapon) => addSlotToUnit(unit.id, name, weapon)"
+          @remove-slot="(name) => removeSlotFromUnit(unit.id, name)"
+          @add-extra="(item) => addExtraToUnit(unit.id, item)"
+          @remove-extra="(index) => removeExtraFromUnit(unit.id, index)"
+        />
       </div>
 
       <div class="models-container">

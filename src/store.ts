@@ -34,20 +34,22 @@ export const setFreeEdit = (val: boolean) => {
     armyState.freeEdit = val;
 }
 
+const calculateEquipmentPoints = (target: { slots: Record<string, EquipmentName>, extras: EquipmentName[] }): number => {
+    const slotsCost = Object.values(target.slots).reduce((sum, weapon) => sum + (equipmentPoints[weapon] || 0), 0);
+    const extrasCost = target.extras.reduce((sum, item) => sum + (equipmentPoints[item] || 0), 0);
+    return slotsCost + extrasCost;
+}
+
 export const calculateModelPoints = (model: Model): number => {
     const baseCost = model.basePoints !== undefined 
         ? model.basePoints 
         : (lifeformClassPoints[model.lifeform]?.[model.class] || 0);
-    const slotsCost = Object.values(model.slots).reduce((sum, weapon) => sum + (equipmentPoints[weapon] || 0), 0);
-    const extrasCost = model.extras.reduce((sum, item) => sum + (equipmentPoints[item] || 0), 0);
-    return baseCost + slotsCost + extrasCost;
+    return baseCost + calculateEquipmentPoints(model);
 }
 
 export const calculateUnitPoints = (unit: Unit): number => {
     const modelsPoints = unit.models.reduce((sum, m) => sum + calculateModelPoints(m), 0);
-    const slotsPoints = Object.values(unit.slots).reduce((sum, weapon) => sum + (equipmentPoints[weapon] || 0), 0);
-    const extrasPoints = unit.extras.reduce((sum, item) => sum + (equipmentPoints[item] || 0), 0);
-    return modelsPoints + slotsPoints + extrasPoints;
+    return modelsPoints + calculateEquipmentPoints(unit);
 }
 
 export const totalArmyPoints = computed(() => {
@@ -105,8 +107,7 @@ const applyModifications = (unit: Unit, modifications: Array<{
     }
 }
 
-const populateModels = (unit: Unit) => {
-    if (armyState.freeEdit) return;
+const resetUnitToBase = (unit: Unit) => {
     const def = unitDefinitions[unit.type]
     unit.models = []
     unit.slots = { ...def.slots } as Record<string, EquipmentName>
@@ -123,41 +124,37 @@ const populateModels = (unit: Unit) => {
             extras: [...modelDef.extras]
         });
     }
+}
 
+const applyUnitOptions = (unit: Unit) => {
     const availableOptions = unitOptions[unit.type] || [];
     const activeSelectedOptions = unit.selectedOptions || [];
 
     for (const optionDef of availableOptions) {
         if (optionDef.type === 'slot') {
-            // Find which choice (if any) is active for this slot
             const choiceIds = optionDef.choices?.map(c => c.id) || [];
             const activeChoiceId = activeSelectedOptions.find(id => choiceIds.includes(id));
             if (activeChoiceId && optionDef.slotName) {
                 const choice = optionDef.choices!.find(c => c.id === activeChoiceId)!;
                 
-                // Check if it's a unit slot
                 if (optionDef.slotName in unit.slots) {
                     unit.slots[optionDef.slotName] = choice.name as EquipmentName;
                 }
 
-                // Apply to every model that has this slot
                 for (const model of unit.models) {
                     if (optionDef.slotName in model.slots) {
                         model.slots[optionDef.slotName] = choice.name as EquipmentName;
                     }
                 }
 
-                // Also apply any additional modifications attached to this choice
                 if (choice.modifications) {
                     applyModifications(unit, choice.modifications);
                 }
             }
         } else {
-            // Toggle option: apply parent modifications if active
             if (activeSelectedOptions.includes(optionDef.id) && optionDef.modifications) {
                 applyModifications(unit, optionDef.modifications);
             }
-            // Dropdown option (has choices, each with modifications): apply the active choice
             if (optionDef.choices) {
                 for (const choice of optionDef.choices) {
                     if (activeSelectedOptions.includes(choice.id)) {
@@ -167,6 +164,12 @@ const populateModels = (unit: Unit) => {
             }
         }
     }
+}
+
+const populateModels = (unit: Unit) => {
+    if (armyState.freeEdit) return;
+    resetUnitToBase(unit);
+    applyUnitOptions(unit);
 }
 
 export const addUnit = () => {
@@ -284,29 +287,36 @@ export const selectUnitOptionChoice = (unitId: string, parentOptionId: string, c
     populateModels(unit);
 }
 
+const findTarget = (unitId: string, modelId?: string): { slots: Record<string, EquipmentName>, extras: EquipmentName[] } | undefined => {
+    const unit = armyState.units.find(u => u.id === unitId);
+    if (!unit) return undefined;
+    if (modelId) return unit.models.find(m => m.id === modelId);
+    return unit;
+}
+
 export const updateUnitName = (unitId: string, name: string) => {
     const unit = armyState.units.find(u => u.id === unitId);
     if (unit) unit.name = name;
 }
 
 export const addSlotToUnit = (unitId: string, slotName: string, weapon: EquipmentName) => {
-    const unit = armyState.units.find(u => u.id === unitId);
-    if (unit) unit.slots[slotName] = weapon;
+    const target = findTarget(unitId);
+    if (target) target.slots[slotName] = weapon;
 }
 
 export const removeSlotFromUnit = (unitId: string, slotName: string) => {
-    const unit = armyState.units.find(u => u.id === unitId);
-    if (unit) delete unit.slots[slotName];
+    const target = findTarget(unitId);
+    if (target) delete target.slots[slotName];
 }
 
 export const addExtraToUnit = (unitId: string, item: EquipmentName) => {
-    const unit = armyState.units.find(u => u.id === unitId);
-    if (unit) unit.extras.push(item);
+    const target = findTarget(unitId);
+    if (target) target.extras.push(item);
 }
 
 export const removeExtraFromUnit = (unitId: string, index: number) => {
-    const unit = armyState.units.find(u => u.id === unitId);
-    if (unit) unit.extras.splice(index, 1);
+    const target = findTarget(unitId);
+    if (target) target.extras.splice(index, 1);
 }
 
 export const updateModelName = (unitId: string, modelId: string, name: string) => {
@@ -328,25 +338,21 @@ export const updateModelBasePoints = (unitId: string, modelId: string, pts: numb
 }
 
 export const addSlotToModel = (unitId: string, modelId: string, slotName: string, weapon: EquipmentName) => {
-    const unit = armyState.units.find(u => u.id === unitId);
-    const model = unit?.models.find(m => m.id === modelId);
-    if (model) model.slots[slotName] = weapon;
+    const target = findTarget(unitId, modelId);
+    if (target) target.slots[slotName] = weapon;
 }
 
 export const removeSlotFromModel = (unitId: string, modelId: string, slotName: string) => {
-    const unit = armyState.units.find(u => u.id === unitId);
-    const model = unit?.models.find(m => m.id === modelId);
-    if (model) delete model.slots[slotName];
+    const target = findTarget(unitId, modelId);
+    if (target) delete target.slots[slotName];
 }
 
 export const addExtraToModel = (unitId: string, modelId: string, item: EquipmentName) => {
-    const unit = armyState.units.find(u => u.id === unitId);
-    const model = unit?.models.find(m => m.id === modelId);
-    if (model) model.extras.push(item);
+    const target = findTarget(unitId, modelId);
+    if (target) target.extras.push(item);
 }
 
 export const removeExtraFromModel = (unitId: string, modelId: string, index: number) => {
-    const unit = armyState.units.find(u => u.id === unitId);
-    const model = unit?.models.find(m => m.id === modelId);
-    if (model) model.extras.splice(index, 1);
+    const target = findTarget(unitId, modelId);
+    if (target) target.extras.splice(index, 1);
 }

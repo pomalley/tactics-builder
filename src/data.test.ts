@@ -4,7 +4,7 @@ import { equipmentPoints } from './data/equipment'
 
 describe('Data Integrity', () => {
     it('should have point values for all equipment in unit definitions', () => {
-        for (const [unitType, def] of Object.entries(unitDefinitions)) {
+        for (const [, def] of Object.entries(unitDefinitions)) {
             // Check unit-level slots
             if (def.slots) {
                 for (const item of Object.values(def.slots)) {

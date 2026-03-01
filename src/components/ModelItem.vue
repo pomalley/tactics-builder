@@ -10,9 +10,9 @@ import {
   addExtraToModel,
   removeExtraFromModel
 } from "../store";
-import { formatSlotName } from "../utils";
-import { EquipmentName, equipmentPoints, equipmentGroups } from "../data/equipment";
 import { lifeformClassPoints } from "../data/lifeforms";
+
+import EquipmentManager from "./EquipmentManager.vue";
 
 const props = defineProps<{
   model: Model;
@@ -27,11 +27,6 @@ const emit = defineEmits<{
 
 const handleRemove = () => {
   emit("remove", props.model.id);
-};
-
-const addManualSlot = () => {
-  const name = window.prompt("Slot Name:");
-  if (name) addSlotToModel(props.unitId, props.model.id, name, "None");
 };
 </script>
 
@@ -74,58 +69,15 @@ const addManualSlot = () => {
       </div>
     </div>
 
-    <div class="model-options" v-if="Object.keys(model.slots).length > 0 || model.extras.length > 0 || armyState.freeEdit">
+    <div class="model-options-container">
       <label>Equipment</label>
-      <div class="equipment-list">
-        <div
-          v-for="(weapon, slotName) in model.slots"
-          :key="slotName"
-          class="option-row"
-        >
-          <div class="slot-label">
-            {{ formatSlotName(slotName as string) }}:
-          </div>
-          <template v-if="armyState.freeEdit">
-            <select @change="(e) => addSlotToModel(unitId, model.id, slotName as string, (e.target as HTMLSelectElement).value as EquipmentName)" class="mini-select">
-              <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
-                <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === weapon">{{ name }} [{{ equipmentPoints[name] }}]</option>
-              </optgroup>
-            </select>
-            <button @click="removeSlotFromModel(unitId, model.id, slotName as string)" class="mini-remove-btn">×</button>
-          </template>
-          <div v-else class="readonly-text">
-            {{ weapon }}
-            <span class="point-badge">[{{ equipmentPoints[weapon] || 0 }}]</span>
-          </div>
-        </div>
-        <div
-          v-for="(item, index) in model.extras"
-          :key="'extra-' + index"
-          class="option-row"
-        >
-          <div class="slot-label">+</div>
-          <template v-if="armyState.freeEdit">
-            <select @change="(e) => {
-              removeExtraFromModel(unitId, model.id, index);
-              addExtraToModel(unitId, model.id, (e.target as HTMLSelectElement).value as EquipmentName);
-            }" class="mini-select">
-              <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
-                <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === item">{{ name }} [{{ equipmentPoints[name] }}]</option>
-              </optgroup>
-            </select>
-            <button @click="removeExtraFromModel(unitId, model.id, index)" class="mini-remove-btn">×</button>
-          </template>
-          <div v-else class="readonly-text">
-            {{ item }}
-            <span class="point-badge">[{{ equipmentPoints[item] || 0 }}]</span>
-          </div>
-        </div>
-
-        <div v-if="armyState.freeEdit" class="manual-add-controls">
-          <button @click="addManualSlot" class="add-manual-btn">+ Add Slot</button>
-          <button @click="addExtraToModel(unitId, model.id, 'None')" class="add-manual-btn">+ Add Extra</button>
-        </div>
-      </div>
+      <EquipmentManager
+        :target="model"
+        @add-slot="(name, weapon) => addSlotToModel(unitId, model.id, name, weapon)"
+        @remove-slot="(name) => removeSlotFromModel(unitId, model.id, name)"
+        @add-extra="(item) => addExtraToModel(unitId, model.id, item)"
+        @remove-extra="(index) => removeExtraFromModel(unitId, model.id, index)"
+      />
     </div>
   </div>
 </template>

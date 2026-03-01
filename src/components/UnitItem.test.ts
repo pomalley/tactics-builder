@@ -1,14 +1,12 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import UnitItem from './UnitItem.vue'
 import { armyState, addUnit } from '../store'
 
 // Mock crypto.randomUUID for jsdom
-if (!global.crypto) {
-  (global as any).crypto = {
+vi.stubGlobal('crypto', {
     randomUUID: () => Math.random().toString(36).substring(2)
-  };
-}
+});
 
 describe('UnitItem Component', () => {
     beforeEach(() => {
