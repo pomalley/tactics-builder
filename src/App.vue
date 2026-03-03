@@ -9,6 +9,14 @@ const message = ref("5PFH: Tactics Army Builder");
   <div class="app-container">
     <header class="header">
       <h1>{{ message }}</h1>
+      <a
+        href="https://github.com/pomalley/tactics-builder"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="info-link"
+      >
+        What is this?
+      </a>
     </header>
     <main>
       <UnitList />
@@ -50,12 +58,25 @@ const message = ref("5PFH: Tactics Army Builder");
 h1 {
   color: #f0c444;
   font-size: 1.75rem;
-  margin: 0.5rem 0;
+  margin: 0.5rem 0 0.25rem 0;
 }
 
 @media (min-width: 768px) {
   h1 {
     font-size: 2.5rem;
   }
+}
+
+.info-link {
+  color: #f0c444;
+  text-decoration: none;
+  font-size: 0.9rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.info-link:hover {
+  opacity: 1;
+  text-decoration: underline;
 }
 </style>
