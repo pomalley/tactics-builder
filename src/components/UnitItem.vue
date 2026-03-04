@@ -55,12 +55,12 @@ const onLifeformChange = (event: Event) => {
 </script>
 
 <template>
-  <div class="unit-item">
+  <div class="unit-item card">
     <div class="unit-header">
       <div class="header-main">
         <button 
           @click="toggleUnitMinimized(unit.id)" 
-          class="toggle-btn"
+          class="btn btn-ghost toggle-btn"
           :title="unit.minimized ? 'Expand' : 'Collapse'"
         >
           {{ unit.minimized ? '▶' : '▼' }}
@@ -77,7 +77,7 @@ const onLifeformChange = (event: Event) => {
           <button 
             @click="moveUnit(unit.id, 'up')" 
             :disabled="isFirst" 
-            class="move-btn"
+            class="btn btn-secondary move-btn"
             title="Move Up"
           >
             ↑
@@ -85,14 +85,14 @@ const onLifeformChange = (event: Event) => {
           <button 
             @click="moveUnit(unit.id, 'down')" 
             :disabled="isLast" 
-            class="move-btn"
+            class="btn btn-secondary move-btn"
             title="Move Down"
           >
             ↓
           </button>
         </div>
-        <span class="unit-points">{{ unitPoints }} pts</span>
-        <button @click="emit('remove', unit.id)" class="remove-btn">
+        <span class="unit-points points-text">{{ unitPoints }} pts</span>
+        <button @click="emit('remove', unit.id)" class="btn btn-danger">
           Delete Unit
         </button>
       </div>
@@ -191,7 +191,7 @@ const onLifeformChange = (event: Event) => {
             @remove="removeModelFromUnit(unit.id, $event)"
           />
         </div>
-        <button v-if="armyState.freeEdit" @click="addModelToUnit(unit.id)" class="add-model-btn">
+        <button v-if="armyState.freeEdit" @click="addModelToUnit(unit.id)" class="btn btn-secondary add-model-btn">
           + Add Model
         </button>
       </div>
@@ -201,35 +201,16 @@ const onLifeformChange = (event: Event) => {
 
 <style scoped>
 .unit-item {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 0.75rem;
-  margin-bottom: 1rem;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-@media (min-width: 768px) {
-  .unit-item {
-    padding: 1rem;
-    margin-bottom: 1rem;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .unit-item {
-    background-color: #1e1e1e;
-    border-color: #333;
-  }
+  margin-bottom: var(--space-lg);
 }
 
 .unit-header {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 2px solid #eee;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 2px solid var(--border-color);
 }
 
 @media (min-width: 600px) {
@@ -237,99 +218,48 @@ const onLifeformChange = (event: Event) => {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.75rem;
+    margin-bottom: var(--space-md);
   }
 }
 
 .header-main {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-sm);
   flex: 1;
 }
 
 .toggle-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  padding: 0.25rem;
-  color: #666;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 24px;
   height: 24px;
-}
-
-@media (prefers-color-scheme: dark) {
-  .toggle-btn {
-    color: #aaa;
-  }
-}
-
-.toggle-btn:hover {
-  color: #4caf50;
-}
-
-@media (prefers-color-scheme: dark) {
-  .unit-header {
-    border-bottom-color: #333;
-  }
+  padding: 0;
 }
 
 .unit-settings {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #eee;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border-color);
 }
 
 @media (min-width: 600px) {
   .unit-settings {
-    gap: 1.5rem;
-    margin-bottom: 1rem;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .unit-settings {
-    border-bottom-color: #333;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
   }
 }
 
 .setting-group {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-sm);
 }
 
 .setting-group label {
   font-weight: bold;
-  color: #555;
-}
-
-@media (prefers-color-scheme: dark) {
-  .setting-group label {
-    color: #ccc;
-  }
-}
-
-.setting-group select {
-  padding: 0.4rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-family: inherit;
-}
-
-@media (prefers-color-scheme: dark) {
-  .setting-group select {
-    background-color: #333;
-    color: white;
-    border-color: #555;
-  }
+  color: var(--text-muted);
 }
 
 .unit-name-input {
@@ -338,286 +268,87 @@ const onLifeformChange = (event: Event) => {
   border: none;
   background: transparent;
   flex: 1;
-}
-
-@media (min-width: 768px) {
-  .unit-name-input {
-    font-size: 1.25rem;
-  }
+  color: var(--text-main);
 }
 
 .unit-name-input:focus {
   outline: none;
-  border-bottom: 2px solid #4caf50;
+  border-bottom: 2px solid var(--primary);
 }
 
 .unit-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-lg);
 }
 
 .move-btns {
   display: flex;
-  gap: 0.25rem;
+  gap: var(--space-xs);
 }
 
 .move-btn {
-  background: #eee;
-  border: 1px solid #ccc;
-  border-radius: 4px;
   width: 28px;
   height: 28px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  color: #666;
-}
-
-@media (prefers-color-scheme: dark) {
-  .move-btn {
-    background: #333;
-    border-color: #555;
-    color: #ccc;
-  }
-}
-
-.move-btn:hover:not(:disabled) {
-  background: #4caf50;
-  color: white;
-  border-color: #4caf50;
-}
-
-.move-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
+  padding: 0;
 }
 
 .unit-points {
   font-size: 1.1rem;
-  font-weight: bold;
-  color: #4caf50;
-}
-
-.remove-btn {
-  background-color: #ff5252;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.remove-btn:hover {
-  background-color: #ff1744;
 }
 
 .models-container h4 {
-  margin: 0 0 1rem 0;
-  color: #666;
-}
-
-@media (prefers-color-scheme: dark) {
-  .models-container h4 {
-    color: #aaa;
-  }
+  margin: 0 0 var(--space-lg) 0;
+  color: var(--text-muted);
 }
 
 .add-model-btn {
-  background-color: #e0e0e0;
-  color: #333;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 0.5rem;
+  margin-top: var(--space-sm);
   width: 100%;
 }
 
-@media (prefers-color-scheme: dark) {
-  .add-model-btn {
-    background-color: #333;
-    color: #eee;
-  }
-}
-
-.add-model-btn:hover {
-  background-color: #d0d0d0;
-}
-
-@media (prefers-color-scheme: dark) {
-  .add-model-btn:hover {
-    background-color: #444;
-  }
-}
-
-.unit-options {
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #eee;
-}
-
-@media (prefers-color-scheme: dark) {
-  .unit-options {
-    border-bottom-color: #333;
-  }
+.unit-options, .unit-equipment {
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .unit-options h4, .unit-equipment h4 {
-  margin: 0 0 0.75rem 0;
-  color: #666;
-}
-
-@media (prefers-color-scheme: dark) {
-  .unit-options h4, .unit-equipment h4 {
-    color: #ccc;
-  }
-}
-
-.unit-equipment {
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #eee;
-}
-
-@media (prefers-color-scheme: dark) {
-  .unit-equipment {
-    border-bottom-color: #333;
-  }
-}
-
-.equipment-item {
-  display: flex;
-  gap: 0.5rem;
-  font-size: 0.95rem;
-  margin-bottom: 0.25rem;
-}
-
-.slot-name {
-  font-weight: bold;
-  text-transform: capitalize;
-}
-
-.weapon-points {
-  color: #4caf50;
-  font-size: 0.85rem;
+  margin: 0 0 var(--space-md) 0;
+  color: var(--text-muted);
 }
 
 .option-item {
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-md);
 }
 
 .option-select {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--space-md);
 }
 
 .option-select label {
   font-weight: bold;
-  color: #555;
+  color: var(--text-muted);
   font-size: 0.95rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .option-select label {
-    color: #ccc;
-  }
-}
-
-.option-select select {
-  padding: 0.3rem 0.5rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  background-color: white;
-  font-family: inherit;
-  font-size: 0.9rem;
-  flex: 1;
-}
-
-@media (prefers-color-scheme: dark) {
-  .option-select select {
-    background-color: #333;
-    color: white;
-    border-color: #555;
-  }
-}
-
 .option-checkbox {
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-sm);
 }
 
 .option-checkbox label {
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-sm);
   font-size: 0.95rem;
-}
-
-.mini-remove-btn {
-  background: #ff5252;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  width: 1.2rem;
-  height: 1.2rem;
-  line-height: 1rem;
-  font-size: 1rem;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.mini-select {
-  padding: 0.1rem 0.3rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 0.85rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  .mini-select {
-    background-color: #333;
-    color: white;
-    border-color: #555;
-  }
-}
-
-.manual-add-controls {
-  margin-top: 0.5rem;
-  display: flex;
-  gap: 0.5rem;
-}
-
-.add-manual-btn {
-  background: #4CAF50;
-  color: white;
-  border: none;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.add-manual-btn:hover {
-  background: #45a049;
 }
 
 .unit-summary {
   font-weight: bold;
-  color: #555;
+  color: var(--text-muted);
   font-size: 0.95rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  .unit-summary {
-    color: #ccc;
-  }
 }
 </style>

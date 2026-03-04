@@ -31,7 +31,7 @@ const handleRemove = () => {
 </script>
 
 <template>
-  <div class="model-item">
+  <div class="model-item card alt-bg">
     <div class="model-header">
       <input
         type="text"
@@ -39,7 +39,7 @@ const handleRemove = () => {
         placeholder="Model Name"
         class="model-name-input"
       />
-      <button v-if="armyState.freeEdit" @click="handleRemove" class="remove-btn" title="Remove Model">
+      <button v-if="armyState.freeEdit" @click="handleRemove" class="btn btn-ghost btn-mini remove-btn" title="Remove Model">
         ✕
       </button>
     </div>
@@ -59,13 +59,13 @@ const handleRemove = () => {
         </template>
         <div v-else class="readonly-text">
           {{ model.class }}
-          <span class="point-badge" v-if="model.basePoints === undefined">[{{ lifeformClassPoints[model.lifeform]?.[model.class] || 0 }}]</span>
-          <span class="point-badge" v-else>[{{ model.basePoints }}]</span>
+          <span class="point-badge points-text" v-if="model.basePoints === undefined">[{{ lifeformClassPoints[model.lifeform]?.[model.class] || 0 }}]</span>
+          <span class="point-badge points-text" v-else>[{{ model.basePoints }}]</span>
         </div>
       </div>
       <div class="field points-field">
         <label>Points</label>
-        <div class="readonly-text">{{ calculateModelPoints(model) }}</div>
+        <div class="readonly-text points-text">{{ calculateModelPoints(model) }}</div>
       </div>
     </div>
 
@@ -84,25 +84,18 @@ const handleRemove = () => {
 
 <style scoped>
 .model-item {
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 0.75rem;
-  margin-bottom: 0.5rem;
-  background-color: #fafafa;
+  margin-bottom: var(--space-sm);
 }
 
-@media (prefers-color-scheme: dark) {
-  .model-item {
-    border-color: #444;
-    background-color: #2a2a2a;
-  }
+.alt-bg {
+  background-color: var(--bg-card-alt);
 }
 
 .model-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--space-xs);
 }
 
 .model-name-input {
@@ -111,23 +104,24 @@ const handleRemove = () => {
   border: none;
   background: transparent;
   width: 100%;
+  color: var(--text-main);
 }
 .model-name-input:focus {
   outline: none;
-  border-bottom: 1px solid #4caf50;
+  border-bottom: 1px solid var(--primary);
 }
 
 .model-details {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.5rem;
-  margin-bottom: 0.25rem;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
 }
 
 @media (min-width: 600px) {
   .model-details {
     grid-template-columns: 1fr 1fr 100px;
-    gap: 0.75rem;
+    gap: var(--space-md);
   }
 }
 
@@ -139,41 +133,13 @@ const handleRemove = () => {
 .field label,
 .model-options label {
   font-size: 0.8rem;
-  color: #666;
-  margin-bottom: 0.2rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  .field label,
-  .model-options label {
-    color: #aaa;
-  }
+  color: var(--text-muted);
+  margin-bottom: var(--space-xs);
 }
 
 .readonly-text {
-  padding: 0.4rem 0;
-  color: #777;
+  padding: var(--space-xs) 0;
   font-weight: 500;
-}
-
-@media (prefers-color-scheme: dark) {
-  .readonly-text {
-    color: #999;
-  }
-}
-
-input {
-  padding: 0.4rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-@media (prefers-color-scheme: dark) {
-  input {
-    background-color: #333;
-    border-color: #555;
-    color: white;
-  }
 }
 
 .model-options {
@@ -181,109 +147,12 @@ input {
   flex-direction: column;
 }
 
-.remove-btn {
-  background: transparent;
-  border: none;
-  color: #ff5252;
-  cursor: pointer;
-  font-size: 1.2rem;
-  padding: 0 0.5rem;
-}
-.remove-btn:hover {
-  font-weight: bold;
-}
-
-.option-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.2rem;
-}
-
-.equipment-list {
-  background-color: transparent;
-}
-
-.slot-label {
-  min-width: 4rem;
-  font-size: 0.8rem;
-  color: #999;
-  text-transform: capitalize;
-}
-
-@media (prefers-color-scheme: dark) {
-  .slot-label {
-    color: #666;
-  }
-}
-
 .point-badge {
   font-size: 0.8rem;
-  color: #4caf50;
-  margin-left: 0.2rem;
-  font-weight: bold;
-}
-
-.mini-select {
-  padding: 0.1rem 0.3rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 0.85rem;
-  flex: 1;
-}
-
-.mini-remove-btn {
-  background: #ff5252;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  width: 1.1rem;
-  height: 1.1rem;
-  line-height: 1rem;
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.inline-select {
-  padding: 0.2rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 0.9rem;
-  margin-bottom: 0.2rem;
+  margin-left: var(--space-xs);
 }
 
 .mini-pts-input {
-  padding: 0.2rem;
   width: 60px;
-  font-size: 0.9rem;
-}
-
-.manual-add-controls {
-  margin-top: 0.5rem;
-  display: flex;
-  gap: 0.5rem;
-}
-
-.add-manual-btn {
-  background: #4CAF50;
-  color: white;
-  border: none;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-@media (prefers-color-scheme: dark) {
-  .mini-select, .inline-select, .mini-pts-input {
-    background-color: #333;
-    color: white;
-    border-color: #555;
-  }
 }
 </style>

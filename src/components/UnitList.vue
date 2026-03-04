@@ -26,7 +26,7 @@ const onRemoveArmy = () => {
 </script>
 
 <template>
-  <div class="army-builder">
+  <div class="army-builder card">
     <div class="army-management">
       <div class="army-selector-group">
         <label for="army-select">Current Army:</label>
@@ -37,8 +37,8 @@ const onRemoveArmy = () => {
         </select>
       </div>
       <div class="management-actions">
-        <button @click="addArmy" class="mgmt-btn add-army-btn">+ New Army</button>
-        <button @click="onRemoveArmy" class="mgmt-btn remove-army-btn" :disabled="appState.armies.length <= 1">Delete Army</button>
+        <button @click="addArmy" class="btn btn-blue add-army-btn">+ New Army</button>
+        <button @click="onRemoveArmy" class="btn btn-danger remove-army-btn" :disabled="appState.armies.length <= 1">Delete Army</button>
       </div>
     </div>
 
@@ -72,42 +72,25 @@ const onRemoveArmy = () => {
       />
     </div>
 
-    <button @click="addUnit" class="add-unit-btn">+ Add New Unit To Army</button>
+    <button @click="addUnit" class="btn btn-primary add-unit-btn">+ Add New Unit To Army</button>
   </div>
 </template>
 
 <style scoped>
 .army-builder {
-  background: white;
-  border-radius: 12px;
-  padding: 0.75rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border-radius: var(--radius-lg);
   width: 100%;
-  box-sizing: border-box;
-}
-
-@media (min-width: 768px) {
-  .army-builder {
-    padding: 1rem;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .army-builder {
-    background: #242424;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.5);
-  }
 }
 
 .army-management {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-  padding: 0.75rem;
-  background: #f9f9f9;
-  border-radius: 8px;
-  border: 1px solid #eee;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  padding: var(--space-md);
+  background: var(--bg-card-alt);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
 }
 
 @media (min-width: 600px) {
@@ -118,17 +101,10 @@ const onRemoveArmy = () => {
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .army-management {
-    background: #1a1a1a;
-    border-color: #333;
-  }
-}
-
 .army-selector-group {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-lg);
   flex: 1;
 }
 
@@ -138,65 +114,22 @@ const onRemoveArmy = () => {
 }
 
 .army-selector-group select {
-  padding: 0.5rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
   flex: 1;
   max-width: 300px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .army-selector-group select {
-    background: #333;
-    color: white;
-    border-color: #555;
-  }
-}
-
 .management-actions {
   display: flex;
-  gap: 0.35rem;
-}
-
-.mgmt-btn {
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.add-army-btn {
-  background: #2196F3;
-  color: white;
-}
-
-.add-army-btn:hover {
-  background: #1976D2;
-}
-
-.remove-army-btn {
-  background: #f44336;
-  color: white;
-}
-
-.remove-army-btn:hover:not(:disabled) {
-  background: #d32f2f;
-}
-
-.remove-army-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  gap: var(--space-xs);
 }
 
 .army-header {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 3px solid #4CAF50;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 3px solid var(--primary);
 }
 
 @media (min-width: 600px) {
@@ -204,14 +137,14 @@ const onRemoveArmy = () => {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-lg);
   }
 }
 
 .header-left {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-sm);
   width: 100%;
 }
 
@@ -221,24 +154,13 @@ const onRemoveArmy = () => {
   }
 }
 
-.free-edit-toggle {
-  display: flex;
-  align-items: center;
-}
-
 .free-edit-toggle label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-sm);
   cursor: pointer;
   font-weight: bold;
-  color: #666;
-}
-
-@media (prefers-color-scheme: dark) {
-  .free-edit-toggle label {
-    color: #aaa;
-  }
+  color: var(--text-muted);
 }
 
 .army-name-input {
@@ -246,7 +168,7 @@ const onRemoveArmy = () => {
   font-weight: 800;
   border: none;
   background: transparent;
-  color: #333;
+  color: var(--text-main);
   width: 100%;
 }
 
@@ -256,15 +178,9 @@ const onRemoveArmy = () => {
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .army-name-input {
-    color: #eee;
-  }
-}
-
 .army-name-input:focus {
   outline: none;
-  border-bottom: 2px solid #4CAF50;
+  border-bottom: 2px solid var(--primary);
 }
 
 .army-total {
@@ -279,7 +195,7 @@ const onRemoveArmy = () => {
 }
 
 .total-points {
-  color: #4CAF50;
+  color: var(--primary);
   font-size: 1.25rem;
 }
 
@@ -292,25 +208,12 @@ const onRemoveArmy = () => {
 .units-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-lg);
 }
 
 .add-unit-btn {
-  margin-top: 2rem;
+  margin-top: calc(2 * var(--space-lg));
   width: 100%;
-  padding: 0.75rem;
-  font-size: 1.1rem;
-  font-weight: bold;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.add-unit-btn:hover {
-  background-color: #45a049;
 }
 </style>
 
