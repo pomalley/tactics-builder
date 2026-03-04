@@ -69,7 +69,7 @@ const addManualSlot = () => {
 .equipment-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   font-size: 0.95rem;
   margin-bottom: 0.25rem;
 }
@@ -133,7 +133,7 @@ const addManualSlot = () => {
 .manual-add-controls {
   margin-top: 0.5rem;
   display: flex;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .add-manual-btn {

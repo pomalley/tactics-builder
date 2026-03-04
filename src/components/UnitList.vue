@@ -80,7 +80,7 @@ const onRemoveArmy = () => {
 .army-builder {
   background: white;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 0.75rem;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   width: 100%;
   box-sizing: border-box;
@@ -88,7 +88,7 @@ const onRemoveArmy = () => {
 
 @media (min-width: 768px) {
   .army-builder {
-    padding: 2rem;
+    padding: 1rem;
   }
 }
 
@@ -102,9 +102,9 @@ const onRemoveArmy = () => {
 .army-management {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  padding: 1rem;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
   background: #f9f9f9;
   border-radius: 8px;
   border: 1px solid #eee;
@@ -156,7 +156,7 @@ const onRemoveArmy = () => {
 
 .management-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .mgmt-btn {
@@ -194,8 +194,8 @@ const onRemoveArmy = () => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
   border-bottom: 3px solid #4CAF50;
 }
 
@@ -204,7 +204,7 @@ const onRemoveArmy = () => {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
   }
 }
 
@@ -242,7 +242,7 @@ const onRemoveArmy = () => {
 }
 
 .army-name-input {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 800;
   border: none;
   background: transparent;
@@ -252,7 +252,7 @@ const onRemoveArmy = () => {
 
 @media (min-width: 768px) {
   .army-name-input {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 }
 
@@ -268,24 +268,24 @@ const onRemoveArmy = () => {
 }
 
 .army-total {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: bold;
 }
 
 @media (min-width: 768px) {
   .army-total {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 }
 
 .total-points {
   color: #4CAF50;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
 }
 
 @media (min-width: 768px) {
   .total-points {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 }
 
@@ -298,8 +298,8 @@ const onRemoveArmy = () => {
 .add-unit-btn {
   margin-top: 2rem;
   width: 100%;
-  padding: 1rem;
-  font-size: 1.25rem;
+  padding: 0.75rem;
+  font-size: 1.1rem;
   font-weight: bold;
   background-color: #4CAF50;
   color: white;

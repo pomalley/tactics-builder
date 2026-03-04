@@ -203,16 +203,16 @@ const onLifeformChange = (event: Event) => {
 .unit-item {
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 @media (min-width: 768px) {
   .unit-item {
-    padding: 1.5rem;
-    margin-bottom: 2rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
   }
 }
 
@@ -227,8 +227,8 @@ const onLifeformChange = (event: Event) => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
   border-bottom: 2px solid #eee;
 }
 
@@ -237,7 +237,7 @@ const onLifeformChange = (event: Event) => {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
   }
 }
 
@@ -282,15 +282,15 @@ const onLifeformChange = (event: Event) => {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
   border-bottom: 1px solid #eee;
 }
 
 @media (min-width: 600px) {
   .unit-settings {
     gap: 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 }
 
@@ -333,7 +333,7 @@ const onLifeformChange = (event: Event) => {
 }
 
 .unit-name-input {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
   border: none;
   background: transparent;
@@ -342,7 +342,7 @@ const onLifeformChange = (event: Event) => {
 
 @media (min-width: 768px) {
   .unit-name-input {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 }
 
@@ -396,7 +396,7 @@ const onLifeformChange = (event: Event) => {
 }
 
 .unit-points {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: bold;
   color: #4caf50;
 }
@@ -454,8 +454,8 @@ const onLifeformChange = (event: Event) => {
 }
 
 .unit-options {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
   border-bottom: 1px solid #eee;
 }
 
@@ -477,8 +477,8 @@ const onLifeformChange = (event: Event) => {
 }
 
 .unit-equipment {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
   border-bottom: 1px solid #eee;
 }
 

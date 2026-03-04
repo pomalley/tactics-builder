@@ -86,8 +86,8 @@ const handleRemove = () => {
 .model-item {
   border: 1px solid #ddd;
   border-radius: 6px;
-  padding: 1rem;
-  margin-bottom: 1rem;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
   background-color: #fafafa;
 }
 
@@ -102,7 +102,7 @@ const handleRemove = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .model-name-input {
@@ -121,13 +121,13 @@ const handleRemove = () => {
   display: grid;
   grid-template-columns: 1fr;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 @media (min-width: 600px) {
   .model-details {
     grid-template-columns: 1fr 1fr 100px;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 }
 

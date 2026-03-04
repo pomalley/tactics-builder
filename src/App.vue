@@ -29,7 +29,7 @@ const message = ref("5PFH: Tactics Army Builder");
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.75rem;
   font-family: "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
   display: flex;
   flex-direction: column;
@@ -40,30 +40,30 @@ const message = ref("5PFH: Tactics Army Builder");
 
 @media (min-width: 768px) {
   .app-container {
-    padding: 2rem;
+    padding: 1rem;
   }
 }
 
 .header {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 @media (min-width: 768px) {
   .header {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
   }
 }
 
 h1 {
   color: #f0c444;
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   margin: 0.5rem 0 0.25rem 0;
 }
 
 @media (min-width: 768px) {
   h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 }
 
