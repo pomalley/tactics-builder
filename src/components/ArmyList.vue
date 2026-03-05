@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import draggable from 'vuedraggable'
 import { 
   appState, 
   armyState, 
@@ -8,10 +10,16 @@ import {
   setFreeEdit,
   selectUnit,
   moveUnit,
+  updateUnitsOrder,
   calculateUnitPoints
 } from '../store'
 
 const getUnitPoints = (unit: any) => calculateUnitPoints(unit);
+
+const draggableUnits = computed({
+  get: () => armyState.units,
+  set: (value) => updateUnitsOrder(value)
+})
 </script>
 
 <template>
@@ -38,28 +46,35 @@ const getUnitPoints = (unit: any) => calculateUnitPoints(unit);
       </label>
     </div>
 
-    <div class="units-list">
-      <div 
-        v-for="(unit, index) in armyState.units" 
-        :key="unit.id" 
-        class="unit-summary-card"
-        :class="{ 'selected': appState.selectedUnitId === unit.id }"
-        @click="selectUnit(unit.id)"
-      >
-        <div class="unit-summary-main">
-          <div class="unit-summary-name">{{ unit.name }}</div>
-          <div class="unit-summary-details">{{ unit.type }} - {{ unit.lifeform }}</div>
-        </div>
-        <div class="unit-summary-actions">
-          <span class="unit-summary-points">{{ getUnitPoints(unit) }} pts</span>
-          <div class="action-buttons">
-            <button @click.stop="moveUnit(unit.id, 'up')" :disabled="index === 0" class="btn btn-ghost move-btn" title="Move Up">↑</button>
-            <button @click.stop="moveUnit(unit.id, 'down')" :disabled="index === armyState.units.length - 1" class="btn btn-ghost move-btn" title="Move Down">↓</button>
-            <button @click.stop="removeUnit(unit.id)" class="btn btn-ghost delete-btn" title="Delete Unit">✕</button>
+    <draggable 
+      v-model="draggableUnits" 
+      item-key="id"
+      handle=".drag-handle"
+      class="units-list"
+      ghost-class="ghost"
+    >
+      <template #item="{ element: unit, index }">
+        <div 
+          class="unit-summary-card"
+          :class="{ 'selected': appState.selectedUnitId === unit.id }"
+          @click="selectUnit(unit.id)"
+        >
+          <div class="drag-handle" @click.stop title="Drag to reorder">⋮⋮</div>
+          <div class="unit-summary-main">
+            <div class="unit-summary-name">{{ unit.name }}</div>
+            <div class="unit-summary-details">{{ unit.type }} - {{ unit.lifeform }}</div>
+          </div>
+          <div class="unit-summary-actions">
+            <span class="unit-summary-points">{{ getUnitPoints(unit) }} pts</span>
+            <div class="action-buttons">
+              <button @click.stop="moveUnit(unit.id, 'up')" :disabled="index === 0" class="btn btn-ghost move-btn" title="Move Up">↑</button>
+              <button @click.stop="moveUnit(unit.id, 'down')" :disabled="index === armyState.units.length - 1" class="btn btn-ghost move-btn" title="Move Down">↓</button>
+              <button @click.stop="removeUnit(unit.id)" class="btn btn-ghost delete-btn" title="Delete Unit">✕</button>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </template>
+    </draggable>
     
     <div v-if="armyState.units.length === 0" class="empty-state">
       <p>Your army has no units.</p>
@@ -141,6 +156,30 @@ const getUnitPoints = (unit: any) => calculateUnitPoints(unit);
   border-color: var(--primary);
   box-shadow: 0 0 0 1px var(--primary);
   background: var(--bg-card);
+}
+
+.drag-handle {
+  padding: 0 var(--space-xs);
+  cursor: grab;
+  color: var(--text-muted);
+  opacity: 0.5;
+  font-size: 1.2rem;
+  user-select: none;
+}
+
+.drag-handle:hover {
+  opacity: 1;
+  color: var(--primary);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.ghost {
+  opacity: 0.5;
+  background: var(--bg-card-alt) !important;
+  border: 1px dashed var(--primary) !important;
 }
 
 .unit-summary-main {

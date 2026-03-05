@@ -6,6 +6,7 @@ import {
     addUnitWithType, 
     removeUnit,
     moveUnit,
+    updateUnitsOrder,
     updateUnitName,
     changeUnitLifeform,
     addModelToUnit,
@@ -200,6 +201,19 @@ describe('Army Store', () => {
             
             moveUnit(id2, 'down')
             expect(armyState.units[0].name).toBe('Unit 1')
+        })
+
+        it('should update unit order via updateUnitsOrder', () => {
+            addUnitWithType('Infantry')
+            armyState.units[0].name = 'Unit 1'
+            addUnitWithType('Infantry')
+            armyState.units[1].name = 'Unit 2'
+            
+            const reversed = [...armyState.units].reverse()
+            updateUnitsOrder(reversed)
+            
+            expect(armyState.units[0].name).toBe('Unit 2')
+            expect(armyState.units[1].name).toBe('Unit 1')
         })
 
         it('should update unit name', () => {

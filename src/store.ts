@@ -306,6 +306,10 @@ export const moveUnit = (unitId: string, direction: 'up' | 'down') => {
     armyState.units.splice(newIndex, 0, unit);
 }
 
+export const updateUnitsOrder = (newUnits: Unit[]) => {
+    armyState.units = [...newUnits];
+}
+
 export const changeUnitType = (unitId: string, newType: UnitType) => {
     const unit = armyState.units.find(u => u.id === unitId)
     if (unit) {
