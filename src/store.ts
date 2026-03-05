@@ -251,13 +251,18 @@ const applyUnitOptions = (unit: Unit) => {
     }
 }
 
-const populateModels = (unit: Unit) => {
+export const populateModels = (unit: Unit) => {
     if (armyState.freeEdit) return;
     resetUnitToBase(unit);
     applyUnitOptions(unit);
 }
 
+export const minimizeAllUnits = () => {
+    armyState.units.forEach(u => u.minimized = true);
+}
+
 export const addUnit = () => {
+    minimizeAllUnits();
     const newUnit: Unit = {
         id: crypto.randomUUID(),
         name: 'New Unit',

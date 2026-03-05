@@ -177,6 +177,17 @@ describe('Army Store', () => {
             expect(armyState.units[0].models.length).toBeGreaterThan(0)
         })
 
+        it('should minimize existing units when adding a new unit', () => {
+            addUnit() // Add first unit
+            const firstUnit = armyState.units[0]
+            expect(firstUnit.minimized).toBeFalsy()
+
+            addUnit() // Add second unit
+            expect(armyState.units.length).toBe(2)
+            expect(firstUnit.minimized).toBe(true)
+            expect(armyState.units[1].minimized).toBeFalsy()
+        })
+
         it('should remove a unit', () => {
             addUnit()
             addUnit()
