@@ -85,11 +85,11 @@ describe('Army Store', () => {
         })
 
         it('should update army default lifeform and inherit it for new units', () => {
-            updateArmyDefaultLifeform('test-army-id', 'Greys')
-            expect(armyState.defaultLifeform).toBe('Greys')
+            updateArmyDefaultLifeform('test-army-id', 'Feral')
+            expect(armyState.defaultLifeform).toBe('Feral')
             
             addUnitWithType('Infantry')
-            expect(armyState.units[0].lifeform).toBe('Greys')
+            expect(armyState.units[0].lifeform).toBe('Feral')
         })
 
         it('should update totalArmyPoints when switching armies', () => {
@@ -234,9 +234,9 @@ describe('Army Store', () => {
         it('should change unit lifeform and propagate to models', () => {
             addUnitWithType('Infantry')
             const unit = armyState.units[0]
-            changeUnitLifeform(unit.id, 'Greys')
-            expect(unit.lifeform).toBe('Greys')
-            expect(unit.models[0].lifeform).toBe('Greys')
+            changeUnitLifeform(unit.id, 'Feral')
+            expect(unit.lifeform).toBe('Feral')
+            expect(unit.models[0].lifeform).toBe('Feral')
         })
     })
 

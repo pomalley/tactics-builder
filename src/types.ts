@@ -18,6 +18,20 @@ export interface ModelStats {
     capacity?: number;
 }
 
+export interface ModelDef {
+    name: string;
+    class?: ModelClass;
+    baseStats?: ModelStats;
+    slots: Partial<Record<string, EquipmentName>>;
+    extras: EquipmentName[];
+}
+
+export interface UnitTypeDef {
+    slots?: Partial<Record<string, EquipmentName>>;
+    extras?: EquipmentName[];
+    models: ModelDef[];
+}
+
 export interface Model {
     id: string;
     name: string;

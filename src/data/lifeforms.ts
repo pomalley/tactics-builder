@@ -1,6 +1,6 @@
 import type { ModelClass, ModelStats } from '../types'
 
-const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
+const _lifeformStats = {
     'Human': {
         'Civilian': {
             'points': 5,
@@ -781,7 +781,7 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'training': 2
         }
     }
-};
+} satisfies Record<string, Record<ModelClass, ModelStats>>;
 
 export type Lifeform = keyof typeof _lifeformStats;
 
