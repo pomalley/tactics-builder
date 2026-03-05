@@ -125,3 +125,29 @@ body {
   color: var(--primary);
   font-weight: bold;
 }
+
+/* Typography & Content Utilities */
+.text-muted {
+  color: var(--text-muted);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-xl) var(--space-md);
+  opacity: 0.7;
+}
+
+/* Input Headers (Transparent, bold inputs) */
+.input-header {
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  color: var(--text-main);
+  padding: 0;
+  width: 100%;
+}
+
+.input-header:focus {
+  outline: none;
+  border-bottom: 2px solid var(--primary);
+}

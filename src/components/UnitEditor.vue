@@ -55,7 +55,7 @@ const onLifeformChange = (event: Event) => {
         <input
           type="text"
           v-model="unit.name"
-          class="unit-name-input"
+          class="input-header unit-name-input"
           placeholder="Unit Name"
         />
         <span class="unit-points points-text">{{ unitPoints }} pts</span>
@@ -183,17 +183,7 @@ const onLifeformChange = (event: Event) => {
 
 .unit-name-input {
   font-size: 1.25rem;
-  font-weight: 700;
-  border: none;
-  background: transparent;
   flex: 1;
-  color: var(--text-main);
-  padding: 0;
-}
-
-.unit-name-input:focus {
-  outline: none;
-  border-bottom: 2px solid var(--primary);
 }
 
 .unit-points {

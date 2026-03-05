@@ -37,7 +37,7 @@ const handleRemove = () => {
         type="text"
         v-model="model.name"
         placeholder="Model Name"
-        class="model-name-input"
+        class="input-header model-name-input"
       />
       <button v-if="armyState.freeEdit" @click="handleRemove" class="btn btn-ghost btn-mini remove-btn" title="Remove Model">
         ✕
@@ -99,16 +99,7 @@ const handleRemove = () => {
 }
 
 .model-name-input {
-  font-weight: 600;
   font-size: 1.1em;
-  border: none;
-  background: transparent;
-  width: 100%;
-  color: var(--text-main);
-}
-.model-name-input:focus {
-  outline: none;
-  border-bottom: 1px solid var(--primary);
 }
 
 .model-details {

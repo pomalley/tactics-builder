@@ -49,7 +49,7 @@ const getUnitPoints = (unit: any) => calculateUnitPoints(unit);
         type="text" 
         :value="armyState.name" 
         @input="(e) => updateArmyName(armyState.id, (e.target as HTMLInputElement).value)"
-        class="army-name-input" 
+        class="input-header army-name-input" 
         placeholder="Army Name" 
       />
       <div class="army-total">
@@ -87,7 +87,7 @@ const getUnitPoints = (unit: any) => calculateUnitPoints(unit);
       </div>
     </div>
     
-    <div v-if="armyState.units.length === 0" class="empty-roster">
+    <div v-if="armyState.units.length === 0" class="empty-state">
       <p>Your army has no units.</p>
       <p class="text-muted">Select a unit from the catalog to add it to your roster.</p>
     </div>
@@ -131,16 +131,6 @@ const getUnitPoints = (unit: any) => calculateUnitPoints(unit);
 .army-name-input {
   font-size: 1.25rem;
   font-weight: 800;
-  border: none;
-  background: transparent;
-  color: var(--text-main);
-  width: 100%;
-  padding: 0;
-}
-
-.army-name-input:focus {
-  outline: none;
-  border-bottom: 2px solid var(--primary);
 }
 
 .army-total {
@@ -244,28 +234,11 @@ const getUnitPoints = (unit: any) => calculateUnitPoints(unit);
   }
 }
 
-.btn-ghost {
-  padding: 2px 6px;
-  font-size: 0.8rem;
-  height: auto;
-}
-
 .delete-btn {
   color: var(--danger);
 }
 
 .delete-btn:hover {
   background: rgba(var(--danger-rgb), 0.1);
-}
-
-.empty-roster {
-  text-align: center;
-  padding: var(--space-xl) var(--space-md);
-  opacity: 0.7;
-}
-
-.text-muted {
-  font-size: 0.9rem;
-  color: var(--text-muted);
 }
 </style>
