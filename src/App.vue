@@ -8,7 +8,8 @@ import {
   armyState, 
   addArmy, 
   selectArmy, 
-  removeArmy 
+  removeArmy,
+  setFreeEdit 
 } from "./store";
 
 const title = ref("5PFH: Tactics Army Builder");
@@ -88,6 +89,13 @@ const onRemoveArmy = () => {
             <button @click="onRemoveArmy" class="btn btn-danger" :disabled="appState.armies.length <= 1" title="Delete Army">🗑</button>
           </div>
         </div>
+
+        <div class="toolbar-options">
+          <label class="free-edit-label">
+            <input type="checkbox" :checked="armyState.freeEdit" @change="(e) => setFreeEdit((e.target as HTMLInputElement).checked)" />
+            <span>Free Edit Mode</span>
+          </label>
+        </div>
       </div>
     </header>
 
@@ -165,13 +173,40 @@ const onRemoveArmy = () => {
   border-top: 1px solid var(--border-color);
   margin-top: var(--space-xs);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+@media (min-width: 1024px) {
+  .army-toolbar {
+    justify-content: center;
+  }
 }
 
 .army-selector-group {
   display: flex;
   gap: var(--space-sm);
   align-items: center;
+}
+
+.toolbar-options {
+  display: flex;
+  align-items: center;
+}
+
+.free-edit-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.free-edit-label:hover {
+  color: var(--text-main);
 }
 
 .army-label {

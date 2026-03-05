@@ -7,7 +7,6 @@ import {
   removeUnit, 
   totalArmyPoints, 
   updateArmyName,
-  setFreeEdit,
   selectUnit,
   moveUnit,
   updateUnitsOrder,
@@ -37,13 +36,6 @@ const draggableUnits = computed({
       <div class="army-total">
         <span class="total-points">{{ totalArmyPoints }} pts</span>
       </div>
-    </div>
-
-    <div class="free-edit-toggle">
-      <label>
-        <input type="checkbox" :checked="armyState.freeEdit" @change="(e) => setFreeEdit((e.target as HTMLInputElement).checked)" />
-        Free Edit Mode
-      </label>
     </div>
 
     <draggable 
@@ -113,17 +105,8 @@ const draggableUnits = computed({
   color: var(--primary);
 }
 
-.free-edit-toggle {
-  margin-bottom: var(--space-lg);
-}
-
-.free-edit-toggle label {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: var(--text-muted);
+.total-points {
+  color: var(--primary);
 }
 
 .units-list {
