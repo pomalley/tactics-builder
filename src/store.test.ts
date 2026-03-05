@@ -298,4 +298,32 @@ describe('Army Store', () => {
             setItemSpy.mockRestore()
         })
     })
+
+    describe('Vehicle / No-Lifeform Units', () => {
+        it('should create a vehicle unit with no lifeform', () => {
+            addUnitWithType('Nomad Bike')
+            const unit = armyState.units[0]
+            expect(unit.lifeform).toBeUndefined()
+            expect(unit.models[0].lifeform).toBeUndefined()
+            expect(unit.models[0].class).toBeUndefined()
+            expect(unit.models[0].baseStats).toBeDefined()
+            expect(unit.models[0].baseStats!.points).toBe(15)
+        })
+
+        it('should calculate points from baseStats when no lifeform', () => {
+            addUnitWithType('Nomad Bike')
+            const model = armyState.units[0].models[0]
+            const pts = calculateModelPoints(model)
+            // baseStats.points (15) + equipment
+            expect(pts).toBe(15)
+        })
+
+        it('should create an infantry unit with a lifeform', () => {
+            addUnitWithType('Infantry')
+            const unit = armyState.units[0]
+            expect(unit.lifeform).toBe('Human')
+            expect(unit.models[0].lifeform).toBe('Human')
+            expect(unit.models[0].class).toBeDefined()
+        })
+    })
 })

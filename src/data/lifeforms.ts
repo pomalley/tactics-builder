@@ -51,18 +51,6 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'killPoints': 3,
             'savvy': 1,
             'training': 2
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 12,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 10,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
         }
     },
     'Feral': {
@@ -115,18 +103,6 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'killPoints': 3,
             'savvy': 1,
             'training': 2
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 12,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 10,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
         }
     },
     'Hulker': {
@@ -179,18 +155,6 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'killPoints': 4,
             'savvy': 1,
             'training': 1
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 10,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 11,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
         }
     },
     'Erekish (Precursor)': {
@@ -243,18 +207,6 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'killPoints': 3,
             'savvy': 1,
             'training': 1
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 12,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 10,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
         }
     },
     "K'Erin": {
@@ -307,18 +259,6 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'killPoints': 3,
             'savvy': 1,
             'training': 2
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 12,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 10,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
         }
     },
     'Soulless': {
@@ -371,18 +311,6 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'killPoints': 2,
             'savvy': 2,
             'training': 1
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 12,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 10,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
         }
     },
     'Converted': {
@@ -435,18 +363,6 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'killPoints': 3,
             'savvy': 1,
             'training': 2
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 12,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 10,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
         }
     },
     'Horde': {
@@ -499,18 +415,6 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'killPoints': 3,
             'savvy': 1,
             'training': 1
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 12,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 10,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
         }
     },
     'Serian (Engineer)': {
@@ -563,18 +467,6 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'killPoints': 3,
             'savvy': 3,
             'training': 2
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 12,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 10,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
         }
     },
     'Swift': {
@@ -627,18 +519,6 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'killPoints': 3,
             'savvy': 1,
             'training': 2
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 14,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 10,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
         }
     },
     'Keltrin (Skulker)': {
@@ -691,18 +571,6 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'killPoints': 3,
             'savvy': 2,
             'training': 2
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 12,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 10,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
         }
     },
     'Hakshan': {
@@ -755,18 +623,6 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'killPoints': 3,
             'savvy': 1,
             'training': 2
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 12,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 10,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
         }
     },
     'Clones': {
@@ -819,18 +675,6 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'killPoints': 3,
             'savvy': 2,
             'training': 2
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 12,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 10,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
         }
     },
     'Ystrik (Manipulator)': {
@@ -883,18 +727,6 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'killPoints': 3,
             'savvy': 2,
             'training': 2
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 12,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 10,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
         }
     },
     'Krag (Dwarf)': {
@@ -947,82 +779,6 @@ const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
             'killPoints': 3,
             'savvy': 1,
             'training': 2
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 12,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 10,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
-        }
-    },
-    'None': {
-        'Civilian': {
-            'points': 0,
-            'speed': 4,
-            'reaction': 2,
-            'combatSkill': 2,
-            'toughness': 3,
-            'killPoints': 1,
-            'savvy': 3,
-            'training': 2
-        },
-        'Soldier': {
-            'points': 0,
-            'speed': 6,
-            'reaction': 4,
-            'combatSkill': 4,
-            'toughness': 4,
-            'killPoints': 1,
-            'savvy': 4,
-            'training': 4
-        },
-        'Minor Character': {
-            'points': 0,
-            'speed': 6,
-            'reaction': 5,
-            'combatSkill': 5,
-            'toughness': 4,
-            'killPoints': 1,
-            'savvy': 4,
-            'training': 5
-        },
-        'Major Character': {
-            'points': 0,
-            'speed': 6,
-            'reaction': 6,
-            'combatSkill': 6,
-            'toughness': 5,
-            'killPoints': 2,
-            'savvy': 5,
-            'training': 6
-        },
-        'Epic Character': {
-            'points': 0,
-            'speed': 8,
-            'reaction': 7,
-            'combatSkill': 7,
-            'toughness': 5,
-            'killPoints': 3,
-            'savvy': 6,
-            'training': 7
-        },
-        'Vehicle': {
-            'points': 0,
-            'speed': 12,
-            'reaction': 3,
-            'combatSkill': 4,
-            'toughness': 10,
-            'killPoints': 5,
-            'savvy': 0,
-            'training': 4,
-            'crew': 2,
-            'capacity': 0
         }
     }
 };

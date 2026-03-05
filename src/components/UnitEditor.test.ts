@@ -84,4 +84,21 @@ describe('UnitEditor Component', () => {
         // Trooper 4 swap LMG(10) for Plasma Rifle(8) = -2 pts -> 80
         expect(wrapper.find('.unit-points').text()).toBe('80 pts')
     })
+
+    it('hides lifeform dropdown for vehicle units', async () => {
+        const { changeUnitType } = await import('../store')
+        const unit = armyState.units[0]
+        changeUnitType(unit.id, 'Nomad Bike')
+        await nextTick()
+
+        const wrapper = mount(UnitEditor)
+        await nextTick()
+
+        // Should have Type select but no Lifeform select
+        const settingGroups = wrapper.findAll('.setting-group')
+        expect(settingGroups.length).toBe(1) // only Type
+        const labels = settingGroups.map(g => g.find('label').text())
+        expect(labels).toContain('Type:')
+        expect(labels).not.toContain('Lifeform:')
+    })
 })

@@ -47,4 +47,15 @@ describe('ArmyList Component', () => {
         await cards[0].trigger('click')
         expect(appState.selectedUnitId).toBe(armyState.units[0].id)
     })
+
+    it('hides lifeform in vehicle unit summary', async () => {
+        const { addUnitWithType } = await import('../store')
+        addUnitWithType('Nomad Bike')
+        await nextTick()
+
+        const wrapper = mount(ArmyList)
+        const details = wrapper.find('.unit-summary-details')
+        expect(details.text()).toBe('Nomad Bike')
+        expect(details.text()).not.toContain(' - ')
+    })
 })

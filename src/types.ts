@@ -3,7 +3,7 @@ import type { UnitType } from './data/units'
 import type { Lifeform } from './data/lifeforms'
 export type { UnitType };
 
-export type ModelClass = 'Civilian' | 'Soldier' | 'Minor Character' | 'Major Character' | 'Epic Character' | 'Vehicle';
+export type ModelClass = 'Civilian' | 'Soldier' | 'Minor Character' | 'Major Character' | 'Epic Character';
 
 export interface ModelStats {
     points: number;
@@ -21,9 +21,10 @@ export interface ModelStats {
 export interface Model {
     id: string;
     name: string;
-    lifeform: Lifeform;
-    class: ModelClass;
+    lifeform?: Lifeform;
+    class?: ModelClass;
     basePoints?: number;                  // if provided, overrides lifeformStats points
+    baseStats?: ModelStats;               // if provided, overrides lifeformStats
     slots: Record<string, EquipmentName>; // named weapon slots, e.g. { rifle: 'Military Rifle', support: 'Light Machine Gun' }
     extras: EquipmentName[];              // non-swappable items: grenades, blades, etc.
 }
@@ -32,7 +33,7 @@ export interface Unit {
     id: string;
     name: string;
     type: UnitType;
-    lifeform: Lifeform;
+    lifeform?: Lifeform;
     selectedOptions: string[];
     models: Model[];
     slots: Record<string, EquipmentName>;

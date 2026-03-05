@@ -11,7 +11,7 @@ import {
   addExtraToModel,
   removeExtraFromModel
 } from "../store";
-import { lifeformStats } from "../data/lifeforms";
+import { lifeformStats, type Lifeform } from "../data/lifeforms";
 
 import EquipmentManager from "./EquipmentManager.vue";
 
@@ -20,13 +20,13 @@ const props = defineProps<{
   unitId: string;
 }>();
 
-const modelClasses: ModelClass[] = ['Civilian', 'Soldier', 'Minor Character', 'Major Character', 'Epic Character', 'Vehicle'];
+const modelClasses: ModelClass[] = ['Civilian', 'Soldier', 'Minor Character', 'Major Character', 'Epic Character'];
 
 const emit = defineEmits<{
   (e: "remove", modelId: string): void;
 }>();
 
-const stats = computed(() => lifeformStats[props.model.lifeform]?.[props.model.class]);
+const stats = computed(() => props.model.baseStats ?? (props.model.lifeform && props.model.class ? lifeformStats[props.model.lifeform as Lifeform]?.[props.model.class] : undefined));
 
 const handleRemove = () => {
   emit("remove", props.model.id);
@@ -48,11 +48,11 @@ const handleRemove = () => {
     </div>
 
     <div class="model-details">
-      <div class="field" v-if="model.class !== 'Vehicle'">
+      <div class="field" v-if="model.lifeform">
         <label>Lifeform</label>
         <div class="readonly-text">{{ model.lifeform }}</div>
       </div>
-      <div class="field">
+      <div class="field" v-if="model.class">
         <label>Class</label>
         <template v-if="armyState.freeEdit">
           <select :value="model.class" @change="(e) => updateModelClass(unitId, model.id, (e.target as HTMLSelectElement).value as ModelClass)" class="inline-select">
@@ -62,7 +62,7 @@ const handleRemove = () => {
         </template>
         <div v-else class="readonly-text">
           {{ model.class }}
-          <span class="point-badge points-text" v-if="model.basePoints === undefined">[{{ lifeformStats[model.lifeform]?.[model.class]?.points || 0 }}]</span>
+          <span class="point-badge points-text" v-if="model.basePoints === undefined">[{{ model.baseStats?.points ?? (model.lifeform && model.class ? lifeformStats[model.lifeform as Lifeform]?.[model.class]?.points : 0) ?? 0 }}]</span>
           <span class="point-badge points-text" v-else>[{{ model.basePoints }}]</span>
         </div>
       </div>
@@ -81,7 +81,7 @@ const handleRemove = () => {
       <div class="stat-box" title="Savvy"><span class="stat-label">SAV</span><span class="stat-value">{{ stats.savvy }}</span></div>
       <div class="stat-box" title="Training"><span class="stat-label">TRN</span><span class="stat-value">{{ stats.training }}</span></div>
       
-      <template v-if="model.class === 'Vehicle'">
+      <template v-if="stats?.crew !== undefined">
         <div class="stat-box" title="Crew"><span class="stat-label">CRW</span><span class="stat-value">{{ stats.crew }}</span></div>
         <div class="stat-box" title="Capacity"><span class="stat-label">CAP</span><span class="stat-value">{{ stats.capacity }}</span></div>
       </template>

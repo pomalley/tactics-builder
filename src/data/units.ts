@@ -1,10 +1,10 @@
-import type { ModelClass, UnitOptionDef } from '../types'
+import type { ModelClass, UnitOptionDef, ModelStats } from '../types'
 import type { EquipmentName } from './equipment'
 
 export interface ModelDef {
     name: string;
-    class: ModelClass;
-    basePoints?: number;
+    class?: ModelClass;
+    baseStats?: ModelStats;
     slots: Partial<Record<string, EquipmentName>>;
     extras: EquipmentName[];
 }
@@ -145,115 +145,115 @@ const _unitDefinitions = {
     'Nomad Bike': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'Nomad Bike', class: 'Vehicle', basePoints: 15, slots: { forward: 'None' }, extras: [] }
+            { name: 'Nomad Bike', baseStats: { points: 15, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { forward: 'None' }, extras: [] }
         ]
     },
     'Scouter': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'Scouter', class: 'Vehicle', basePoints: 25, slots: { forward: 'Light Machine Gun' }, extras: [] }
+            { name: 'Scouter', baseStats: { points: 25, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { forward: 'Light Machine Gun' }, extras: [] }
         ]
     },
     'Lancer': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'Lancer', class: 'Vehicle', basePoints: 22, slots: { forward: 'Plasma Rifle' }, extras: [] }
+            { name: 'Lancer', baseStats: { points: 22, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { forward: 'Plasma Rifle' }, extras: [] }
         ]
     },
     'Frontier Trike': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'Frontier Trike', class: 'Vehicle', basePoints: 25, slots: { 'Forward/Side': 'Light Machine Gun' }, extras: [] }
+            { name: 'Frontier Trike', baseStats: { points: 25, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { 'Forward/Side': 'Light Machine Gun' }, extras: [] }
         ]
     },
     'Raider Trike': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'Raider Trike', class: 'Vehicle', basePoints: 25, slots: { 'Forward/Side': 'Light Machine Gun' }, extras: [] }
+            { name: 'Raider Trike', baseStats: { points: 25, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { 'Forward/Side': 'Light Machine Gun' }, extras: [] }
         ]
     },
     'Armored Car': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'Armored Car', class: 'Vehicle', basePoints: 40, slots: { turret: '20mm Autocannon' }, extras: [] }
+            { name: 'Armored Car', baseStats: { points: 40, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { turret: '20mm Autocannon' }, extras: [] }
         ]
     },
     'APC': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'APC', class: 'Vehicle', basePoints: 40, slots: { turret: 'Light Machine Gun' }, extras: [] }
+            { name: 'APC', baseStats: { points: 40, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { turret: 'Light Machine Gun' }, extras: [] }
         ]
     },
     'APC - Grav': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'APC - Grav', class: 'Vehicle', basePoints: 45, slots: { turret: 'Light Machine Gun' }, extras: [] }
+            { name: 'APC - Grav', baseStats: { points: 45, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { turret: 'Light Machine Gun' }, extras: [] }
         ]
     },
     'IFV': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'IFV', class: 'Vehicle', basePoints: 40, slots: { front: 'Light Machine Gun', turret: '20mm Autocannon' }, extras: [] }
+            { name: 'IFV', baseStats: { points: 40, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { front: 'Light Machine Gun', turret: '20mm Autocannon' }, extras: [] }
         ]
     },
     'IFV - Grav': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'IFV - Grav', class: 'Vehicle', basePoints: 45, slots: { front: 'Light Machine Gun', turret: '20mm Autocannon' }, extras: [] }
+            { name: 'IFV - Grav', baseStats: { points: 45, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { front: 'Light Machine Gun', turret: '20mm Autocannon' }, extras: [] }
         ]
     },
     'Light Tank': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'Light Tank', class: 'Vehicle', basePoints: 55, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '40mm Autocannon' }, extras: [] }
+            { name: 'Light Tank', baseStats: { points: 55, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '40mm Autocannon' }, extras: [] }
         ]
     },
     'Light Tank - Grav': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'Light Tank - Grav', class: 'Vehicle', basePoints: 70, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '40mm Autocannon' }, extras: [] }
+            { name: 'Light Tank - Grav', baseStats: { points: 70, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '40mm Autocannon' }, extras: [] }
         ]
     },
     'Medium Tank': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'Medium Tank', class: 'Vehicle', basePoints: 65, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '100mm Cannon' }, extras: [] }
+            { name: 'Medium Tank', baseStats: { points: 65, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '100mm Cannon' }, extras: [] }
         ]
     },
     'Medium Tank - Grav': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'Medium Tank - Grav', class: 'Vehicle', basePoints: 75, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '100mm Cannon' }, extras: [] }
+            { name: 'Medium Tank - Grav', baseStats: { points: 75, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '100mm Cannon' }, extras: [] }
         ]
     },
     'Heavy Tank': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'Heavy Tank', class: 'Vehicle', basePoints: 125, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '100mm Cannon' }, extras: [] }
+            { name: 'Heavy Tank', baseStats: { points: 125, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { front: 'Light Machine Gun', coaxial: 'Light Machine Gun', turret: '100mm Cannon' }, extras: [] }
         ]
     },
     'Light Walker': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'Light Walker', class: 'Vehicle', basePoints: 44, slots: { arm1: '20mm Autocannon', arm2: 'Flame Projector' }, extras: [] }
+            { name: 'Light Walker', baseStats: { points: 44, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { arm1: '20mm Autocannon', arm2: 'Flame Projector' }, extras: [] }
         ]
     },
     'Heavy Walker': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'Heavy Walker', class: 'Vehicle', basePoints: 55, slots: { shoulder: 'Pulse Laser', arm: 'Light Machine Gun' }, extras: [] }
+            { name: 'Heavy Walker', baseStats: { points: 55, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { shoulder: 'Pulse Laser', arm: 'Light Machine Gun' }, extras: [] }
         ]
     },
     'CIM-L': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'CIM-L', class: 'Vehicle', basePoints: 21, slots: { weapon: 'Hyper Blaster' }, extras: [] }
+            { name: 'CIM-L', baseStats: { points: 21, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { weapon: 'Hyper Blaster' }, extras: [] }
         ]
     },
     'CIM-APP': {
         slots: { veteran_skill: 'None' },
         models: [
-            { name: 'CIM-APP', class: 'Vehicle', basePoints: 25, slots: { weapon: '20mm Autocannon' }, extras: [] }
+            { name: 'CIM-APP', baseStats: { points: 25, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 }, slots: { weapon: '20mm Autocannon' }, extras: [] }
         ]
     }
 } satisfies Record<string, UnitTypeDef>;

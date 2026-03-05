@@ -93,16 +93,16 @@ describe('ModelItem Component', () => {
             props: { model, unitId: unit.id }
         })
 
-        // Human Minor Character stats: SPD 6", REA 5, CS 5, TGH 4, KP 1, SAV 4, TRN 5
+        // Human Minor Character stats: SPD 4" (updated), REA 2, CS 1, TGH 3, KP 2, SAV 0, TRN 2
         const stats = wrapper.findAll('.stat-box')
         expect(stats.length).toBe(7) // non-vehicle
-        expect(stats[0].text()).toContain('SPD6"')
-        expect(stats[1].text()).toContain('REA5')
-        expect(stats[2].text()).toContain('CS5')
-        expect(stats[3].text()).toContain('TGH4')
-        expect(stats[4].text()).toContain('KP1')
-        expect(stats[5].text()).toContain('SAV4')
-        expect(stats[6].text()).toContain('TRN5')
+        expect(stats[0].text()).toContain('SPD4"')
+        expect(stats[1].text()).toContain('REA2')
+        expect(stats[2].text()).toContain('CS1')
+        expect(stats[3].text()).toContain('TGH3')
+        expect(stats[4].text()).toContain('KP2')
+        expect(stats[5].text()).toContain('SAV0')
+        expect(stats[6].text()).toContain('TRN2')
     })
     
     it('renders vehicle stats', () => {
@@ -110,8 +110,8 @@ describe('ModelItem Component', () => {
         unit.models.push({
             id: 'test-vehicle',
             name: 'Tank',
-            lifeform: 'Human',
-            class: 'Vehicle',
+            lifeform: undefined,
+            baseStats: { points: 100, speed: 10, reaction: 3, combatSkill: 4, toughness: 8, killPoints: 5, savvy: 0, training: 4, crew: 2, capacity: 0 },
             slots: {},
             extras: []
         });

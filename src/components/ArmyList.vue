@@ -65,7 +65,7 @@ const draggableUnits = computed({
           <div class="drag-handle" @click.stop title="Drag to reorder">⋮⋮</div>
           <div class="unit-summary-main">
             <div class="unit-summary-name">{{ unit.name }}</div>
-            <div class="unit-summary-details">{{ unit.type }} - {{ unit.lifeform }}</div>
+            <div class="unit-summary-details">{{ unit.type }}{{ unit.lifeform ? ' - ' + unit.lifeform : '' }}</div>
           </div>
           <div class="unit-summary-actions">
             <span class="unit-summary-points">{{ getUnitPoints(unit) }} pts</span>

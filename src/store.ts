@@ -145,9 +145,7 @@ const calculateEquipmentPoints = (target: { slots: Record<string, EquipmentName>
 }
 
 export const calculateModelPoints = (model: Model): number => {
-    const baseCost = model.basePoints !== undefined 
-        ? model.basePoints 
-        : (lifeformStats[model.lifeform]?.[model.class]?.points || 0);
+    const baseCost = model.basePoints ?? model.baseStats?.points ?? (model.lifeform && model.class ? lifeformStats[model.lifeform as Lifeform]?.[model.class]?.points : 0) ?? 0;
     return baseCost + calculateEquipmentPoints(model);
 }
 
@@ -221,9 +219,9 @@ const resetUnitToBase = (unit: Unit) => {
         unit.models.push({
             id: crypto.randomUUID(),
             name: modelDef.name,
-            lifeform: modelDef.class === 'Vehicle' ? 'None' : unit.lifeform,
+            lifeform: modelDef.baseStats ? undefined : unit.lifeform,
             class: modelDef.class,
-            basePoints: modelDef.basePoints,
+            baseStats: modelDef.baseStats,
             slots: { ...modelDef.slots } as Record<string, EquipmentName>,
             extras: [...modelDef.extras]
         });
@@ -277,11 +275,13 @@ export const populateModels = (unit: Unit) => {
 }
 
 export const addUnitWithType = (type: UnitType) => {
+    const def = unitDefinitions[type];
+    const hasLifeform = def.models.some(m => !m.baseStats);
     const newUnit: Unit = {
         id: crypto.randomUUID(),
         name: 'New ' + type,
         type,
-        lifeform: armyState.defaultLifeform,
+        lifeform: hasLifeform ? armyState.defaultLifeform : undefined,
         selectedOptions: [],
         models: [],
         slots: {},
@@ -326,6 +326,9 @@ export const changeUnitType = (unitId: string, newType: UnitType) => {
     if (unit) {
         unit.type = newType;
         unit.selectedOptions = [];
+        const def = unitDefinitions[newType];
+        const hasLifeform = def.models.some(m => !m.baseStats);
+        unit.lifeform = hasLifeform ? (unit.lifeform || armyState.defaultLifeform) : undefined;
         populateModels(unit);
     }
 }

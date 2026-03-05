@@ -78,7 +78,7 @@ const onLifeformChange = (event: Event) => {
             </optgroup>
           </select>
         </div>
-        <div class="setting-group">
+        <div class="setting-group" v-if="unit.lifeform !== undefined">
           <label>Lifeform:</label>
           <select :value="unit.lifeform" @change="onLifeformChange">
             <option v-for="lf in lifeformTypes" :key="lf" :value="lf">
