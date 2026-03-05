@@ -1,5 +1,5 @@
 import { reactive, computed, watch } from 'vue'
-import type { Army, Unit, Model, UnitType, AppState } from './types'
+import type { Army, Unit, Model, ModelStats, UnitType, AppState } from './types'
 import { Lifeform, lifeformStats } from './data/lifeforms';
 import { EquipmentName, equipmentPoints } from './data/equipment';
 import { unitDefinitions, unitOptions } from './data/units';
@@ -144,8 +144,12 @@ const calculateEquipmentPoints = (target: { slots: Record<string, EquipmentName>
     return slotsCost + extrasCost;
 }
 
+export const getModelStats = (model: Model): ModelStats | undefined => {
+    return model.baseStats ?? (model.lifeform && model.class ? lifeformStats[model.lifeform as Lifeform]?.[model.class] : undefined);
+}
+
 export const calculateModelPoints = (model: Model): number => {
-    const baseCost = model.basePoints ?? model.baseStats?.points ?? (model.lifeform && model.class ? lifeformStats[model.lifeform as Lifeform]?.[model.class]?.points : 0) ?? 0;
+    const baseCost = getModelStats(model)?.points ?? 0;
     return baseCost + calculateEquipmentPoints(model);
 }
 
@@ -169,7 +173,6 @@ const applyModifications = (unit: Unit, modifications: Array<{
     setUnitSlot?: Record<string, EquipmentName>;
     addExtras?: EquipmentName[];
     addUnitExtras?: EquipmentName[];
-    setBasePoints?: number;
 }>) => {
     for (const mod of modifications) {
         if (mod.clearUnitSlot) delete unit.slots[mod.clearUnitSlot];
@@ -202,9 +205,7 @@ const applyModifications = (unit: Unit, modifications: Array<{
                     }
                 }
             }
-            if (mod.setBasePoints !== undefined) {
-                model.basePoints = mod.setBasePoints;
-            }
+
         }
     }
 }
@@ -274,14 +275,16 @@ export const populateModels = (unit: Unit) => {
     applyUnitOptions(unit);
 }
 
+const unitTypeHasLifeform = (type: UnitType): boolean => {
+    return unitDefinitions[type].models.some(m => !m.baseStats);
+}
+
 export const addUnitWithType = (type: UnitType) => {
-    const def = unitDefinitions[type];
-    const hasLifeform = def.models.some(m => !m.baseStats);
     const newUnit: Unit = {
         id: crypto.randomUUID(),
         name: 'New ' + type,
         type,
-        lifeform: hasLifeform ? armyState.defaultLifeform : undefined,
+        lifeform: unitTypeHasLifeform(type) ? armyState.defaultLifeform : undefined,
         selectedOptions: [],
         models: [],
         slots: {},
@@ -326,9 +329,7 @@ export const changeUnitType = (unitId: string, newType: UnitType) => {
     if (unit) {
         unit.type = newType;
         unit.selectedOptions = [];
-        const def = unitDefinitions[newType];
-        const hasLifeform = def.models.some(m => !m.baseStats);
-        unit.lifeform = hasLifeform ? (unit.lifeform || armyState.defaultLifeform) : undefined;
+        unit.lifeform = unitTypeHasLifeform(newType) ? (unit.lifeform || armyState.defaultLifeform) : undefined;
         populateModels(unit);
     }
 }
@@ -441,12 +442,6 @@ export const updateModelClass = (unitId: string, modelId: string, cls: any) => {
     const unit = armyState.units.find(u => u.id === unitId);
     const model = unit?.models.find(m => m.id === modelId);
     if (model) model.class = cls;
-}
-
-export const updateModelBasePoints = (unitId: string, modelId: string, pts: number | undefined) => {
-    const unit = armyState.units.find(u => u.id === unitId);
-    const model = unit?.models.find(m => m.id === modelId);
-    if (model) model.basePoints = pts;
 }
 
 export const addSlotToModel = (unitId: string, modelId: string, slotName: string, weapon: EquipmentName) => {

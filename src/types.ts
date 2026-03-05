@@ -23,7 +23,6 @@ export interface Model {
     name: string;
     lifeform?: Lifeform;
     class?: ModelClass;
-    basePoints?: number;                  // if provided, overrides lifeformStats points
     baseStats?: ModelStats;               // if provided, overrides lifeformStats
     slots: Record<string, EquipmentName>; // named weapon slots, e.g. { rifle: 'Military Rifle', support: 'Light Machine Gun' }
     extras: EquipmentName[];              // non-swappable items: grenades, blades, etc.
@@ -56,7 +55,6 @@ export interface UnitOptionDef {
         setUnitSlot?: Record<string, EquipmentName>; // override a unit-level slot value
         addExtras?: EquipmentName[];             // push items onto the model's extras
         addUnitExtras?: EquipmentName[];         // push items onto the unit's extras
-        setBasePoints?: number;                  // override the model's base points
     }[];
 }
 

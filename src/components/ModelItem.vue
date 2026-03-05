@@ -3,15 +3,14 @@ import { computed } from "vue";
 import type { Model, ModelClass } from "../types";
 import { 
   calculateModelPoints, 
+  getModelStats,
   armyState,
   updateModelClass,
-  updateModelBasePoints,
   addSlotToModel,
   removeSlotFromModel,
   addExtraToModel,
   removeExtraFromModel
 } from "../store";
-import { lifeformStats, type Lifeform } from "../data/lifeforms";
 
 import EquipmentManager from "./EquipmentManager.vue";
 
@@ -26,7 +25,7 @@ const emit = defineEmits<{
   (e: "remove", modelId: string): void;
 }>();
 
-const stats = computed(() => props.model.baseStats ?? (props.model.lifeform && props.model.class ? lifeformStats[props.model.lifeform as Lifeform]?.[props.model.class] : undefined));
+const stats = computed(() => getModelStats(props.model));
 
 const handleRemove = () => {
   emit("remove", props.model.id);
@@ -58,12 +57,10 @@ const handleRemove = () => {
           <select :value="model.class" @change="(e) => updateModelClass(unitId, model.id, (e.target as HTMLSelectElement).value as ModelClass)" class="inline-select">
             <option v-for="cls in modelClasses" :key="cls" :value="cls">{{ cls }}</option>
           </select>
-          <input type="number" :value="model.basePoints" @input="(e) => updateModelBasePoints(unitId, model.id, parseInt((e.target as HTMLInputElement).value) || undefined)" class="mini-pts-input" placeholder="Base Points" />
         </template>
         <div v-else class="readonly-text">
           {{ model.class }}
-          <span class="point-badge points-text" v-if="model.basePoints === undefined">[{{ model.baseStats?.points ?? (model.lifeform && model.class ? lifeformStats[model.lifeform as Lifeform]?.[model.class]?.points : 0) ?? 0 }}]</span>
-          <span class="point-badge points-text" v-else>[{{ model.basePoints }}]</span>
+          <span class="point-badge points-text">[{{ stats?.points ?? 0 }}]</span>
         </div>
       </div>
       <div class="field points-field">

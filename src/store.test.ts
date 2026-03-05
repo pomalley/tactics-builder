@@ -13,7 +13,6 @@ import {
     removeModelFromUnit,
     updateModelName,
     updateModelClass,
-    updateModelBasePoints,
     addSlotToModel,
     removeSlotFromModel,
     addExtraToModel,
@@ -161,12 +160,12 @@ describe('Army Store', () => {
             expect(calculateUnitPoints(unit)).toBe(70)
         })
 
-        it('should calculate unit points correctly for vehicles using basePoints (Nomad Bike)', () => {
+        it('should calculate unit points correctly for vehicles using baseStats (Nomad Bike)', () => {
             addUnitWithType('Infantry')
             const unit = armyState.units[0]
             changeUnitType(unit.id, 'Nomad Bike')
             selectUnitOptionChoice(unit.id, 'nomad_forward_slot', 'nomad_lmg')
-            // basePoints: 15 + LMG (10) = 25
+            // baseStats.points: 15 + LMG (10) = 25
             expect(calculateUnitPoints(unit)).toBe(25)
         })
 
@@ -264,9 +263,6 @@ describe('Army Store', () => {
 
             updateModelClass(unit.id, model.id, 'Major Character')
             expect(model.class).toBe('Major Character')
-
-            updateModelBasePoints(unit.id, model.id, 50)
-            expect(model.basePoints).toBe(50)
         })
 
         it('should add/remove slots and extras from models', () => {

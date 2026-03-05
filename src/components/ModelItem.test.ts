@@ -60,8 +60,6 @@ describe('ModelItem Component', () => {
 
         // Should have a remove button
         expect(wrapper.find('.remove-btn').exists()).toBe(true)
-        // Should have a base points input
-        expect(wrapper.find('.mini-pts-input').exists()).toBe(true)
         // Should have an inline select for class
         expect(wrapper.find('.inline-select').exists()).toBe(true)
     })
@@ -77,13 +75,6 @@ describe('ModelItem Component', () => {
         const classSelect = wrapper.find('.inline-select')
         await classSelect.setValue('Major Character')
         expect(model.class).toBe('Major Character')
-
-        const ptsInput = wrapper.find('.mini-pts-input')
-        await ptsInput.setValue('50')
-        expect(model.basePoints).toBe(50)
-        
-        // Total points: 50 + 3 + 1 = 54
-        expect(wrapper.find('.points-field .readonly-text').text()).toBe('54')
     })
     
     it('renders model stats', () => {
