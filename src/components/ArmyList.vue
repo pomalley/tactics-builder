@@ -4,9 +4,6 @@ import {
   armyState, 
   removeUnit, 
   totalArmyPoints, 
-  addArmy, 
-  selectArmy, 
-  removeArmy, 
   updateArmyName,
   setFreeEdit,
   selectUnit,
@@ -14,35 +11,12 @@ import {
   calculateUnitPoints
 } from '../store'
 
-const onArmySelect = (event: Event) => {
-  const target = event.target as HTMLSelectElement;
-  selectArmy(target.value);
-};
-
-const onRemoveArmy = () => {
-  if (confirm(`Are you sure you want to delete "${armyState.name}"?`)) {
-    removeArmy(armyState.id);
-  }
-};
-
 const getUnitPoints = (unit: any) => calculateUnitPoints(unit);
 </script>
 
 <template>
   <div class="army-list card">
-    <div class="army-management">
-      <div class="army-selector-group">
-        <select id="army-select" :value="armyState.id" @change="onArmySelect">
-          <option v-for="army in appState.armies" :key="army.id" :value="army.id">
-            {{ army.name }}
-          </option>
-        </select>
-        <div class="management-actions">
-          <button @click="addArmy" class="btn btn-blue" title="New Army">+</button>
-          <button @click="onRemoveArmy" class="btn btn-danger" :disabled="appState.armies.length <= 1" title="Delete Army">🗑</button>
-        </div>
-      </div>
-    </div>
+
 
     <div class="army-header">
       <input 
@@ -101,25 +75,7 @@ const getUnitPoints = (unit: any) => calculateUnitPoints(unit);
   height: 100%;
 }
 
-.army-management {
-  margin-bottom: var(--space-md);
-  padding-bottom: var(--space-md);
-  border-bottom: 2px solid var(--border-color);
-}
 
-.army-selector-group {
-  display: flex;
-  gap: var(--space-sm);
-}
-
-.army-selector-group select {
-  flex: 1;
-}
-
-.management-actions {
-  display: flex;
-  gap: var(--space-xs);
-}
 
 .army-header {
   display: flex;

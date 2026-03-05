@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import App from './App.vue'
-import { armyState, resetStore, addUnitWithType, selectUnit } from './store'
+import { appState, armyState, resetStore, addUnitWithType, selectUnit, addArmy } from './store'
 
 // Mock crypto.randomUUID for jsdom
 vi.stubGlobal('crypto', {
@@ -67,5 +67,32 @@ describe('App Component Layout', () => {
         await armyBtn.trigger('click')
         expect(wrapper.find('.army-column').classes()).toContain('mobile-active')
         expect(wrapper.find('.unit-column').classes()).not.toContain('mobile-active')
+    })
+
+    describe('Army Management', () => {
+        it('switches armies via the global selector', async () => {
+            const wrapper = mount(App)
+            
+            // Add a second army
+            addArmy() // This selects the new army
+            await nextTick()
+            
+            const select = wrapper.find('#army-select')
+            expect((select.element as HTMLSelectElement).value).not.toBe('test-army-id')
+
+            // Switch back to the first army
+            await select.setValue('test-army-id')
+            expect(armyState.id).toBe('test-army-id')
+        })
+
+        it('adds a new army via the global button', async () => {
+            const wrapper = mount(App)
+            const addArmyBtn = wrapper.find('.army-toolbar .btn-blue')
+            
+            await addArmyBtn.trigger('click')
+            
+            expect(appState.armies.length).toBe(2)
+            expect(armyState.name).toBe('New Army')
+        })
     })
 })

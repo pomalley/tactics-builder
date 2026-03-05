@@ -3,7 +3,13 @@ import { ref, watch } from "vue";
 import UnitCatalog from "./components/UnitCatalog.vue";
 import ArmyList from "./components/ArmyList.vue";
 import UnitEditor from "./components/UnitEditor.vue";
-import { appState } from "./store";
+import { 
+  appState, 
+  armyState, 
+  addArmy, 
+  selectArmy, 
+  removeArmy 
+} from "./store";
 
 const title = ref("5PFH: Tactics Army Builder");
 
@@ -17,6 +23,17 @@ watch(() => appState.selectedUnitId, (newId) => {
     activeMobileColumn.value = 'unit';
   }
 });
+
+const onArmySelect = (event: Event) => {
+  const target = event.target as HTMLSelectElement;
+  selectArmy(target.value);
+};
+
+const onRemoveArmy = () => {
+  if (confirm(`Are you sure you want to delete "${armyState.name}"?`)) {
+    removeArmy(armyState.id);
+  }
+};
 </script>
 
 <template>
@@ -56,6 +73,22 @@ watch(() => appState.selectedUnitId, (newId) => {
           Unit
         </button>
       </nav>
+
+      <!-- Global Army Management -->
+      <div class="army-toolbar">
+        <div class="army-selector-group">
+          <label class="army-label" for="army-select">Army: </label>
+          <select id="army-select" :value="armyState.id" @change="onArmySelect">
+            <option v-for="army in appState.armies" :key="army.id" :value="army.id">
+              {{ army.name }}
+            </option>
+          </select>
+          <div class="management-actions">
+            <button @click="addArmy" class="btn btn-blue" title="New Army">+</button>
+            <button @click="onRemoveArmy" class="btn btn-danger" :disabled="appState.armies.length <= 1" title="Delete Army">🗑</button>
+          </div>
+        </div>
+      </div>
     </header>
 
     <main class="layout-grid">
@@ -111,7 +144,8 @@ watch(() => appState.selectedUnitId, (newId) => {
 .header-title {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
+  width: 100%;
 }
 
 .app-header h1 {
@@ -122,10 +156,43 @@ watch(() => appState.selectedUnitId, (newId) => {
 
 @media (min-width: 1024px) {
   .app-header {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    padding: var(--space-sm) var(--space-lg);
   }
+}
+
+.army-toolbar {
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border-color);
+  margin-top: var(--space-xs);
+  display: flex;
+  justify-content: center;
+}
+
+.army-selector-group {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.army-label {
+  font-weight: bold;
+  color: var(--text-muted);
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .army-label {
+    display: inline;
+  }
+}
+
+.management-actions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.army-selector-group select {
+  min-width: 200px;
 }
 
 .info-link {

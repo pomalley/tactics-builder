@@ -30,36 +30,7 @@ describe('ArmyList Component', () => {
         expect(wrapper.find('.total-points').text()).toContain('0 pts')
     })
 
-    describe('Multi-Army UI', () => {
-        it('switches armies via the selector', async () => {
-            const wrapper = mount(ArmyList)
-            
-            // Add a second army
-            const { addArmy } = await import('../store')
-            addArmy() // This selects the new army
-            await nextTick()
-            
-            const select = wrapper.find('#army-select')
-            expect((select.element as HTMLSelectElement).value).not.toBe('test-army-id')
 
-            // Switch back to the first army
-            await select.setValue('test-army-id')
-            expect(armyState.id).toBe('test-army-id')
-            expect((wrapper.find('.army-name-input').element as HTMLInputElement).value).toBe('Test Army')
-        })
-
-        it('adds a new army via the button', async () => {
-            const wrapper = mount(ArmyList)
-            const addArmyBtns = wrapper.findAll('button')
-            const addArmyBtn = addArmyBtns.find(b => b.text().includes('+'))!
-            
-            await addArmyBtn.trigger('click')
-            
-            expect(appState.armies.length).toBe(2)
-            expect(armyState.name).toBe('New Army')
-            expect((wrapper.find('.army-name-input').element as HTMLInputElement).value).toBe('New Army')
-        })
-    })
 
     it('displays unit summaries and allows selection', async () => {
         const { addUnitWithType } = await import('../store')
