@@ -56,4 +56,5 @@ export interface Army {
 export interface AppState {
     armies: Army[];
     currentArmyId: string | null;
+    selectedUnitId: string | null;
 }

@@ -3,7 +3,7 @@ import { nextTick } from 'vue'
 import { 
     appState,
     armyState, 
-    addUnit, 
+    addUnitWithType, 
     removeUnit,
     moveUnit,
     updateUnitName,
@@ -39,7 +39,8 @@ describe('Army Store', () => {
                 units: [],
                 freeEdit: false
             }],
-            currentArmyId: 'test-army-id'
+            currentArmyId: 'test-army-id',
+            selectedUnitId: null
         })
     })
 
@@ -86,7 +87,7 @@ describe('Army Store', () => {
             expect(totalArmyPoints.value).toBe(0)
 
             addArmy() // Army 2
-            addUnit() // Add Infantry (82 pts)
+            addUnitWithType('Infantry') // Add Infantry (82 pts)
             expect(totalArmyPoints.value).toBe(82)
 
             selectArmy('test-army-id') // Back to Army 1
@@ -110,7 +111,8 @@ describe('Army Store', () => {
             // For now, let's test that resetStore with a full AppState works as expected.
             resetStore({
                 armies: [{ ...legacyData, id: 'migrated-id' } as any],
-                currentArmyId: 'migrated-id'
+                currentArmyId: 'migrated-id',
+                selectedUnitId: null
             })
 
             expect(appState.armies.length).toBe(1)
@@ -121,14 +123,14 @@ describe('Army Store', () => {
 
     describe('Unit Point Calculations', () => {
         it('should calculate model points correctly', () => {
-            addUnit() // Default is Infantry for Human
+            addUnitWithType('Infantry') // Default is Infantry for Human
             const model = armyState.units[0].models[0] // Sergeant
             // Human Minor Character (15) + Military Rifle (3) + Frag Grenade (1) = 19
             expect(calculateModelPoints(model)).toBe(19)
         })
 
         it('should deduplicate extras when multiple options add the same item', () => {
-            addUnit() // Add Infantry
+            addUnitWithType('Infantry') // Add Infantry
             const unit = armyState.units[0]
             let trooper4 = unit.models.find(m => m.name === 'Trooper 4')!
             
@@ -141,7 +143,7 @@ describe('Army Store', () => {
         })
 
         it('should calculate unit points correctly with unit-level slots (Weapon Team)', () => {
-            addUnit()
+            addUnitWithType('Infantry')
             const unit = armyState.units[0]
             changeUnitType(unit.id, 'Weapon Team')
             // Gunner(11) + Loader1(11) + Loader2(11) + Laser Cannon(35) + Morale(2) = 70
@@ -149,7 +151,7 @@ describe('Army Store', () => {
         })
 
         it('should calculate unit points correctly for vehicles using basePoints (Nomad Bike)', () => {
-            addUnit()
+            addUnitWithType('Infantry')
             const unit = armyState.units[0]
             changeUnitType(unit.id, 'Nomad Bike')
             selectUnitOptionChoice(unit.id, 'nomad_forward_slot', 'nomad_lmg')
@@ -158,7 +160,7 @@ describe('Army Store', () => {
         })
 
         it('should calculate unit points for Heavy Tank and its swaps', () => {
-            addUnit()
+            addUnitWithType('Infantry')
             const unit = armyState.units[0]
             changeUnitType(unit.id, 'Heavy Tank')
             // base 125 + LMG (10) + Coaxial LMG (10) + 100mm (55) = 200
@@ -172,25 +174,14 @@ describe('Army Store', () => {
 
     describe('Unit Management', () => {
         it('should add a unit with default models', () => {
-            addUnit()
+            addUnitWithType('Infantry')
             expect(armyState.units.length).toBe(1)
             expect(armyState.units[0].models.length).toBeGreaterThan(0)
         })
 
-        it('should minimize existing units when adding a new unit', () => {
-            addUnit() // Add first unit
-            const firstUnit = armyState.units[0]
-            expect(firstUnit.minimized).toBeFalsy()
-
-            addUnit() // Add second unit
-            expect(armyState.units.length).toBe(2)
-            expect(firstUnit.minimized).toBe(true)
-            expect(armyState.units[1].minimized).toBeFalsy()
-        })
-
         it('should remove a unit', () => {
-            addUnit()
-            addUnit()
+            addUnitWithType('Infantry')
+            addUnitWithType('Infantry')
             const idToRemove = armyState.units[0].id
             removeUnit(idToRemove)
             expect(armyState.units.length).toBe(1)
@@ -198,9 +189,9 @@ describe('Army Store', () => {
         })
 
         it('should move units up and down', () => {
-            addUnit()
+            addUnitWithType('Infantry')
             armyState.units[0].name = 'Unit 1'
-            addUnit()
+            addUnitWithType('Infantry')
             armyState.units[1].name = 'Unit 2'
             
             const id2 = armyState.units[1].id
@@ -212,13 +203,13 @@ describe('Army Store', () => {
         })
 
         it('should update unit name', () => {
-            addUnit()
+            addUnitWithType('Infantry')
             updateUnitName(armyState.units[0].id, 'New Name')
             expect(armyState.units[0].name).toBe('New Name')
         })
 
         it('should change unit lifeform and propagate to models', () => {
-            addUnit()
+            addUnitWithType('Infantry')
             const unit = armyState.units[0]
             changeUnitLifeform(unit.id, 'Greys')
             expect(unit.lifeform).toBe('Greys')
@@ -228,7 +219,7 @@ describe('Army Store', () => {
 
     describe('Model Management', () => {
         it('should add and remove models from unit', () => {
-            addUnit()
+            addUnitWithType('Infantry')
             const unit = armyState.units[0]
             const initialCount = unit.models.length
             addModelToUnit(unit.id)
@@ -240,7 +231,7 @@ describe('Army Store', () => {
         })
 
         it('should update model details', () => {
-            addUnit()
+            addUnitWithType('Infantry')
             const unit = armyState.units[0]
             const model = unit.models[0]
 
@@ -255,7 +246,7 @@ describe('Army Store', () => {
         })
 
         it('should add/remove slots and extras from models', () => {
-            addUnit()
+            addUnitWithType('Infantry')
             const unit = armyState.units[0]
             const model = unit.models[0]
 
@@ -277,7 +268,7 @@ describe('Army Store', () => {
     describe('Persistence', () => {
         it('should save to localStorage when state changes', async () => {
             const setItemSpy = vi.spyOn(Storage.prototype, 'setItem')
-            addUnit()
+            addUnitWithType('Infantry')
             await nextTick()
             expect(setItemSpy).toHaveBeenCalled()
             setItemSpy.mockRestore()

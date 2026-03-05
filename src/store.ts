@@ -17,7 +17,8 @@ const getDefaultState = (): AppState => {
     const defaultArmy = getDefaultArmy();
     return {
         armies: [defaultArmy],
-        currentArmyId: defaultArmy.id
+        currentArmyId: defaultArmy.id,
+        selectedUnitId: null
     }
 }
 
@@ -36,8 +37,12 @@ const loadState = (): AppState => {
                 }
                 return {
                     armies: [legacyArmy],
-                    currentArmyId: legacyArmy.id
+                    currentArmyId: legacyArmy.id,
+                    selectedUnitId: null
                 }
+            }
+            if (data.selectedUnitId === undefined) {
+                data.selectedUnitId = null;
             }
             return data as AppState
         } catch (e) {
@@ -55,6 +60,7 @@ export const resetStore = (initialState?: AppState) => {
     const next = initialState || getDefaultState();
     appState.armies = next.armies;
     appState.currentArmyId = next.currentArmyId;
+    appState.selectedUnitId = next.selectedUnitId;
 }
 
 // Internal computed for finding current army
@@ -97,6 +103,7 @@ export const addArmy = () => {
 
 export const selectArmy = (id: string) => {
     appState.currentArmyId = id;
+    appState.selectedUnitId = null;
 }
 
 export const removeArmy = (id: string) => {
@@ -106,6 +113,7 @@ export const removeArmy = (id: string) => {
         appState.armies.splice(index, 1);
         if (appState.currentArmyId === id) {
             appState.currentArmyId = appState.armies[0].id;
+            appState.selectedUnitId = null;
         }
     }
 }
@@ -257,16 +265,11 @@ export const populateModels = (unit: Unit) => {
     applyUnitOptions(unit);
 }
 
-export const minimizeAllUnits = () => {
-    armyState.units.forEach(u => u.minimized = true);
-}
-
-export const addUnit = () => {
-    minimizeAllUnits();
+export const addUnitWithType = (type: UnitType) => {
     const newUnit: Unit = {
         id: crypto.randomUUID(),
-        name: 'New Unit',
-        type: 'Infantry',
+        name: 'New ' + type,
+        type,
         lifeform: 'Human',
         selectedOptions: [],
         models: [],
@@ -275,12 +278,20 @@ export const addUnit = () => {
     }
     populateModels(newUnit)
     armyState.units.push(newUnit)
+    selectUnit(newUnit.id)
+}
+
+export const selectUnit = (unitId: string | null) => {
+    appState.selectedUnitId = unitId;
 }
 
 export const removeUnit = (unitId: string) => {
     const index = armyState.units.findIndex(u => u.id === unitId)
     if (index !== -1) {
         armyState.units.splice(index, 1)
+        if (appState.selectedUnitId === unitId) {
+            appState.selectedUnitId = null;
+        }
     }
 }
 
@@ -347,13 +358,6 @@ export const toggleUnitOption = (unitId: string, optionId: string) => {
             unit.selectedOptions.splice(index, 1);
         }
         populateModels(unit);
-    }
-}
-
-export const toggleUnitMinimized = (unitId: string) => {
-    const unit = armyState.units.find(u => u.id === unitId);
-    if (unit) {
-        unit.minimized = !unit.minimized;
     }
 }
 
