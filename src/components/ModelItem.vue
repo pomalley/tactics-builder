@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import type { Model, ModelClass } from "../types";
 import { 
   calculateModelPoints, 
@@ -10,7 +11,7 @@ import {
   addExtraToModel,
   removeExtraFromModel
 } from "../store";
-import { lifeformClassPoints } from "../data/lifeforms";
+import { lifeformStats } from "../data/lifeforms";
 
 import EquipmentManager from "./EquipmentManager.vue";
 
@@ -24,6 +25,8 @@ const modelClasses: ModelClass[] = ['Civilian', 'Soldier', 'Minor Character', 'M
 const emit = defineEmits<{
   (e: "remove", modelId: string): void;
 }>();
+
+const stats = computed(() => lifeformStats[props.model.lifeform]?.[props.model.class]);
 
 const handleRemove = () => {
   emit("remove", props.model.id);
@@ -59,7 +62,7 @@ const handleRemove = () => {
         </template>
         <div v-else class="readonly-text">
           {{ model.class }}
-          <span class="point-badge points-text" v-if="model.basePoints === undefined">[{{ lifeformClassPoints[model.lifeform]?.[model.class] || 0 }}]</span>
+          <span class="point-badge points-text" v-if="model.basePoints === undefined">[{{ lifeformStats[model.lifeform]?.[model.class]?.points || 0 }}]</span>
           <span class="point-badge points-text" v-else>[{{ model.basePoints }}]</span>
         </div>
       </div>
@@ -67,6 +70,21 @@ const handleRemove = () => {
         <label>Points</label>
         <div class="readonly-text points-text">{{ calculateModelPoints(model) }}</div>
       </div>
+    </div>
+
+    <div class="model-stats" v-if="stats">
+      <div class="stat-box" title="Speed"><span class="stat-label">SPD</span><span class="stat-value">{{ stats.speed }}"</span></div>
+      <div class="stat-box" title="Reaction"><span class="stat-label">REA</span><span class="stat-value">{{ stats.reaction }}</span></div>
+      <div class="stat-box" title="Combat Skill"><span class="stat-label">CS</span><span class="stat-value">{{ stats.combatSkill }}</span></div>
+      <div class="stat-box" title="Toughness"><span class="stat-label">TGH</span><span class="stat-value">{{ stats.toughness }}</span></div>
+      <div class="stat-box" title="Kill Points"><span class="stat-label">KP</span><span class="stat-value">{{ stats.killPoints }}</span></div>
+      <div class="stat-box" title="Savvy"><span class="stat-label">SAV</span><span class="stat-value">{{ stats.savvy }}</span></div>
+      <div class="stat-box" title="Training"><span class="stat-label">TRN</span><span class="stat-value">{{ stats.training }}</span></div>
+      
+      <template v-if="model.class === 'Vehicle'">
+        <div class="stat-box" title="Crew"><span class="stat-label">CRW</span><span class="stat-value">{{ stats.crew }}</span></div>
+        <div class="stat-box" title="Capacity"><span class="stat-label">CAP</span><span class="stat-value">{{ stats.capacity }}</span></div>
+      </template>
     </div>
 
     <div class="model-options-container">
@@ -145,5 +163,37 @@ const handleRemove = () => {
 
 .mini-pts-input {
   width: 60px;
+}
+
+.model-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+  background: var(--bg-card);
+  padding: var(--space-xs);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 40px;
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-main);
 }
 </style>

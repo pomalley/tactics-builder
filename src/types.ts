@@ -5,12 +5,25 @@ export type { UnitType };
 
 export type ModelClass = 'Civilian' | 'Soldier' | 'Minor Character' | 'Major Character' | 'Epic Character' | 'Vehicle';
 
+export interface ModelStats {
+    points: number;
+    speed: number;
+    reaction: number;
+    combatSkill: number;
+    toughness: number;
+    killPoints: number;
+    savvy: number;
+    training: number;
+    crew?: number;
+    capacity?: number;
+}
+
 export interface Model {
     id: string;
     name: string;
     lifeform: Lifeform;
     class: ModelClass;
-    basePoints?: number;                  // if provided, overrides lifeformClassPoints
+    basePoints?: number;                  // if provided, overrides lifeformStats points
     slots: Record<string, EquipmentName>; // named weapon slots, e.g. { rifle: 'Military Rifle', support: 'Light Machine Gun' }
     extras: EquipmentName[];              // non-swappable items: grenades, blades, etc.
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { UnitType } from "../types";
-import { lifeformClassPoints, type Lifeform } from "../data/lifeforms";
+import { lifeformStats, type Lifeform } from "../data/lifeforms";
 import { unitGroups, unitOptions } from "../data/units";
 import ModelItem from "./ModelItem.vue";
 import {
@@ -23,7 +23,7 @@ import {
 import EquipmentManager from "./EquipmentManager.vue";
 import { getOptionDefaultLabel, getChoicePointsLabel, getOptionPointsLabel } from "../logic";
 
-const lifeformTypes = Object.keys(lifeformClassPoints) as Lifeform[];
+const lifeformTypes = Object.keys(lifeformStats) as Lifeform[];
 
 const unit = computed(() => armyState.units.find(u => u.id === appState.selectedUnitId));
 

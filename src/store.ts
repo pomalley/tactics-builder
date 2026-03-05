@@ -1,6 +1,6 @@
 import { reactive, computed, watch } from 'vue'
 import type { Army, Unit, Model, UnitType, AppState } from './types'
-import { Lifeform, lifeformClassPoints } from './data/lifeforms';
+import { Lifeform, lifeformStats } from './data/lifeforms';
 import { EquipmentName, equipmentPoints } from './data/equipment';
 import { unitDefinitions, unitOptions } from './data/units';
 
@@ -147,7 +147,7 @@ const calculateEquipmentPoints = (target: { slots: Record<string, EquipmentName>
 export const calculateModelPoints = (model: Model): number => {
     const baseCost = model.basePoints !== undefined 
         ? model.basePoints 
-        : (lifeformClassPoints[model.lifeform]?.[model.class] || 0);
+        : (lifeformStats[model.lifeform]?.[model.class]?.points || 0);
     return baseCost + calculateEquipmentPoints(model);
 }
 

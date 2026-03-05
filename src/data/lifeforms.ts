@@ -1,139 +1,1034 @@
-import type { ModelClass } from '../types'
+import type { ModelClass, ModelStats } from '../types'
 
-const _lifeformClassPoints: Record<string, Record<ModelClass, number>> = {
+const _lifeformStats: Record<string, Record<ModelClass, ModelStats>> = {
     'Human': {
-        'Civilian': 5,
-        'Soldier': 10,
-        'Minor Character': 15,
-        'Major Character': 20,
-        'Epic Character': 30,
-        'Vehicle': NaN
+        'Civilian': {
+            'points': 5,
+            'speed': 4,
+            'reaction': 1,
+            'combatSkill': 0,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 0,
+            'training': 0
+        },
+        'Soldier': {
+            'points': 10,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 0,
+            'training': 1
+        },
+        'Minor Character': {
+            'points': 15,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 3,
+            'killPoints': 2,
+            'savvy': 0,
+            'training': 2
+        },
+        'Major Character': {
+            'points': 20,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 2,
+            'toughness': 3,
+            'killPoints': 2,
+            'savvy': 0,
+            'training': 2
+        },
+        'Epic Character': {
+            'points': 30,
+            'speed': 5,
+            'reaction': 3,
+            'combatSkill': 2,
+            'toughness': 4,
+            'killPoints': 3,
+            'savvy': 1,
+            'training': 2
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 12,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 10,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     },
     'Feral': {
-        'Civilian': 6,
-        'Soldier': 12,
-        'Minor Character': 17,
-        'Major Character': 22,
-        'Epic Character': 32,
-        'Vehicle': NaN
+        'Civilian': {
+            'points': 6,
+            'speed': 4,
+            'reaction': 1,
+            'combatSkill': 0,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 0,
+            'training': 0
+        },
+        'Soldier': {
+            'points': 12,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 4,
+            'killPoints': 1,
+            'savvy': 0,
+            'training': 1
+        },
+        'Minor Character': {
+            'points': 17,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 4,
+            'killPoints': 2,
+            'savvy': 0,
+            'training': 1
+        },
+        'Major Character': {
+            'points': 22,
+            'speed': 5,
+            'reaction': 2,
+            'combatSkill': 2,
+            'toughness': 4,
+            'killPoints': 2,
+            'savvy': 0,
+            'training': 1
+        },
+        'Epic Character': {
+            'points': 32,
+            'speed': 5,
+            'reaction': 3,
+            'combatSkill': 2,
+            'toughness': 5,
+            'killPoints': 3,
+            'savvy': 1,
+            'training': 2
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 12,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 10,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     },
     'Hulker': {
-        'Civilian': NaN,  // There are no Hulker civilians
-        'Soldier': 15,
-        'Minor Character': 20,
-        'Major Character': 25,
-        'Epic Character': 40,
-        'Vehicle': NaN
+        'Civilian': {
+            'points': NaN,
+            'speed': NaN,
+            'reaction': NaN,
+            'combatSkill': NaN,
+            'toughness': NaN,
+            'killPoints': NaN,
+            'savvy': NaN,
+            'training': NaN
+        },
+        'Soldier': {
+            'points': 15,
+            'speed': 5,
+            'reaction': 1,
+            'combatSkill': 1,
+            'toughness': 5,
+            'killPoints': 2,
+            'savvy': 0,
+            'training': 0
+        },
+        'Minor Character': {
+            'points': 20,
+            'speed': 5,
+            'reaction': 1,
+            'combatSkill': 1,
+            'toughness': 5,
+            'killPoints': 3,
+            'savvy': 0,
+            'training': 0
+        },
+        'Major Character': {
+            'points': 25,
+            'speed': 5,
+            'reaction': 2,
+            'combatSkill': 2,
+            'toughness': 5,
+            'killPoints': 3,
+            'savvy': 0,
+            'training': 0
+        },
+        'Epic Character': {
+            'points': 40,
+            'speed': 6,
+            'reaction': 2,
+            'combatSkill': 2,
+            'toughness': 6,
+            'killPoints': 4,
+            'savvy': 1,
+            'training': 1
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 10,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 11,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     },
     'Erekish (Precursor)': {
-        'Civilian': 6,
-        'Soldier': 12,
-        'Minor Character': 18,
-        'Major Character': 25,
-        'Epic Character': 35,
-        'Vehicle': NaN
+        'Civilian': {
+            'points': 6,
+            'speed': 5,
+            'reaction': 2,
+            'combatSkill': 0,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 1,
+            'training': 0
+        },
+        'Soldier': {
+            'points': 12,
+            'speed': 5,
+            'reaction': 3,
+            'combatSkill': 1,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 1,
+            'training': 1
+        },
+        'Minor Character': {
+            'points': 18,
+            'speed': 5,
+            'reaction': 3,
+            'combatSkill': 1,
+            'toughness': 3,
+            'killPoints': 2,
+            'savvy': 1,
+            'training': 1
+        },
+        'Major Character': {
+            'points': 25,
+            'speed': 5,
+            'reaction': 4,
+            'combatSkill': 2,
+            'toughness': 3,
+            'killPoints': 2,
+            'savvy': 1,
+            'training': 1
+        },
+        'Epic Character': {
+            'points': 35,
+            'speed': 6,
+            'reaction': 4,
+            'combatSkill': 2,
+            'toughness': 4,
+            'killPoints': 3,
+            'savvy': 1,
+            'training': 1
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 12,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 10,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     },
     "K'Erin": {
-        'Civilian': 6,
-        'Soldier': 13,
-        'Minor Character': 20,
-        'Major Character': 25,
-        'Epic Character': 35,
-        'Vehicle': NaN
+        'Civilian': {
+            'points': 6,
+            'speed': 4,
+            'reaction': 1,
+            'combatSkill': 1,
+            'toughness': 4,
+            'killPoints': 1,
+            'savvy': 0,
+            'training': 0
+        },
+        'Soldier': {
+            'points': 13,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 4,
+            'killPoints': 1,
+            'savvy': 0,
+            'training': 1
+        },
+        'Minor Character': {
+            'points': 20,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 4,
+            'killPoints': 2,
+            'savvy': 0,
+            'training': 1
+        },
+        'Major Character': {
+            'points': 25,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 2,
+            'toughness': 5,
+            'killPoints': 2,
+            'savvy': 0,
+            'training': 1
+        },
+        'Epic Character': {
+            'points': 35,
+            'speed': 5,
+            'reaction': 3,
+            'combatSkill': 2,
+            'toughness': 5,
+            'killPoints': 3,
+            'savvy': 1,
+            'training': 2
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 12,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 10,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     },
-    // Soulless only have one profile; this is a bit of a hack.
     'Soulless': {
-        'Civilian': 20,
-        'Soldier': 20,
-        'Minor Character': 20,
-        'Major Character': 20,
-        'Epic Character': 20,
-        'Vehicle': NaN
+        'Civilian': {
+            'points': 20,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 2,
+            'toughness': 4,
+            'killPoints': 2,
+            'savvy': 2,
+            'training': 1
+        },
+        'Soldier': {
+            'points': 20,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 2,
+            'toughness': 4,
+            'killPoints': 2,
+            'savvy': 2,
+            'training': 1
+        },
+        'Minor Character': {
+            'points': 20,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 2,
+            'toughness': 4,
+            'killPoints': 2,
+            'savvy': 2,
+            'training': 1
+        },
+        'Major Character': {
+            'points': 20,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 2,
+            'toughness': 4,
+            'killPoints': 2,
+            'savvy': 2,
+            'training': 1
+        },
+        'Epic Character': {
+            'points': 20,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 2,
+            'toughness': 4,
+            'killPoints': 2,
+            'savvy': 2,
+            'training': 1
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 12,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 10,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     },
     'Converted': {
-        'Civilian': 10,
-        'Soldier': 15,
-        'Minor Character': 20,
-        'Major Character': 25,
-        'Epic Character': 35,
-        'Vehicle': NaN
+        'Civilian': {
+            'points': 10,
+            'speed': 4,
+            'reaction': 1,
+            'combatSkill': 0,
+            'toughness': 4,
+            'killPoints': 1,
+            'savvy': 0,
+            'training': 0
+        },
+        'Soldier': {
+            'points': 15,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 4,
+            'killPoints': 1,
+            'savvy': 0,
+            'training': 0
+        },
+        'Minor Character': {
+            'points': 20,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 4,
+            'killPoints': 2,
+            'savvy': 0,
+            'training': 1
+        },
+        'Major Character': {
+            'points': 25,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 5,
+            'killPoints': 3,
+            'savvy': 0,
+            'training': 1
+        },
+        'Epic Character': {
+            'points': 35,
+            'speed': 5,
+            'reaction': 3,
+            'combatSkill': 2,
+            'toughness': 5,
+            'killPoints': 3,
+            'savvy': 1,
+            'training': 2
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 12,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 10,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     },
     'Horde': {
-        'Civilian': 6,
-        'Soldier': 10,
-        'Minor Character': 15,
-        'Major Character': 20,
-        'Epic Character': 30,
-        'Vehicle': NaN
+        'Civilian': {
+            'points': 6,
+            'speed': 4,
+            'reaction': 1,
+            'combatSkill': 0,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 0,
+            'training': 0
+        },
+        'Soldier': {
+            'points': 10,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 0,
+            'toughness': 4,
+            'killPoints': 1,
+            'savvy': 0,
+            'training': 0
+        },
+        'Minor Character': {
+            'points': 15,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 0,
+            'toughness': 4,
+            'killPoints': 2,
+            'savvy': 0,
+            'training': 0
+        },
+        'Major Character': {
+            'points': 20,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 5,
+            'killPoints': 2,
+            'savvy': 0,
+            'training': 0
+        },
+        'Epic Character': {
+            'points': 30,
+            'speed': 5,
+            'reaction': 3,
+            'combatSkill': 1,
+            'toughness': 5,
+            'killPoints': 3,
+            'savvy': 1,
+            'training': 1
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 12,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 10,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     },
     'Serian (Engineer)': {
-        'Civilian': 7,
-        'Soldier': 11,
-        'Minor Character': 16,
-        'Major Character': 22,
-        'Epic Character': 32,
-        'Vehicle': NaN
+        'Civilian': {
+            'points': 7,
+            'speed': 4,
+            'reaction': 1,
+            'combatSkill': 0,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 2,
+            'training': 1
+        },
+        'Soldier': {
+            'points': 11,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 2,
+            'training': 1
+        },
+        'Minor Character': {
+            'points': 16,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 3,
+            'killPoints': 2,
+            'savvy': 2,
+            'training': 1
+        },
+        'Major Character': {
+            'points': 22,
+            'speed': 4,
+            'reaction': 3,
+            'combatSkill': 2,
+            'toughness': 3,
+            'killPoints': 2,
+            'savvy': 2,
+            'training': 1
+        },
+        'Epic Character': {
+            'points': 32,
+            'speed': 5,
+            'reaction': 3,
+            'combatSkill': 2,
+            'toughness': 4,
+            'killPoints': 3,
+            'savvy': 3,
+            'training': 2
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 12,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 10,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     },
     'Swift': {
-        'Civilian': 6,
-        'Soldier': 12,
-        'Minor Character': 17,
-        'Major Character': 22,
-        'Epic Character': 32,
-        'Vehicle': NaN
+        'Civilian': {
+            'points': 6,
+            'speed': 5,
+            'reaction': 1,
+            'combatSkill': 0,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 0,
+            'training': 0
+        },
+        'Soldier': {
+            'points': 12,
+            'speed': 5,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 0,
+            'training': 1
+        },
+        'Minor Character': {
+            'points': 17,
+            'speed': 5,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 3,
+            'killPoints': 2,
+            'savvy': 0,
+            'training': 1
+        },
+        'Major Character': {
+            'points': 22,
+            'speed': 5,
+            'reaction': 3,
+            'combatSkill': 1,
+            'toughness': 3,
+            'killPoints': 2,
+            'savvy': 1,
+            'training': 1
+        },
+        'Epic Character': {
+            'points': 32,
+            'speed': 6,
+            'reaction': 3,
+            'combatSkill': 2,
+            'toughness': 4,
+            'killPoints': 3,
+            'savvy': 1,
+            'training': 2
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 14,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 10,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     },
     'Keltrin (Skulker)': {
-        'Civilian': 6,
-        'Soldier': 12,
-        'Minor Character': 17,
-        'Major Character': 22,
-        'Epic Character': 32,
-        'Vehicle': NaN
+        'Civilian': {
+            'points': 6,
+            'speed': 6,
+            'reaction': 1,
+            'combatSkill': 0,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 1,
+            'training': 0
+        },
+        'Soldier': {
+            'points': 12,
+            'speed': 6,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 1,
+            'training': 1
+        },
+        'Minor Character': {
+            'points': 17,
+            'speed': 6,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 3,
+            'killPoints': 2,
+            'savvy': 1,
+            'training': 1
+        },
+        'Major Character': {
+            'points': 22,
+            'speed': 6,
+            'reaction': 2,
+            'combatSkill': 2,
+            'toughness': 4,
+            'killPoints': 2,
+            'savvy': 1,
+            'training': 1
+        },
+        'Epic Character': {
+            'points': 32,
+            'speed': 7,
+            'reaction': 3,
+            'combatSkill': 2,
+            'toughness': 4,
+            'killPoints': 3,
+            'savvy': 2,
+            'training': 2
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 12,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 10,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     },
     'Hakshan': {
-        'Civilian': 5,
-        'Soldier': 10,
-        'Minor Character': 15,
-        'Major Character': 20,
-        'Epic Character': 30,
-        'Vehicle': NaN
+        'Civilian': {
+            'points': 5,
+            'speed': 4,
+            'reaction': 1,
+            'combatSkill': 0,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 1,
+            'training': 0
+        },
+        'Soldier': {
+            'points': 10,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 0,
+            'training': 1
+        },
+        'Minor Character': {
+            'points': 15,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 3,
+            'killPoints': 2,
+            'savvy': 0,
+            'training': 1
+        },
+        'Major Character': {
+            'points': 20,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 2,
+            'toughness': 3,
+            'killPoints': 2,
+            'savvy': 0,
+            'training': 2
+        },
+        'Epic Character': {
+            'points': 30,
+            'speed': 5,
+            'reaction': 3,
+            'combatSkill': 2,
+            'toughness': 4,
+            'killPoints': 3,
+            'savvy': 1,
+            'training': 2
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 12,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 10,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     },
     'Clones': {
-        'Civilian': 8,
-        'Soldier': 15,
-        'Minor Character': 20,
-        'Major Character': 30,
-        'Epic Character': 40,
-        'Vehicle': NaN
+        'Civilian': {
+            'points': 8,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 0,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 1,
+            'training': 1
+        },
+        'Soldier': {
+            'points': 15,
+            'speed': 4,
+            'reaction': 3,
+            'combatSkill': 1,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 1,
+            'training': 1
+        },
+        'Minor Character': {
+            'points': 20,
+            'speed': 4,
+            'reaction': 3,
+            'combatSkill': 1,
+            'toughness': 3,
+            'killPoints': 2,
+            'savvy': 1,
+            'training': 1
+        },
+        'Major Character': {
+            'points': 30,
+            'speed': 4,
+            'reaction': 4,
+            'combatSkill': 2,
+            'toughness': 3,
+            'killPoints': 2,
+            'savvy': 1,
+            'training': 2
+        },
+        'Epic Character': {
+            'points': 40,
+            'speed': 5,
+            'reaction': 4,
+            'combatSkill': 2,
+            'toughness': 4,
+            'killPoints': 3,
+            'savvy': 2,
+            'training': 2
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 12,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 10,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     },
     'Ystrik (Manipulator)': {
-        'Civilian': 5,
-        'Soldier': 8,
-        'Minor Character': 13,
-        'Major Character': 18,
-        'Epic Character': 27,
-        'Vehicle': NaN
+        'Civilian': {
+            'points': 5,
+            'speed': 4,
+            'reaction': 1,
+            'combatSkill': 0,
+            'toughness': 1,
+            'killPoints': 1,
+            'savvy': 1,
+            'training': 0
+        },
+        'Soldier': {
+            'points': 8,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 1,
+            'killPoints': 1,
+            'savvy': 1,
+            'training': 1
+        },
+        'Minor Character': {
+            'points': 13,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 2,
+            'killPoints': 2,
+            'savvy': 1,
+            'training': 1
+        },
+        'Major Character': {
+            'points': 18,
+            'speed': 4,
+            'reaction': 3,
+            'combatSkill': 2,
+            'toughness': 2,
+            'killPoints': 2,
+            'savvy': 1,
+            'training': 1
+        },
+        'Epic Character': {
+            'points': 27,
+            'speed': 5,
+            'reaction': 3,
+            'combatSkill': 2,
+            'toughness': 3,
+            'killPoints': 3,
+            'savvy': 2,
+            'training': 2
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 12,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 10,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     },
     'Krag (Dwarf)': {
-        'Civilian': 5,
-        'Soldier': 10,
-        'Minor Character': 15,
-        'Major Character': 20,
-        'Epic Character': 30,
-        'Vehicle': NaN
+        'Civilian': {
+            'points': 5,
+            'speed': 3,
+            'reaction': 1,
+            'combatSkill': 0,
+            'toughness': 4,
+            'killPoints': 1,
+            'savvy': 1,
+            'training': 0
+        },
+        'Soldier': {
+            'points': 10,
+            'speed': 3,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 4,
+            'killPoints': 1,
+            'savvy': 0,
+            'training': 1
+        },
+        'Minor Character': {
+            'points': 15,
+            'speed': 3,
+            'reaction': 2,
+            'combatSkill': 1,
+            'toughness': 4,
+            'killPoints': 2,
+            'savvy': 0,
+            'training': 1
+        },
+        'Major Character': {
+            'points': 20,
+            'speed': 3,
+            'reaction': 2,
+            'combatSkill': 2,
+            'toughness': 5,
+            'killPoints': 2,
+            'savvy': 0,
+            'training': 1
+        },
+        'Epic Character': {
+            'points': 30,
+            'speed': 4,
+            'reaction': 3,
+            'combatSkill': 2,
+            'toughness': 5,
+            'killPoints': 3,
+            'savvy': 1,
+            'training': 2
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 12,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 10,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     },
     'None': {
-        'Civilian': 0,
-        'Soldier': 0,
-        'Minor Character': 0,
-        'Major Character': 0,
-        'Epic Character': 0,
-        'Vehicle': 0
+        'Civilian': {
+            'points': 0,
+            'speed': 4,
+            'reaction': 2,
+            'combatSkill': 2,
+            'toughness': 3,
+            'killPoints': 1,
+            'savvy': 3,
+            'training': 2
+        },
+        'Soldier': {
+            'points': 0,
+            'speed': 6,
+            'reaction': 4,
+            'combatSkill': 4,
+            'toughness': 4,
+            'killPoints': 1,
+            'savvy': 4,
+            'training': 4
+        },
+        'Minor Character': {
+            'points': 0,
+            'speed': 6,
+            'reaction': 5,
+            'combatSkill': 5,
+            'toughness': 4,
+            'killPoints': 1,
+            'savvy': 4,
+            'training': 5
+        },
+        'Major Character': {
+            'points': 0,
+            'speed': 6,
+            'reaction': 6,
+            'combatSkill': 6,
+            'toughness': 5,
+            'killPoints': 2,
+            'savvy': 5,
+            'training': 6
+        },
+        'Epic Character': {
+            'points': 0,
+            'speed': 8,
+            'reaction': 7,
+            'combatSkill': 7,
+            'toughness': 5,
+            'killPoints': 3,
+            'savvy': 6,
+            'training': 7
+        },
+        'Vehicle': {
+            'points': 0,
+            'speed': 12,
+            'reaction': 3,
+            'combatSkill': 4,
+            'toughness': 10,
+            'killPoints': 5,
+            'savvy': 0,
+            'training': 4,
+            'crew': 2,
+            'capacity': 0
+        }
     }
-}
+};
 
-export type Lifeform = keyof typeof _lifeformClassPoints;
+export type Lifeform = keyof typeof _lifeformStats;
 
-export const lifeformClassPoints: Record<Lifeform, Record<ModelClass, number>> = _lifeformClassPoints;
+export const lifeformStats: Record<Lifeform, Record<ModelClass, ModelStats>> = _lifeformStats;
 
-export const lifeforms = Object.keys(_lifeformClassPoints) as Lifeform[];
+export const lifeforms = Object.keys(_lifeformStats) as Lifeform[];

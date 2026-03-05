@@ -85,4 +85,44 @@ describe('ModelItem Component', () => {
         // Total points: 50 + 3 + 1 = 54
         expect(wrapper.find('.points-field .readonly-text').text()).toBe('54')
     })
+    
+    it('renders model stats', () => {
+        const unit = armyState.units[0]
+        const model = unit.models[0] // Sergeant (Human Minor Character)
+        const wrapper = mount(ModelItem, {
+            props: { model, unitId: unit.id }
+        })
+
+        // Human Minor Character stats: SPD 6", REA 5, CS 5, TGH 4, KP 1, SAV 4, TRN 5
+        const stats = wrapper.findAll('.stat-box')
+        expect(stats.length).toBe(7) // non-vehicle
+        expect(stats[0].text()).toContain('SPD6"')
+        expect(stats[1].text()).toContain('REA5')
+        expect(stats[2].text()).toContain('CS5')
+        expect(stats[3].text()).toContain('TGH4')
+        expect(stats[4].text()).toContain('KP1')
+        expect(stats[5].text()).toContain('SAV4')
+        expect(stats[6].text()).toContain('TRN5')
+    })
+    
+    it('renders vehicle stats', () => {
+        const unit = armyState.units[0]
+        unit.models.push({
+            id: 'test-vehicle',
+            name: 'Tank',
+            lifeform: 'Human',
+            class: 'Vehicle',
+            slots: {},
+            extras: []
+        });
+        const model = unit.models[unit.models.length - 1]
+        const wrapper = mount(ModelItem, {
+            props: { model, unitId: unit.id }
+        })
+
+        const stats = wrapper.findAll('.stat-box')
+        expect(stats.length).toBe(9) // vehicle has 9 stats
+        expect(stats[7].text()).toContain('CRW2')
+        expect(stats[8].text()).toContain('CAP0')
+    })
 })
