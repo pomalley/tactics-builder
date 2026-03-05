@@ -135,3 +135,5 @@ const _lifeformClassPoints: Record<string, Record<ModelClass, number>> = {
 export type Lifeform = keyof typeof _lifeformClassPoints;
 
 export const lifeformClassPoints: Record<Lifeform, Record<ModelClass, number>> = _lifeformClassPoints;
+
+export const lifeforms = Object.keys(_lifeformClassPoints) as Lifeform[];

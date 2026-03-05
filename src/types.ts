@@ -51,6 +51,7 @@ export interface Army {
     name: string;
     units: Unit[];
     freeEdit: boolean;
+    defaultLifeform: Lifeform;
 }
 
 export interface AppState {

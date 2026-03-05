@@ -28,6 +28,7 @@ import {
     selectArmy,
     removeArmy,
     updateArmyName,
+    updateArmyDefaultLifeform,
     resetStore
 } from './store'
 
@@ -38,7 +39,8 @@ describe('Army Store', () => {
                 id: 'test-army-id',
                 name: 'Test Army',
                 units: [],
-                freeEdit: false
+                freeEdit: false,
+                defaultLifeform: 'Human'
             }],
             currentArmyId: 'test-army-id',
             selectedUnitId: null
@@ -81,6 +83,14 @@ describe('Army Store', () => {
         it('should update army name', () => {
             updateArmyName('test-army-id', 'Updated Army Name')
             expect(armyState.name).toBe('Updated Army Name')
+        })
+
+        it('should update army default lifeform and inherit it for new units', () => {
+            updateArmyDefaultLifeform('test-army-id', 'Greys')
+            expect(armyState.defaultLifeform).toBe('Greys')
+            
+            addUnitWithType('Infantry')
+            expect(armyState.units[0].lifeform).toBe('Greys')
         })
 
         it('should update totalArmyPoints when switching armies', () => {

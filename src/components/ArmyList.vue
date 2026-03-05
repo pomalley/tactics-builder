@@ -7,11 +7,13 @@ import {
   removeUnit, 
   totalArmyPoints, 
   updateArmyName,
+  updateArmyDefaultLifeform,
   selectUnit,
   moveUnit,
   updateUnitsOrder,
   calculateUnitPoints
 } from '../store'
+import { lifeforms } from '../data/lifeforms'
 
 const getUnitPoints = (unit: any) => calculateUnitPoints(unit);
 
@@ -26,13 +28,22 @@ const draggableUnits = computed({
 
 
     <div class="army-header">
-      <input 
-        type="text" 
-        :value="armyState.name" 
-        @input="(e) => updateArmyName(armyState.id, (e.target as HTMLInputElement).value)"
-        class="input-header army-name-input" 
-        placeholder="Army Name" 
-      />
+      <div class="army-name-row">
+        <input 
+          type="text" 
+          :value="armyState.name" 
+          @input="(e) => updateArmyName(armyState.id, (e.target as HTMLInputElement).value)"
+          class="input-header army-name-input" 
+          placeholder="Army Name" 
+        />
+        <select 
+          :value="armyState.defaultLifeform"
+          @change="(e) => updateArmyDefaultLifeform(armyState.id, (e.target as HTMLSelectElement).value as any)"
+          class="lifeform-select"
+        >
+          <option v-for="lf in lifeforms" :key="lf" :value="lf">{{ lf }}</option>
+        </select>
+      </div>
       <div class="army-total">
         <span class="total-points">{{ totalArmyPoints }} pts</span>
       </div>
@@ -91,9 +102,31 @@ const draggableUnits = computed({
   margin-bottom: var(--space-sm);
 }
 
+.army-name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
 .army-name-input {
+  flex: 1;
   font-size: 1.25rem;
   font-weight: 800;
+}
+
+.lifeform-select {
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+}
+
+.lifeform-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  color: var(--text-main);
 }
 
 .army-total {

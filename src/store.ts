@@ -10,7 +10,8 @@ const getDefaultArmy = (): Army => ({
     id: crypto.randomUUID(),
     name: 'New Army',
     units: [],
-    freeEdit: false
+    freeEdit: false,
+    defaultLifeform: 'Human'
 })
 
 const getDefaultState = (): AppState => {
@@ -33,7 +34,8 @@ const loadState = (): AppState => {
                     id: crypto.randomUUID(),
                     name: data.name || 'New Army',
                     units: data.units,
-                    freeEdit: !!data.freeEdit
+                    freeEdit: !!data.freeEdit,
+                    defaultLifeform: 'Human'
                 }
                 return {
                     armies: [legacyArmy],
@@ -44,6 +46,10 @@ const loadState = (): AppState => {
             if (data.selectedUnitId === undefined) {
                 data.selectedUnitId = null;
             }
+            // Migration: Add defaultLifeform to existing armies
+            data.armies.forEach((a: Army) => {
+                if (!a.defaultLifeform) a.defaultLifeform = 'Human';
+            });
             return data as AppState
         } catch (e) {
             console.error('Failed to load state from localStorage', e)
@@ -121,6 +127,11 @@ export const removeArmy = (id: string) => {
 export const updateArmyName = (id: string, name: string) => {
     const army = appState.armies.find(a => a.id === id);
     if (army) army.name = name;
+}
+
+export const updateArmyDefaultLifeform = (id: string, lifeform: Lifeform) => {
+    const army = appState.armies.find(a => a.id === id);
+    if (army) army.defaultLifeform = lifeform;
 }
 
 export const setFreeEdit = (val: boolean) => {
@@ -270,7 +281,7 @@ export const addUnitWithType = (type: UnitType) => {
         id: crypto.randomUUID(),
         name: 'New ' + type,
         type,
-        lifeform: 'Human',
+        lifeform: armyState.defaultLifeform,
         selectedOptions: [],
         models: [],
         slots: {},

@@ -16,7 +16,8 @@ describe('UnitEditor Component', () => {
                 id: 'test-army-id',
                 name: 'Test Army',
                 units: [],
-                freeEdit: false
+                freeEdit: false,
+                defaultLifeform: 'Human'
             }],
             currentArmyId: 'test-army-id',
             selectedUnitId: null
