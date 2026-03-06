@@ -20,10 +20,10 @@ export interface ModelStats {
 }
 
 export interface WeaponStats {
-  range: number | null;
-  shots: number | null;
-  damage: number | null;
-  bonus?: number;
+    range: number | null;
+    shots: number | null;
+    damage: number | null;
+    bonusDamage?: number | null;
 }
 
 export interface EquipmentDef {

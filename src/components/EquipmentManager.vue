@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { EquipmentDef } from "../types";
 import { type EquipmentName, equipmentPoints, equipmentGroups, equipmentDefinitions } from "../data/equipment";
 import { armyState } from "../store";
 import { formatSlotName } from "../utils";
@@ -16,6 +17,29 @@ const addManualSlot = () => {
   if (name) props.onAddSlot(name, "None");
 };
 
+const getDef = (name: EquipmentName): EquipmentDef => equipmentDefinitions[name] as EquipmentDef;
+
+const formatStats = (name: EquipmentName) => {
+  const def = getDef(name);
+  if (!def.weapon && (!def.traits || def.traits.length === 0)) return "";
+  
+  let stats = "";
+  if (def.weapon) {
+    const w = def.weapon;
+    const parts = [];
+    if (w.range) parts.push(`${w.range}"`);
+    parts.push(`S${w.shots ?? '-'}`);
+    parts.push(`D${w.damage ?? '-'}${w.bonusDamage ? `(x${w.bonusDamage})` : ""}`);
+    stats += parts.join(" ");
+  }
+  
+  if (def.traits && def.traits.length > 0) {
+    if (stats) stats += " ";
+    stats += def.traits.join(" • ");
+  }
+  
+  return stats ? ` | ${stats}` : "";
+};
 </script>
 
 <template>
@@ -26,7 +50,9 @@ const addManualSlot = () => {
         <template v-if="armyState.freeEdit">
           <select @change="(e) => onAddSlot(slot as string, (e.target as HTMLSelectElement).value as EquipmentName)">
             <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
-              <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === weapon">{{ name }} [{{ equipmentPoints[name] }}]</option>
+              <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === weapon">
+                {{ name }} [{{ equipmentPoints[name] }}]{{ formatStats(name) }}
+              </option>
             </optgroup>
           </select>
           <button @click="onRemoveSlot(slot as string)" class="btn btn-danger btn-mini mini-remove-btn" title="Remove Slot">×</button>
@@ -35,15 +61,16 @@ const addManualSlot = () => {
           <span class="weapon-name">{{ weapon }}</span>
         </template>
         <span class="weapon-points points-text">[{{ equipmentPoints[weapon] || 0 }}]</span>
-      </div>
-      <div v-if="equipmentDefinitions[weapon].weapon || equipmentDefinitions[weapon].traits?.length" class="weapon-info">
-        <div v-if="equipmentDefinitions[weapon].weapon" class="weapon-stats">
-          <span class="stat"><span class="stat-label">R:</span>{{ equipmentDefinitions[weapon].weapon?.range ?? '-' }}</span>
-          <span class="stat"><span class="stat-label">S:</span>{{ equipmentDefinitions[weapon].weapon?.shots ?? '-' }}</span>
-          <span class="stat"><span class="stat-label">D:</span>{{ equipmentDefinitions[weapon].weapon?.damage ?? '-' }}</span>
-        </div>
-        <div v-if="equipmentDefinitions[weapon].traits?.length" class="traits-list">
-          <span v-for="trait in equipmentDefinitions[weapon].traits" :key="trait" class="trait-tag">{{ trait }}</span>
+        
+        <div v-if="getDef(weapon).weapon || getDef(weapon).traits?.length" class="weapon-info-inline">
+          <div v-if="getDef(weapon).weapon" class="weapon-stats-compressed">
+            <span class="stat">{{ getDef(weapon).weapon?.range ? getDef(weapon).weapon?.range + '"' : '' }}</span>
+            <span class="stat">S{{ getDef(weapon).weapon?.shots ?? '-' }}</span>
+            <span class="stat">D{{ getDef(weapon).weapon?.damage ?? '-' }}{{ getDef(weapon).weapon?.bonusDamage ? '(x' + getDef(weapon).weapon?.bonusDamage + ')' : '' }}</span>
+          </div>
+          <div v-if="getDef(weapon).traits?.length" class="traits-list-inline">
+            <span class="trait-text">{{ getDef(weapon).traits?.join(' • ') }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -57,7 +84,9 @@ const addManualSlot = () => {
             onAddExtra((e.target as HTMLSelectElement).value as EquipmentName);
           }">
             <optgroup v-for="group in equipmentGroups" :key="group.label" :label="group.label">
-              <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === item">{{ name }} [{{ equipmentPoints[name] }}]</option>
+              <option v-for="name in group.equipment" :key="name" :value="name" :selected="name === item">
+                {{ name }} [{{ equipmentPoints[name] }}]{{ formatStats(name) }}
+              </option>
             </optgroup>
           </select>
           <button @click="onRemoveExtra(index)" class="btn btn-danger btn-mini mini-remove-btn" title="Remove Extra">×</button>
@@ -66,15 +95,16 @@ const addManualSlot = () => {
           <span class="weapon-name">{{ item }}</span>
         </template>
         <span class="weapon-points points-text">[{{ equipmentPoints[item] || 0 }}]</span>
-      </div>
-      <div v-if="equipmentDefinitions[item].weapon || equipmentDefinitions[item].traits?.length" class="weapon-info">
-        <div v-if="equipmentDefinitions[item].weapon" class="weapon-stats">
-          <span class="stat"><span class="stat-label">R:</span>{{ equipmentDefinitions[item].weapon?.range ?? '-' }}</span>
-          <span class="stat"><span class="stat-label">S:</span>{{ equipmentDefinitions[item].weapon?.shots ?? '-' }}</span>
-          <span class="stat"><span class="stat-label">D:</span>{{ equipmentDefinitions[item].weapon?.damage ?? '-' }}</span>
-        </div>
-        <div v-if="equipmentDefinitions[item].traits?.length" class="traits-list">
-          <span v-for="trait in equipmentDefinitions[item].traits" :key="trait" class="trait-tag">{{ trait }}</span>
+
+        <div v-if="getDef(item).weapon || getDef(item).traits?.length" class="weapon-info-inline">
+          <div v-if="getDef(item).weapon" class="weapon-stats-compressed">
+            <span class="stat">{{ getDef(item).weapon?.range ? getDef(item).weapon?.range + '"' : '' }}</span>
+            <span class="stat">S{{ getDef(item).weapon?.shots ?? '-' }}</span>
+            <span class="stat">D{{ getDef(item).weapon?.damage ?? '-' }}{{ getDef(item).weapon?.bonusDamage ? '(x' + getDef(item).weapon?.bonusDamage + ')' : '' }}</span>
+          </div>
+          <div v-if="getDef(item).traits?.length" class="traits-list-inline">
+            <span class="trait-text">{{ getDef(item).traits?.join(' • ') }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -92,71 +122,62 @@ const addManualSlot = () => {
 }
 
 .equipment-row {
-  margin-bottom: var(--space-xs);
-  padding: var(--space-xs);
-  background: var(--bg-card);
-  border-radius: var(--radius-sm);
-  border-left: 3px solid var(--border-color);
+  margin-bottom: 2px;
 }
 
 .equipment-item {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
-  font-size: 0.95rem;
-  margin-bottom: 2px;
+  font-size: 0.9rem;
+  flex-wrap: wrap;
 }
 
 .slot-name {
   font-weight: bold;
   text-transform: capitalize;
-  min-width: 4.5rem;
-  font-size: 0.8rem;
+  min-width: 4rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
 }
 
 .weapon-name {
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .weapon-points {
   font-size: 0.85rem;
+  color: var(--primary);
+  font-weight: bold;
 }
 
-.weapon-info {
+.weapon-info-inline {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-sm);
-  margin-left: 4.5rem;
+  margin-left: var(--space-xs);
 }
 
-.weapon-stats {
+.weapon-stats-compressed {
   display: flex;
-  gap: var(--space-sm);
-  font-size: 0.85rem;
+  gap: var(--space-xs);
+  color: var(--text-main);
+  font-weight: 500;
 }
 
-.stat-label {
-  font-weight: bold;
-  color: var(--text-muted);
-  margin-right: 2px;
+.stat {
+  white-space: nowrap;
 }
 
-.traits-list {
+.traits-list-inline {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+  gap: var(--space-xs);
 }
 
-.trait-tag {
-  font-size: 0.75rem;
-  background: var(--bg-card-alt);
-  padding: 1px 6px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-color);
+.trait-text {
   color: var(--text-muted);
   font-style: italic;
+  font-size: 0.85rem;
 }
 
 .manual-add-controls {
