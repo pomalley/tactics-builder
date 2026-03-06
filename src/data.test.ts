@@ -1,8 +1,25 @@
 import { describe, it, expect } from 'vitest'
 import { unitDefinitions, unitOptions } from './data/units'
-import { equipmentPoints } from './data/equipment'
+import { equipmentPoints, equipmentDefinitions } from './data/equipment'
 
 describe('Data Integrity', () => {
+    it('should have valid equipment definitions', () => {
+        for (const [name, def] of Object.entries(equipmentDefinitions)) {
+            expect(def).toHaveProperty('points')
+            expect(typeof def.points).toBe('number')
+            if (def.weapon) {
+                expect(def.weapon).toHaveProperty('range')
+                expect(def.weapon).toHaveProperty('shots')
+                expect(def.weapon).toHaveProperty('damage')
+            }
+            if (def.traits) {
+                expect(Array.isArray(def.traits)).toBe(true)
+            }
+            // Check that equipmentPoints matches
+            expect(equipmentPoints[name as keyof typeof equipmentDefinitions]).toBe(def.points)
+        }
+    })
+
     it('should have point values for all equipment in unit definitions', () => {
         for (const [, def] of Object.entries(unitDefinitions)) {
             // Check unit-level slots
