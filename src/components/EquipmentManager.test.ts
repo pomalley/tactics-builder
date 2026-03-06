@@ -74,4 +74,80 @@ describe('EquipmentManager Component', () => {
 
     expect(props.onAddSlot).toHaveBeenCalledWith('primary', 'Shotgun');
   });
+
+  it('renders weapon stats and traits correctly', () => {
+    const targetWithStats = {
+      slots: { primary: 'Laser Cannon' as any },
+      extras: [] as any[],
+    };
+    const wrapper = mount(EquipmentManager, { 
+      props: { ...props, target: targetWithStats } 
+    });
+
+    // Laser Cannon: 48" S1 D5(x3) Crewed
+    const statsText = wrapper.find('.weapon-stats-compressed').text();
+    expect(statsText).toContain('48"');
+    expect(statsText).toContain('S1');
+    expect(statsText).toContain('D5(x3)');
+    
+    expect(wrapper.find('.trait-text').text()).toBe('Crewed');
+  });
+
+  it('renders multiple traits separated by bullets', () => {
+    const targetWithMultipleTraits = {
+      slots: { primary: 'Sniper Rifle' as any },
+      extras: [] as any[],
+    };
+    const wrapper = mount(EquipmentManager, { 
+      props: { ...props, target: targetWithMultipleTraits } 
+    });
+
+    // Sniper Rifle: Heavy • Piercing • Sniping • Team
+    expect(wrapper.find('.trait-text').text()).toBe('Heavy • Piercing • Sniping • Team');
+  });
+
+  it('is hidden when target has no equipment and not in free edit mode', () => {
+    const emptyTarget = { slots: {}, extras: [] };
+    const wrapper = mount(EquipmentManager, { 
+      props: { ...props, target: emptyTarget } 
+    });
+
+    expect(wrapper.find('.equipment-manager').exists()).toBe(false);
+  });
+
+  it('is visible when target has no equipment but in free edit mode', () => {
+    setFreeEdit(true);
+    const emptyTarget = { slots: {}, extras: [] };
+    const wrapper = mount(EquipmentManager, { 
+      props: { ...props, target: emptyTarget } 
+    });
+
+    expect(wrapper.find('.equipment-manager').exists()).toBe(true);
+    expect(wrapper.find('.manual-add-controls').exists()).toBe(true);
+  });
+
+  it('formats dropdown options with stats', async () => {
+    setFreeEdit(true);
+    const wrapper = mount(EquipmentManager, { props });
+    
+    const option = wrapper.find('option[value="Military Rifle"]');
+    // Military Rifle [3] - 24" S1 D0
+    expect(option.text()).toContain('Military Rifle [3]');
+    expect(option.text()).toContain(' - 24" S1 D0');
+  });
+
+  it('triggers onAddSlot when adding a manual slot', async () => {
+    setFreeEdit(true);
+    const wrapper = mount(EquipmentManager, { props });
+    
+    const promptSpy = vi.spyOn(window, 'prompt').mockReturnValue('sidearm');
+    
+    const addSlotBtn = wrapper.find('.add-manual-btn:first-child');
+    await addSlotBtn.trigger('click');
+    
+    expect(promptSpy).toHaveBeenCalled();
+    expect(props.onAddSlot).toHaveBeenCalledWith('sidearm', 'None');
+    
+    promptSpy.mockRestore();
+  });
 });
