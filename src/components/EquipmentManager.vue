@@ -4,10 +4,10 @@ import {
   type EquipmentName,
   equipmentPoints,
   equipmentGroups,
-  equipmentDefinitions,
 } from '../data/equipment';
 import { armyState } from '../store';
 import { formatSlotName } from '../utils';
+import { formatStats, getDef } from '../logic';
 
 const props = defineProps<{
   target: { slots: Record<string, EquipmentName>; extras: EquipmentName[] };
@@ -22,29 +22,7 @@ const addManualSlot = () => {
   if (name) props.onAddSlot(name, 'None');
 };
 
-const getDef = (name: EquipmentName): EquipmentDef => equipmentDefinitions[name] as EquipmentDef;
-
-const formatStats = (name: EquipmentName) => {
-  const def = getDef(name);
-  if (!def.weapon && (!def.traits || def.traits.length === 0)) return '';
-
-  let stats = '';
-  if (def.weapon) {
-    const w = def.weapon;
-    const parts = [];
-    if (w.range) parts.push(`${w.range}"`);
-    parts.push(`S${w.shots ?? '-'}`);
-    parts.push(`D${w.damage ?? '-'}${w.bonusDamage ? `(x${w.bonusDamage})` : ''}`);
-    stats += parts.join(' ');
-  }
-
-  if (def.traits && def.traits.length > 0) {
-    if (stats) stats += ' ';
-    stats += def.traits.join(' • ');
-  }
-
-  return stats ? ` | ${stats}` : '';
-};
+const getEquipDef = (name: EquipmentName): EquipmentDef => getDef(name) as EquipmentDef;
 </script>
 
 <template>
@@ -87,25 +65,25 @@ const formatStats = (name: EquipmentName) => {
         <span class="weapon-points points-text">[{{ equipmentPoints[weapon] || 0 }}]</span>
 
         <div
-          v-if="getDef(weapon).weapon || getDef(weapon).traits?.length"
+          v-if="getEquipDef(weapon).weapon || getEquipDef(weapon).traits?.length"
           class="weapon-info-inline"
         >
-          <div v-if="getDef(weapon).weapon" class="weapon-stats-compressed">
+          <div v-if="getEquipDef(weapon).weapon" class="weapon-stats-compressed">
             <span class="stat">{{
-              getDef(weapon).weapon?.range ? getDef(weapon).weapon?.range + '"' : ''
+              getEquipDef(weapon).weapon?.range ? getEquipDef(weapon).weapon?.range + '"' : ''
             }}</span>
-            <span class="stat">S{{ getDef(weapon).weapon?.shots ?? '-' }}</span>
+            <span class="stat">S{{ getEquipDef(weapon).weapon?.shots ?? '-' }}</span>
             <span class="stat"
-              >D{{ getDef(weapon).weapon?.damage ?? '-'
+              >D{{ getEquipDef(weapon).weapon?.damage ?? '-'
               }}{{
-                getDef(weapon).weapon?.bonusDamage
-                  ? '(x' + getDef(weapon).weapon?.bonusDamage + ')'
+                getEquipDef(weapon).weapon?.bonusDamage
+                  ? '(x' + getEquipDef(weapon).weapon?.bonusDamage + ')'
                   : ''
               }}</span
             >
           </div>
-          <div v-if="getDef(weapon).traits?.length" class="traits-list-inline">
-            <span class="trait-text">{{ getDef(weapon).traits?.join(' • ') }}</span>
+          <div v-if="getEquipDef(weapon).traits?.length" class="traits-list-inline">
+            <span class="trait-text">{{ getEquipDef(weapon).traits?.join(' • ') }}</span>
           </div>
         </div>
       </div>
@@ -147,23 +125,26 @@ const formatStats = (name: EquipmentName) => {
         </template>
         <span class="weapon-points points-text">[{{ equipmentPoints[item] || 0 }}]</span>
 
-        <div v-if="getDef(item).weapon || getDef(item).traits?.length" class="weapon-info-inline">
-          <div v-if="getDef(item).weapon" class="weapon-stats-compressed">
+        <div
+          v-if="getEquipDef(item).weapon || getEquipDef(item).traits?.length"
+          class="weapon-info-inline"
+        >
+          <div v-if="getEquipDef(item).weapon" class="weapon-stats-compressed">
             <span class="stat">{{
-              getDef(item).weapon?.range ? getDef(item).weapon?.range + '"' : ''
+              getEquipDef(item).weapon?.range ? getEquipDef(item).weapon?.range + '"' : ''
             }}</span>
-            <span class="stat">S{{ getDef(item).weapon?.shots ?? '-' }}</span>
+            <span class="stat">S{{ getEquipDef(item).weapon?.shots ?? '-' }}</span>
             <span class="stat"
-              >D{{ getDef(item).weapon?.damage ?? '-'
+              >D{{ getEquipDef(item).weapon?.damage ?? '-'
               }}{{
-                getDef(item).weapon?.bonusDamage
-                  ? '(x' + getDef(item).weapon?.bonusDamage + ')'
+                getEquipDef(item).weapon?.bonusDamage
+                  ? '(x' + getEquipDef(item).weapon?.bonusDamage + ')'
                   : ''
               }}</span
             >
           </div>
-          <div v-if="getDef(item).traits?.length" class="traits-list-inline">
-            <span class="trait-text">{{ getDef(item).traits?.join(' • ') }}</span>
+          <div v-if="getEquipDef(item).traits?.length" class="traits-list-inline">
+            <span class="trait-text">{{ getEquipDef(item).traits?.join(' • ') }}</span>
           </div>
         </div>
       </div>

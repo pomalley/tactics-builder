@@ -36,7 +36,9 @@ describe('Logic Helpers', () => {
         slotName: 'squad_weapon',
       };
       // Laser Cannon is 35 pts
-      expect(getOptionDefaultLabel(opt, mockUnit)).toBe('Default (Laser Cannon [35])');
+      expect(getOptionDefaultLabel(opt, mockUnit)).toBe(
+        'Default (Laser Cannon [35] - 48" S1 D5(x3) Crewed)'
+      );
     });
 
     it('returns correct label for model-level slots via opt.slotName', () => {
@@ -47,7 +49,7 @@ describe('Logic Helpers', () => {
         slotName: 'rifle',
       };
       // Military Rifle is 3 pts
-      expect(getOptionDefaultLabel(opt, mockUnit)).toBe('Default (Military Rifle [3])');
+      expect(getOptionDefaultLabel(opt, mockUnit)).toBe('Default (Military Rifle [3] - 24" S1 D0)');
     });
 
     it('returns correct label for model-level slots via modification target', () => {
@@ -62,7 +64,7 @@ describe('Logic Helpers', () => {
           },
         ],
       };
-      expect(getOptionDefaultLabel(opt, mockUnit)).toBe('Default (Military Rifle [3])');
+      expect(getOptionDefaultLabel(opt, mockUnit)).toBe('Default (Military Rifle [3] - 24" S1 D0)');
     });
 
     it('returns (Default / None) if no slot found', () => {

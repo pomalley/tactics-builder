@@ -1,5 +1,32 @@
-import type { Unit, UnitOptionDef } from './types';
-import { equipmentPoints, type EquipmentName } from './data/equipment';
+import type { Unit, UnitOptionDef, EquipmentDef } from './types';
+import { equipmentPoints, type EquipmentName, equipmentDefinitions } from './data/equipment';
+
+export const getDef = (name: string): EquipmentDef | undefined => {
+  return (equipmentDefinitions as any)[name];
+};
+
+export const formatStats = (name: string) => {
+  const def = getDef(name);
+  if (!def) return '';
+  if (!def.weapon && (!def.traits || def.traits.length === 0)) return '';
+
+  let stats = '';
+  if (def.weapon) {
+    const w = def.weapon;
+    const parts = [];
+    if (w.range) parts.push(`${w.range}"`);
+    parts.push(`S${w.shots ?? '-'}`);
+    parts.push(`D${w.damage ?? '-'}${w.bonusDamage ? `(x${w.bonusDamage})` : ''}`);
+    stats += parts.join(' ');
+  }
+
+  if (def.traits && def.traits.length > 0) {
+    if (stats) stats += ' ';
+    stats += def.traits.join(' • ');
+  }
+
+  return stats ? ` - ${stats}` : '';
+};
 
 export const getOptionDefaultLabel = (opt: UnitOptionDef, unit: Unit) => {
   // Check unit slots first
@@ -7,7 +34,8 @@ export const getOptionDefaultLabel = (opt: UnitOptionDef, unit: Unit) => {
     const currentWeapon = unit.slots[opt.slotName];
     const points = equipmentPoints[currentWeapon as EquipmentName];
     const pointsLabel = points !== undefined ? ` [${points}]` : '';
-    return `Default (${currentWeapon}${pointsLabel})`;
+    const statsLabel = formatStats(currentWeapon);
+    return `Default (${currentWeapon}${pointsLabel}${statsLabel})`;
   }
 
   // If the first choice's first modification targets a slot, find the current value of that slot
@@ -24,7 +52,8 @@ export const getOptionDefaultLabel = (opt: UnitOptionDef, unit: Unit) => {
       if (currentWeapon) {
         const points = equipmentPoints[currentWeapon as EquipmentName];
         const pointsLabel = points !== undefined ? ` [${points}]` : '';
-        return `Default (${currentWeapon}${pointsLabel})`;
+        const statsLabel = formatStats(currentWeapon);
+        return `Default (${currentWeapon}${pointsLabel}${statsLabel})`;
       }
     }
 
@@ -41,7 +70,8 @@ export const getOptionDefaultLabel = (opt: UnitOptionDef, unit: Unit) => {
       const currentWeapon = targetModel.slots[slotName];
       const points = equipmentPoints[currentWeapon as EquipmentName];
       const pointsLabel = points !== undefined ? ` [${points}]` : '';
-      return `Default (${currentWeapon}${pointsLabel})`;
+      const statsLabel = formatStats(currentWeapon);
+      return `Default (${currentWeapon}${pointsLabel}${statsLabel})`;
     }
   }
 
@@ -52,34 +82,49 @@ export const getOptionDefaultLabel = (opt: UnitOptionDef, unit: Unit) => {
       const currentWeapon = targetModel.slots[opt.slotName!];
       const points = equipmentPoints[currentWeapon as EquipmentName];
       const pointsLabel = points !== undefined ? ` [${points}]` : '';
-      return `Default (${currentWeapon}${pointsLabel})`;
+      const statsLabel = formatStats(currentWeapon);
+      return `Default (${currentWeapon}${pointsLabel}${statsLabel})`;
     }
   }
 
   return '(Default / None)';
 };
 
-export const getChoicePointsLabel = (choice: any) => {
+const findWeaponInChoice = (choice: any): string | undefined => {
   // Try weapon name directly first
-  let points = equipmentPoints[choice.name as EquipmentName];
+  if (equipmentPoints[choice.name as EquipmentName] !== undefined) {
+    return choice.name;
+  }
 
   // If not found, check modifications
-  if (points === undefined && choice.modifications) {
+  if (choice.modifications) {
     for (const mod of choice.modifications) {
       if (mod.setSlot) {
-        const weaponName = Object.values(mod.setSlot)[0] as string;
-        points = equipmentPoints[weaponName as EquipmentName];
-        if (points !== undefined) break;
+        return Object.values(mod.setSlot)[0] as string;
       }
       if (mod.setUnitSlot) {
-        const weaponName = Object.values(mod.setUnitSlot)[0] as string;
-        points = equipmentPoints[weaponName as EquipmentName];
-        if (points !== undefined) break;
+        return Object.values(mod.setUnitSlot)[0] as string;
       }
     }
   }
+  return undefined;
+};
 
-  return points !== undefined ? ` [${points}]` : '';
+export const getChoicePointsLabel = (choice: any) => {
+  const weaponName = findWeaponInChoice(choice);
+  if (weaponName) {
+    const points = equipmentPoints[weaponName as EquipmentName];
+    return points !== undefined ? ` [${points}]` : '';
+  }
+  return '';
+};
+
+export const getChoiceStatsLabel = (choice: any) => {
+  const weaponName = findWeaponInChoice(choice);
+  if (weaponName) {
+    return formatStats(weaponName);
+  }
+  return '';
 };
 
 export const getOptionPointsLabel = (opt: UnitOptionDef) => {
@@ -104,6 +149,29 @@ export const getOptionPointsLabel = (opt: UnitOptionDef) => {
       }
     }
     if (found) return ` [${total}]`;
+  }
+  return '';
+};
+
+export const getOptionStatsLabel = (opt: UnitOptionDef) => {
+  if (!opt.choices && opt.modifications) {
+    const statsStrings: string[] = [];
+    for (const mod of opt.modifications) {
+      if (mod.addExtras) {
+        for (const item of mod.addExtras) {
+          const stats = formatStats(item);
+          if (stats) statsStrings.push(stats.replace(/^ - /, ''));
+        }
+      }
+      if (mod.setSlot) {
+        const weaponName = Object.values(mod.setSlot)[0] as string;
+        const stats = formatStats(weaponName);
+        if (stats) statsStrings.push(stats.replace(/^ - /, ''));
+      }
+    }
+    if (statsStrings.length > 0) {
+      return ` - ${statsStrings.join(', ')}`;
+    }
   }
   return '';
 };

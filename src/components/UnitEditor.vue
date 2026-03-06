@@ -21,7 +21,13 @@ import {
 } from '../store';
 
 import EquipmentManager from './EquipmentManager.vue';
-import { getOptionDefaultLabel, getChoicePointsLabel, getOptionPointsLabel } from '../logic';
+import {
+  getOptionDefaultLabel,
+  getChoicePointsLabel,
+  getChoiceStatsLabel,
+  getOptionPointsLabel,
+  getOptionStatsLabel,
+} from '../logic';
 
 const lifeformTypes = Object.keys(lifeformStats) as Lifeform[];
 
@@ -110,7 +116,8 @@ const onLifeformChange = (event: Event) => {
                   :value="choice.id"
                   :selected="unit.selectedOptions.includes(choice.id)"
                 >
-                  {{ choice.name }}{{ getChoicePointsLabel(choice) }}
+                  {{ choice.name }}{{ getChoicePointsLabel(choice)
+                  }}{{ getChoiceStatsLabel(choice) }}
                 </option>
               </select>
             </div>
@@ -123,7 +130,7 @@ const onLifeformChange = (event: Event) => {
                   :checked="unit.selectedOptions.includes(opt.id)"
                   @change="toggleUnitOption(unit!.id, opt.id)"
                 />
-                {{ opt.name }}{{ getOptionPointsLabel(opt) }}
+                {{ opt.name }}{{ getOptionPointsLabel(opt) }}{{ getOptionStatsLabel(opt) }}
               </label>
             </div>
           </template>
