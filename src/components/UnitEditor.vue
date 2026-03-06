@@ -1,19 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import type { UnitType } from '../types';
 import { lifeformStats, type Lifeform } from '../data/lifeforms';
-import { unitGroups, unitOptions } from '../data/units';
-import ModelItem from './ModelItem.vue';
+import { unitGroups } from '../data/units';
+import { useCurrentUnit } from '../composables/useCurrentUnit';
 import {
-  appState,
-  armyState,
-  addModelToUnit,
-  removeModelFromUnit,
-  calculateUnitPoints,
   changeUnitType,
   changeUnitLifeform,
-  toggleUnitOption,
-  selectUnitOptionChoice,
   addSlotToUnit,
   removeSlotFromUnit,
   addExtraToUnit,
@@ -21,25 +13,12 @@ import {
 } from '../store';
 
 import EquipmentManager from './EquipmentManager.vue';
-import {
-  getOptionDefaultLabel,
-  getChoicePointsLabel,
-  getChoiceStatsLabel,
-  getOptionPointsLabel,
-  getOptionStatsLabel,
-} from '../logic';
+import UnitOptionsEditor from './UnitOptionsEditor.vue';
+import UnitModelList from './UnitModelList.vue';
+
+const { unit, unitPoints } = useCurrentUnit();
 
 const lifeformTypes = Object.keys(lifeformStats) as Lifeform[];
-
-const unit = computed(() => armyState.units.find((u) => u.id === appState.selectedUnitId));
-
-const unitPoints = computed(() => {
-  return unit.value ? calculateUnitPoints(unit.value) : 0;
-});
-
-const availableOptions = computed(() => {
-  return unit.value ? unitOptions[unit.value.type] || [] : [];
-});
 
 const onTypeChange = (event: Event) => {
   if (!unit.value) return;
@@ -90,52 +69,7 @@ const onLifeformChange = (event: Event) => {
         </div>
       </div>
 
-      <div class="unit-options" v-if="availableOptions.length > 0">
-        <h4>Unit Options</h4>
-        <div v-for="opt in availableOptions" :key="opt.id" class="option-item">
-          <template v-if="opt.choices">
-            <div class="option-select">
-              <label :for="opt.id">{{ opt.name }}:</label>
-              <select
-                :id="opt.id"
-                @change="
-                  (e) =>
-                    selectUnitOptionChoice(
-                      unit!.id,
-                      opt.id,
-                      (e.target as HTMLSelectElement).value || null
-                    )
-                "
-              >
-                <option v-if="opt.type !== 'slot'" value="">
-                  {{ getOptionDefaultLabel(opt, unit) }}
-                </option>
-                <option
-                  v-for="choice in opt.choices"
-                  :key="choice.id"
-                  :value="choice.id"
-                  :selected="unit.selectedOptions.includes(choice.id)"
-                >
-                  {{ choice.name }}{{ getChoicePointsLabel(choice)
-                  }}{{ getChoiceStatsLabel(choice) }}
-                </option>
-              </select>
-            </div>
-          </template>
-          <template v-else>
-            <div class="option-checkbox">
-              <label>
-                <input
-                  type="checkbox"
-                  :checked="unit.selectedOptions.includes(opt.id)"
-                  @change="toggleUnitOption(unit!.id, opt.id)"
-                />
-                {{ opt.name }}{{ getOptionPointsLabel(opt) }}{{ getOptionStatsLabel(opt) }}
-              </label>
-            </div>
-          </template>
-        </div>
-      </div>
+      <UnitOptionsEditor :unit="unit" />
 
       <div class="unit-equipment-container">
         <EquipmentManager
@@ -147,25 +81,7 @@ const onLifeformChange = (event: Event) => {
         />
       </div>
 
-      <div class="models-container">
-        <h4 v-if="unit.models.length > 0">Models</h4>
-        <div class="models-list">
-          <ModelItem
-            v-for="model in unit.models"
-            :key="model.id"
-            :model="model"
-            :unitId="unit.id"
-            @remove="removeModelFromUnit(unit!.id, $event)"
-          />
-        </div>
-        <button
-          v-if="armyState.freeEdit"
-          @click="addModelToUnit(unit.id)"
-          class="btn btn-secondary add-model-btn"
-        >
-          + Add Model
-        </button>
-      </div>
+      <UnitModelList :unit="unit" />
     </div>
   </div>
 </template>
@@ -222,54 +138,14 @@ const onLifeformChange = (event: Event) => {
   color: var(--text-muted);
 }
 
-.models-container h4 {
-  margin: 0 0 var(--space-lg) 0;
-  color: var(--text-muted);
-}
-
-.add-model-btn {
-  margin-top: var(--space-sm);
-  width: 100%;
-}
-
-.unit-options,
 .unit-equipment-container {
   margin-bottom: var(--space-lg);
   padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--border-color);
 }
 
-.unit-options h4,
 .unit-equipment-container h4 {
   margin: 0 0 var(--space-md) 0;
   color: var(--text-muted);
-}
-
-.option-item {
-  margin-bottom: var(--space-md);
-}
-
-.option-select {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-}
-
-.option-select label {
-  font-weight: bold;
-  color: var(--text-muted);
-  font-size: 0.95rem;
-}
-
-.option-checkbox {
-  margin-bottom: var(--space-sm);
-}
-
-.option-checkbox label {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  font-size: 0.95rem;
 }
 </style>

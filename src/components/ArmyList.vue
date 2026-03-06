@@ -11,8 +11,8 @@ import {
   selectUnit,
   moveUnit,
   updateUnitsOrder,
-  calculateUnitPoints,
 } from '../store';
+import { calculateUnitPoints } from '../logic';
 import { lifeforms } from '../data/lifeforms';
 
 const getUnitPoints = (unit: any) => calculateUnitPoints(unit);

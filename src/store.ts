@@ -1,8 +1,14 @@
 import { reactive, computed, watch } from 'vue';
-import type { Army, Unit, Model, ModelStats, UnitType, AppState } from './types';
-import { Lifeform, lifeformStats } from './data/lifeforms';
-import { EquipmentName, equipmentPoints } from './data/equipment';
-import { unitDefinitions, unitOptions } from './data/units';
+import type { Army, Unit, Model, UnitType, AppState } from './types';
+import { type Lifeform } from './data/lifeforms';
+import { type EquipmentName } from './data/equipment';
+import {
+  calculateUnitPoints,
+  populateModels,
+  unitTypeHasLifeform,
+  toggleUnitOptionLogic,
+  selectUnitOptionChoiceLogic,
+} from './logic';
 
 const STORAGE_KEY = 'tactics-army-builder-state';
 
@@ -58,8 +64,6 @@ const loadState = (): AppState => {
   return getDefaultState();
 };
 
-// Using shallowReactive for the top-level state to avoid nested proxy overhead
-// but keeping the internal arrays reactive as needed via resetStore.
 export const appState = reactive<AppState>(loadState());
 
 export const resetStore = (initialState?: AppState) => {
@@ -69,7 +73,6 @@ export const resetStore = (initialState?: AppState) => {
   appState.selectedUnitId = next.selectedUnitId;
 };
 
-// Internal computed for finding current army
 const currentArmy = computed(() => {
   const current = appState.armies.find((a) => a.id === appState.currentArmyId);
   if (current) return current;
@@ -80,7 +83,6 @@ const currentArmy = computed(() => {
   return fresh;
 });
 
-// armyState is a reactive proxy that always delegates to currentArmy.value
 export const armyState = reactive(
   new Proxy({} as Army, {
     get(_, prop) {
@@ -144,161 +146,18 @@ export const setFreeEdit = (val: boolean) => {
   armyState.freeEdit = val;
 };
 
-const calculateEquipmentPoints = (target: {
-  slots: Record<string, EquipmentName>;
-  extras: EquipmentName[];
-}): number => {
-  const slotsCost = Object.values(target.slots).reduce(
-    (sum, weapon) => sum + (equipmentPoints[weapon] || 0),
-    0
-  );
-  const extrasCost = target.extras.reduce((sum, item) => sum + (equipmentPoints[item] || 0), 0);
-  return slotsCost + extrasCost;
-};
-
-export const getModelStats = (model: Model): ModelStats | undefined => {
-  return (
-    model.baseStats ??
-    (model.lifeform && model.class
-      ? lifeformStats[model.lifeform as Lifeform]?.[model.class]
-      : undefined)
-  );
-};
-
-export const calculateModelPoints = (model: Model): number => {
-  const baseCost = getModelStats(model)?.points ?? 0;
-  return baseCost + calculateEquipmentPoints(model);
-};
-
-export const calculateUnitPoints = (unit: Unit): number => {
-  const modelsPoints = unit.models.reduce((sum, m) => sum + calculateModelPoints(m), 0);
-  return modelsPoints + calculateEquipmentPoints(unit);
-};
-
 export const totalArmyPoints = computed(() => {
   return armyState.units.reduce((acc, unit) => {
     return acc + calculateUnitPoints(unit);
   }, 0);
 });
 
-const applyModifications = (
-  unit: Unit,
-  modifications: Array<{
-    targetName?: string;
-    targetClass?: string;
-    clearSlot?: string;
-    setSlot?: Record<string, EquipmentName>;
-    clearUnitSlot?: string;
-    setUnitSlot?: Record<string, EquipmentName>;
-    addExtras?: EquipmentName[];
-    addUnitExtras?: EquipmentName[];
-  }>
-) => {
-  for (const mod of modifications) {
-    if (mod.clearUnitSlot) delete unit.slots[mod.clearUnitSlot];
-    if (mod.setUnitSlot) {
-      for (const [k, v] of Object.entries(mod.setUnitSlot)) {
-        unit.slots[k] = v;
-      }
-    }
-    if (mod.addUnitExtras) {
-      for (const extra of mod.addUnitExtras) {
-        if (!unit.extras.includes(extra)) {
-          unit.extras.push(extra);
-        }
-      }
-    }
-
-    for (const model of unit.models) {
-      if (mod.targetName && model.name !== mod.targetName) continue;
-      if (mod.targetClass && model.class !== mod.targetClass) continue;
-      if (mod.clearSlot) delete model.slots[mod.clearSlot];
-      if (mod.setSlot) {
-        for (const [k, v] of Object.entries(mod.setSlot)) {
-          model.slots[k] = v;
-        }
-      }
-      if (mod.addExtras) {
-        for (const extra of mod.addExtras) {
-          if (!model.extras.includes(extra)) {
-            model.extras.push(extra);
-          }
-        }
-      }
-    }
-  }
-};
-
-const resetUnitToBase = (unit: Unit) => {
-  const def = unitDefinitions[unit.type];
-  unit.models = [];
-  unit.slots = { ...def.slots } as Record<string, EquipmentName>;
-  unit.extras = [...(def.extras || [])];
-
-  for (const modelDef of def.models) {
-    unit.models.push({
-      id: crypto.randomUUID(),
-      name: modelDef.name,
-      lifeform: modelDef.baseStats ? undefined : unit.lifeform,
-      class: modelDef.class,
-      baseStats: modelDef.baseStats,
-      slots: { ...modelDef.slots } as Record<string, EquipmentName>,
-      extras: [...modelDef.extras],
-    });
-  }
-};
-
-const applyUnitOptions = (unit: Unit) => {
-  const availableOptions = unitOptions[unit.type] || [];
-  const activeSelectedOptions = unit.selectedOptions || [];
-
-  for (const optionDef of availableOptions) {
-    if (optionDef.type === 'slot') {
-      const choiceIds = optionDef.choices?.map((c) => c.id) || [];
-      const activeChoiceId = activeSelectedOptions.find((id) => choiceIds.includes(id));
-      if (activeChoiceId && optionDef.slotName) {
-        const choice = optionDef.choices!.find((c) => c.id === activeChoiceId)!;
-
-        if (optionDef.slotName in unit.slots) {
-          unit.slots[optionDef.slotName] = choice.name as EquipmentName;
-        }
-
-        for (const model of unit.models) {
-          if (optionDef.slotName in model.slots) {
-            model.slots[optionDef.slotName] = choice.name as EquipmentName;
-          }
-        }
-
-        if (choice.modifications) {
-          applyModifications(unit, choice.modifications);
-        }
-      }
-    } else {
-      if (activeSelectedOptions.includes(optionDef.id) && optionDef.modifications) {
-        applyModifications(unit, optionDef.modifications);
-      }
-      if (optionDef.choices) {
-        for (const choice of optionDef.choices) {
-          if (activeSelectedOptions.includes(choice.id)) {
-            applyModifications(unit, choice.modifications || []);
-          }
-        }
-      }
-    }
-  }
-};
-
-export const populateModels = (unit: Unit) => {
-  if (armyState.freeEdit) return;
-  resetUnitToBase(unit);
-  applyUnitOptions(unit);
-};
-
-const unitTypeHasLifeform = (type: UnitType): boolean => {
-  return unitDefinitions[type].models.some((m) => !m.baseStats);
+export const minimizeAllUnits = () => {
+  armyState.units.forEach((u) => (u.minimized = true));
 };
 
 export const addUnitWithType = (type: UnitType) => {
+  minimizeAllUnits();
   const newUnit: Unit = {
     id: crypto.randomUUID(),
     name: 'New ' + type,
@@ -309,9 +168,13 @@ export const addUnitWithType = (type: UnitType) => {
     slots: {},
     extras: [],
   };
-  populateModels(newUnit);
+  populateModels(newUnit, armyState.freeEdit);
   armyState.units.push(newUnit);
   selectUnit(newUnit.id);
+};
+
+export const addUnit = () => {
+  addUnitWithType('Infantry');
 };
 
 export const selectUnit = (unitId: string | null) => {
@@ -351,7 +214,7 @@ export const changeUnitType = (unitId: string, newType: UnitType) => {
     unit.lifeform = unitTypeHasLifeform(newType)
       ? unit.lifeform || armyState.defaultLifeform
       : undefined;
-    populateModels(unit);
+    populateModels(unit, armyState.freeEdit);
   }
 };
 
@@ -391,13 +254,7 @@ export const removeModelFromUnit = (unitId: string, modelId: string) => {
 export const toggleUnitOption = (unitId: string, optionId: string) => {
   const unit = armyState.units.find((u) => u.id === unitId);
   if (unit) {
-    const index = unit.selectedOptions.indexOf(optionId);
-    if (index === -1) {
-      unit.selectedOptions.push(optionId);
-    } else {
-      unit.selectedOptions.splice(index, 1);
-    }
-    populateModels(unit);
+    toggleUnitOptionLogic(unit, optionId, armyState.freeEdit);
   }
 };
 
@@ -407,22 +264,9 @@ export const selectUnitOptionChoice = (
   choiceId: string | null
 ) => {
   const unit = armyState.units.find((u) => u.id === unitId);
-  if (!unit) return;
-
-  const availableOptions = unitOptions[unit.type] || [];
-  const parent = availableOptions.find((o) => o.id === parentOptionId);
-  if (!parent || !parent.choices) return;
-
-  // Remove all choices of this parent from selectedOptions
-  const choiceIds = parent.choices.map((c) => c.id);
-  unit.selectedOptions = unit.selectedOptions.filter((id) => !choiceIds.includes(id));
-
-  // Add the new choice if provided
-  if (choiceId) {
-    unit.selectedOptions.push(choiceId);
+  if (unit) {
+    selectUnitOptionChoiceLogic(unit, parentOptionId, choiceId, armyState.freeEdit);
   }
-
-  populateModels(unit);
 };
 
 const findTarget = (

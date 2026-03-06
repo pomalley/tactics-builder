@@ -4,6 +4,8 @@ import type { Model, ModelClass } from '../types';
 import {
   calculateModelPoints,
   getModelStats,
+} from '../logic';
+import {
   armyState,
   updateModelClass,
   addSlotToModel,

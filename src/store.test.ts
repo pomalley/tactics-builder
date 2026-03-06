@@ -19,10 +19,8 @@ import {
   removeExtraFromModel,
   toggleUnitOption,
   selectUnitOptionChoice,
-  calculateModelPoints,
   totalArmyPoints,
   changeUnitType,
-  calculateUnitPoints,
   addArmy,
   selectArmy,
   removeArmy,
@@ -30,6 +28,7 @@ import {
   updateArmyDefaultLifeform,
   resetStore,
 } from './store';
+import { calculateModelPoints, calculateUnitPoints } from './logic';
 
 describe('Army Store', () => {
   beforeEach(() => {

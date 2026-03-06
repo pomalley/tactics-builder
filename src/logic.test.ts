@@ -6,8 +6,12 @@ import {
   formatStats,
   getChoiceStatsLabel,
   getOptionStatsLabel,
+  calculateEquipmentPoints,
+  getModelStats,
+  calculateModelPoints,
+  calculateUnitPoints,
 } from './logic';
-import type { Unit, UnitOptionDef } from './types';
+import type { Unit, UnitOptionDef, Model } from './types';
 
 describe('Logic Helpers', () => {
   let mockUnit: Unit;
@@ -32,6 +36,87 @@ describe('Logic Helpers', () => {
       slots: { squad_weapon: 'Laser Cannon' },
       extras: [],
     };
+  });
+
+  describe('Point Calculations', () => {
+    it('calculateEquipmentPoints should sum points of slots and extras', () => {
+      const target = {
+        slots: { primary: 'Military Rifle' as any, sidearm: 'Hand Laser' as any },
+        extras: ['Frag Grenade' as any, 'Fog Grenade' as any],
+      };
+      // 3 + 2 + 1 + 1 = 7
+      expect(calculateEquipmentPoints(target)).toBe(7);
+    });
+
+    it('getModelStats should return stats from lifeform and class', () => {
+      const model: Model = {
+        id: 'm1',
+        name: 'Trooper',
+        lifeform: 'Human',
+        class: 'Soldier',
+        slots: {},
+        extras: [],
+      };
+      const stats = getModelStats(model);
+      expect(stats).toBeDefined();
+      expect(stats?.points).toBe(10);
+    });
+
+    it('getModelStats should return baseStats if provided', () => {
+      const model: Model = {
+        id: 'm1',
+        name: 'Vehicle',
+        baseStats: { points: 50 } as any,
+        slots: {},
+        extras: [],
+      };
+      const stats = getModelStats(model);
+      expect(stats?.points).toBe(50);
+    });
+
+    it('calculateModelPoints should include base cost and equipment', () => {
+      const model: Model = {
+        id: 'm1',
+        name: 'Trooper',
+        lifeform: 'Human',
+        class: 'Soldier',
+        slots: { rifle: 'Military Rifle' as any },
+        extras: ['Frag Grenade' as any],
+      };
+      // 10 + 3 + 1 = 14
+      expect(calculateModelPoints(model)).toBe(14);
+    });
+
+    it('calculateUnitPoints should sum all models and unit-level equipment', () => {
+      const unit: Unit = {
+        id: 'u1',
+        name: 'Unit',
+        type: 'Infantry',
+        selectedOptions: [],
+        models: [
+          {
+            id: 'm1',
+            name: 'M1',
+            lifeform: 'Human',
+            class: 'Soldier',
+            slots: {},
+            extras: [],
+          }, // 10
+          {
+            id: 'm2',
+            name: 'M2',
+            lifeform: 'Human',
+            class: 'Soldier',
+            slots: {},
+            extras: [],
+          }, // 10
+        ],
+        slots: { squad_gun: 'Laser Cannon' as any }, // 35
+        extras: ['Morale +1 (Weapon Team)' as any], // 2
+      };
+      // 10 + 10 + 35 + 2 = 57
+      expect(calculateUnitPoints(unit)).toBe(57);
+    });
   });
 
   describe('formatStats', () => {
