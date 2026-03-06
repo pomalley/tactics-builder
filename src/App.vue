@@ -1,29 +1,25 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import UnitCatalog from "./components/UnitCatalog.vue";
-import ArmyList from "./components/ArmyList.vue";
-import UnitEditor from "./components/UnitEditor.vue";
-import { 
-  appState, 
-  armyState, 
-  addArmy, 
-  selectArmy, 
-  removeArmy,
-  setFreeEdit 
-} from "./store";
+import { ref, watch } from 'vue';
+import UnitCatalog from './components/UnitCatalog.vue';
+import ArmyList from './components/ArmyList.vue';
+import UnitEditor from './components/UnitEditor.vue';
+import { appState, armyState, addArmy, selectArmy, removeArmy, setFreeEdit } from './store';
 
-const title = ref("5PFH: Tactics Army Builder");
+const title = ref('5PFH: Tactics Army Builder');
 
 // Mobile navigation state
 type ColumnType = 'catalog' | 'army' | 'unit';
 const activeMobileColumn = ref<ColumnType>('army');
 
 // Whenever a unit is forcefully selected (e.g. from the army list), switch to unit view on mobile
-watch(() => appState.selectedUnitId, (newId) => {
-  if (newId) {
-    activeMobileColumn.value = 'unit';
+watch(
+  () => appState.selectedUnitId,
+  (newId) => {
+    if (newId) {
+      activeMobileColumn.value = 'unit';
+    }
   }
-});
+);
 
 const onArmySelect = (event: Event) => {
   const target = event.target as HTMLSelectElement;
@@ -54,19 +50,19 @@ const onRemoveArmy = () => {
 
       <!-- Mobile Navigation -->
       <nav class="mobile-nav">
-        <button 
+        <button
           :class="['nav-btn', { active: activeMobileColumn === 'catalog' }]"
           @click="activeMobileColumn = 'catalog'"
         >
           Catalog
         </button>
-        <button 
+        <button
           :class="['nav-btn', { active: activeMobileColumn === 'army' }]"
           @click="activeMobileColumn = 'army'"
         >
           Army
         </button>
-        <button 
+        <button
           :class="['nav-btn', { active: activeMobileColumn === 'unit' }]"
           @click="activeMobileColumn = 'unit'"
           :disabled="!appState.selectedUnitId"
@@ -86,13 +82,24 @@ const onRemoveArmy = () => {
           </select>
           <div class="management-actions">
             <button @click="addArmy" class="btn btn-blue" title="New Army">+</button>
-            <button @click="onRemoveArmy" class="btn btn-danger" :disabled="appState.armies.length <= 1" title="Delete Army">🗑</button>
+            <button
+              @click="onRemoveArmy"
+              class="btn btn-danger"
+              :disabled="appState.armies.length <= 1"
+              title="Delete Army"
+            >
+              🗑
+            </button>
           </div>
         </div>
 
         <div class="toolbar-options">
           <label class="free-edit-label">
-            <input type="checkbox" :checked="armyState.freeEdit" @change="(e) => setFreeEdit((e.target as HTMLInputElement).checked)" />
+            <input
+              type="checkbox"
+              :checked="armyState.freeEdit"
+              @change="(e) => setFreeEdit((e.target as HTMLInputElement).checked)"
+            />
             <span>Free Edit Mode</span>
           </label>
         </div>
@@ -100,24 +107,18 @@ const onRemoveArmy = () => {
     </header>
 
     <main class="layout-grid">
-      <div 
-        class="column catalog-column" 
+      <div
+        class="column catalog-column"
         :class="{ 'mobile-active': activeMobileColumn === 'catalog' }"
       >
         <UnitCatalog />
       </div>
 
-      <div 
-        class="column army-column"
-        :class="{ 'mobile-active': activeMobileColumn === 'army' }"
-      >
+      <div class="column army-column" :class="{ 'mobile-active': activeMobileColumn === 'army' }">
         <ArmyList />
       </div>
 
-      <div 
-        class="column unit-column"
-        :class="{ 'mobile-active': activeMobileColumn === 'unit' }"
-      >
+      <div class="column unit-column" :class="{ 'mobile-active': activeMobileColumn === 'unit' }">
         <UnitEditor v-if="appState.selectedUnitId" />
         <div v-else class="empty-editor-state">
           <!-- Hidden per user request on desktop, but taking up grid space if needed -->
@@ -143,7 +144,7 @@ const onRemoveArmy = () => {
   padding: var(--space-md) var(--space-lg);
   background: var(--bg-card);
   border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   gap: var(--space-md);

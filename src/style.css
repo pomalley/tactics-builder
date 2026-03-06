@@ -10,13 +10,13 @@
   --bg-card: #1e1e1e;
   --bg-card-alt: #2a2a2a;
   --border-color: #333;
-  --primary: #4CAF50;
+  --primary: #4caf50;
   --primary-hover: #45a049;
   --danger: #ff5252;
   --danger-hover: #ff1744;
   --accent: #f0c444;
-  --accent-blue: #2196F3;
-  --accent-blue-hover: #1976D2;
+  --accent-blue: #2196f3;
+  --accent-blue-hover: #1976d2;
 
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
@@ -69,7 +69,9 @@ body {
   cursor: pointer;
   font-weight: bold;
   font-family: inherit;
-  transition: background-color 0.2s, opacity 0.2s;
+  transition:
+    background-color 0.2s,
+    opacity 0.2s;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -81,29 +83,51 @@ body {
   cursor: not-allowed;
 }
 
-.btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
 
-.btn-danger { background: var(--danger); color: white; }
-.btn-danger:hover:not(:disabled) { background: var(--danger-hover); }
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+.btn-danger:hover:not(:disabled) {
+  background: var(--danger-hover);
+}
 
-.btn-blue { background: var(--accent-blue); color: white; }
-.btn-blue:hover:not(:disabled) { background: var(--accent-blue-hover); }
+.btn-blue {
+  background: var(--accent-blue);
+  color: white;
+}
+.btn-blue:hover:not(:disabled) {
+  background: var(--accent-blue-hover);
+}
 
 .btn-secondary {
   background: #e0e0e0;
   color: #333;
 }
 @media (prefers-color-scheme: dark) {
-  .btn-secondary { background: #333; color: #eee; }
+  .btn-secondary {
+    background: #333;
+    color: #eee;
+  }
 }
-.btn-secondary:hover:not(:disabled) { opacity: 0.8; }
+.btn-secondary:hover:not(:disabled) {
+  opacity: 0.8;
+}
 
 .btn-ghost {
   background: transparent;
   color: var(--text-muted);
 }
-.btn-ghost:hover:not(:disabled) { color: var(--primary); }
+.btn-ghost:hover:not(:disabled) {
+  color: var(--primary);
+}
 
 .btn-mini {
   padding: 0 var(--space-xs);
@@ -112,7 +136,8 @@ body {
   font-size: 1rem;
 }
 
-.input-text, select {
+.input-text,
+select {
   padding: 0.4rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);

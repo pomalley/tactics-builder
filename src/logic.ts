@@ -1,60 +1,62 @@
-import type { Unit, UnitOptionDef } from "./types";
-import { equipmentPoints, type EquipmentName } from "./data/equipment";
+import type { Unit, UnitOptionDef } from './types';
+import { equipmentPoints, type EquipmentName } from './data/equipment';
 
 export const getOptionDefaultLabel = (opt: UnitOptionDef, unit: Unit) => {
   // Check unit slots first
-  if (opt.type === "slot" && opt.slotName && unit.slots[opt.slotName]) {
+  if (opt.type === 'slot' && opt.slotName && unit.slots[opt.slotName]) {
     const currentWeapon = unit.slots[opt.slotName];
     const points = equipmentPoints[currentWeapon as EquipmentName];
-    const pointsLabel = points !== undefined ? ` [${points}]` : "";
+    const pointsLabel = points !== undefined ? ` [${points}]` : '';
     return `Default (${currentWeapon}${pointsLabel})`;
   }
 
   // If the first choice's first modification targets a slot, find the current value of that slot
   const firstMod = opt.choices?.[0]?.modifications?.[0];
-  if (firstMod && (firstMod.setSlot || firstMod.clearSlot || firstMod.setUnitSlot || firstMod.clearUnitSlot)) {
+  if (
+    firstMod &&
+    (firstMod.setSlot || firstMod.clearSlot || firstMod.setUnitSlot || firstMod.clearUnitSlot)
+  ) {
     if (firstMod.setUnitSlot || firstMod.clearUnitSlot) {
-        const slotName = firstMod.setUnitSlot ? Object.keys(firstMod.setUnitSlot)[0] : firstMod.clearUnitSlot!;
-        const currentWeapon = unit.slots[slotName];
-        if (currentWeapon) {
-            const points = equipmentPoints[currentWeapon as EquipmentName];
-            const pointsLabel = points !== undefined ? ` [${points}]` : "";
-            return `Default (${currentWeapon}${pointsLabel})`;
-        }
+      const slotName = firstMod.setUnitSlot
+        ? Object.keys(firstMod.setUnitSlot)[0]
+        : firstMod.clearUnitSlot!;
+      const currentWeapon = unit.slots[slotName];
+      if (currentWeapon) {
+        const points = equipmentPoints[currentWeapon as EquipmentName];
+        const pointsLabel = points !== undefined ? ` [${points}]` : '';
+        return `Default (${currentWeapon}${pointsLabel})`;
+      }
     }
 
-    const slotName = firstMod.setSlot
-      ? Object.keys(firstMod.setSlot)[0]
-      : firstMod.clearSlot!;
+    const slotName = firstMod.setSlot ? Object.keys(firstMod.setSlot)[0] : firstMod.clearSlot!;
 
     // Find a model this option targets
     const targetModel = unit.models.find((m) => {
       const nameMatch = !firstMod.targetName || m.name === firstMod.targetName;
-      const classMatch =
-        !firstMod.targetClass || m.class === firstMod.targetClass;
+      const classMatch = !firstMod.targetClass || m.class === firstMod.targetClass;
       return nameMatch && classMatch && m.slots[slotName];
     });
 
     if (targetModel) {
       const currentWeapon = targetModel.slots[slotName];
       const points = equipmentPoints[currentWeapon as EquipmentName];
-      const pointsLabel = points !== undefined ? ` [${points}]` : "";
+      const pointsLabel = points !== undefined ? ` [${points}]` : '';
       return `Default (${currentWeapon}${pointsLabel})`;
     }
   }
 
   // If the option itself is a slot type
-  if (opt.type === "slot" && opt.slotName) {
+  if (opt.type === 'slot' && opt.slotName) {
     const targetModel = unit.models.find((m) => m.slots[opt.slotName!]);
     if (targetModel) {
       const currentWeapon = targetModel.slots[opt.slotName!];
       const points = equipmentPoints[currentWeapon as EquipmentName];
-      const pointsLabel = points !== undefined ? ` [${points}]` : "";
+      const pointsLabel = points !== undefined ? ` [${points}]` : '';
       return `Default (${currentWeapon}${pointsLabel})`;
     }
   }
 
-  return "(Default / None)";
+  return '(Default / None)';
 };
 
 export const getChoicePointsLabel = (choice: any) => {
@@ -77,7 +79,7 @@ export const getChoicePointsLabel = (choice: any) => {
     }
   }
 
-  return points !== undefined ? ` [${points}]` : "";
+  return points !== undefined ? ` [${points}]` : '';
 };
 
 export const getOptionPointsLabel = (opt: UnitOptionDef) => {
@@ -88,7 +90,7 @@ export const getOptionPointsLabel = (opt: UnitOptionDef) => {
       if (mod.addExtras) {
         total += mod.addExtras.reduce(
           (sum, item) => sum + (equipmentPoints[item as EquipmentName] || 0),
-          0,
+          0
         );
         found = true;
       }
@@ -103,5 +105,5 @@ export const getOptionPointsLabel = (opt: UnitOptionDef) => {
     }
     if (found) return ` [${total}]`;
   }
-  return "";
+  return '';
 };

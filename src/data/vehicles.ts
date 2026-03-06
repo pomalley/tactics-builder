@@ -1,31 +1,31 @@
-import type { UnitOptionDef, UnitTypeDef } from "../types";
+import type { UnitOptionDef, UnitTypeDef } from '../types';
 
 const vehicleVeteranSkill: UnitOptionDef = {
-  id: "vehicle_veteran_skill",
-  name: "Vehicle Veteran Skill",
-  type: "slot",
-  slotName: "veteran_skill",
+  id: 'vehicle_veteran_skill',
+  name: 'Vehicle Veteran Skill',
+  type: 'slot',
+  slotName: 'veteran_skill',
   choices: [
-    { id: "vehicle_veteran_skill_none", name: "None" },
-    { id: "vehicle_veteran_skill_gunnery", name: "Gunnery" },
-    { id: "vehicle_veteran_skill_command", name: "Command" },
-    { id: "vehicle_veteran_skill_driving", name: "Driving" },
-    { id: "vehicle_veteran_skill_damage_control", name: "Damage Control" },
-    { id: "vehicle_veteran_skill_armor", name: "Improvised Armor" },
-    { id: "vehicle_veteran_skill_defensive", name: "Defensive Measures" },
+    { id: 'vehicle_veteran_skill_none', name: 'None' },
+    { id: 'vehicle_veteran_skill_gunnery', name: 'Gunnery' },
+    { id: 'vehicle_veteran_skill_command', name: 'Command' },
+    { id: 'vehicle_veteran_skill_driving', name: 'Driving' },
+    { id: 'vehicle_veteran_skill_damage_control', name: 'Damage Control' },
+    { id: 'vehicle_veteran_skill_armor', name: 'Improvised Armor' },
+    { id: 'vehicle_veteran_skill_defensive', name: 'Defensive Measures' },
   ],
 };
 
 const ifvOptions: UnitOptionDef[] = [
   vehicleVeteranSkill,
   {
-    id: "ifv_turret_slot",
-    name: "Turret",
-    type: "slot",
-    slotName: "turret",
+    id: 'ifv_turret_slot',
+    name: 'Turret',
+    type: 'slot',
+    slotName: 'turret',
     choices: [
-      { id: "ifv_20mm", name: "20mm Autocannon" },
-      { id: "ifv_heavy_plasma", name: "Heavy Plasma Gun" },
+      { id: 'ifv_20mm', name: '20mm Autocannon' },
+      { id: 'ifv_heavy_plasma', name: 'Heavy Plasma Gun' },
     ],
   },
 ];
@@ -33,13 +33,13 @@ const ifvOptions: UnitOptionDef[] = [
 const lightTankOptions: UnitOptionDef[] = [
   vehicleVeteranSkill,
   {
-    id: "light_tank_turret_slot",
-    name: "Turret",
-    type: "slot",
-    slotName: "turret",
+    id: 'light_tank_turret_slot',
+    name: 'Turret',
+    type: 'slot',
+    slotName: 'turret',
     choices: [
-      { id: "light_tank_40mm", name: "40mm Autocannon" },
-      { id: "light_tank_pulse", name: "Pulse Laser" },
+      { id: 'light_tank_40mm', name: '40mm Autocannon' },
+      { id: 'light_tank_pulse', name: 'Pulse Laser' },
     ],
   },
 ];
@@ -47,23 +47,23 @@ const lightTankOptions: UnitOptionDef[] = [
 const mediumTankOptions: UnitOptionDef[] = [
   vehicleVeteranSkill,
   {
-    id: "medium_tank_coax_slot",
-    name: "Coaxial",
-    type: "slot",
-    slotName: "coaxial",
+    id: 'medium_tank_coax_slot',
+    name: 'Coaxial',
+    type: 'slot',
+    slotName: 'coaxial',
     choices: [
-      { id: "medium_tank_lmg", name: "Light Machine Gun" },
-      { id: "medium_tank_heavy_plasma", name: "Heavy Plasma Gun" },
+      { id: 'medium_tank_lmg', name: 'Light Machine Gun' },
+      { id: 'medium_tank_heavy_plasma', name: 'Heavy Plasma Gun' },
     ],
   },
   {
-    id: "medium_tank_turret_slot",
-    name: "Turret",
-    type: "slot",
-    slotName: "turret",
+    id: 'medium_tank_turret_slot',
+    name: 'Turret',
+    type: 'slot',
+    slotName: 'turret',
     choices: [
-      { id: "medium_tank_100mm", name: "100mm Cannon" },
-      { id: "medium_tank_at_laser", name: "Anti-tank Laser" },
+      { id: 'medium_tank_100mm', name: '100mm Cannon' },
+      { id: 'medium_tank_at_laser', name: 'Anti-tank Laser' },
     ],
   },
 ];
@@ -76,11 +76,11 @@ const baseStats = {
 };
 
 export const vehicleDefinitions = {
-  "Nomad Bike": {
-    slots: { veteran_skill: "None" },
+  'Nomad Bike': {
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "Nomad Bike",
+        name: 'Nomad Bike',
         baseStats: {
           points: 15,
           speed: 12,
@@ -90,16 +90,16 @@ export const vehicleDefinitions = {
           capacity: 0,
           ...baseStats,
         },
-        slots: { forward: "None" },
+        slots: { forward: 'None' },
         extras: [],
       },
     ],
   },
   Scouter: {
-    slots: { veteran_skill: "None" },
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "Scouter",
+        name: 'Scouter',
         baseStats: {
           points: 25,
           speed: 16,
@@ -109,16 +109,16 @@ export const vehicleDefinitions = {
           capacity: 0,
           ...baseStats,
         },
-        slots: { forward: "Light Machine Gun" },
+        slots: { forward: 'Light Machine Gun' },
         extras: [],
       },
     ],
   },
   Lancer: {
-    slots: { veteran_skill: "None" },
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "Lancer",
+        name: 'Lancer',
         baseStats: {
           points: 22,
           speed: 12,
@@ -128,16 +128,16 @@ export const vehicleDefinitions = {
           capacity: 0,
           ...baseStats,
         },
-        slots: { forward: "Plasma Rifle" },
+        slots: { forward: 'Plasma Rifle' },
         extras: [],
       },
     ],
   },
-  "Frontier Trike": {
-    slots: { veteran_skill: "None" },
+  'Frontier Trike': {
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "Frontier Trike",
+        name: 'Frontier Trike',
         baseStats: {
           points: 25,
           speed: 10,
@@ -147,16 +147,16 @@ export const vehicleDefinitions = {
           capacity: 0,
           ...baseStats,
         },
-        slots: { "Forward/Side": "Light Machine Gun" },
+        slots: { 'Forward/Side': 'Light Machine Gun' },
         extras: [],
       },
     ],
   },
-  "Raider Trike": {
-    slots: { veteran_skill: "None" },
+  'Raider Trike': {
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "Raider Trike",
+        name: 'Raider Trike',
         baseStats: {
           points: 25,
           speed: 15,
@@ -166,16 +166,16 @@ export const vehicleDefinitions = {
           capacity: 0,
           ...baseStats,
         },
-        slots: { "Forward/Side": "Light Machine Gun" },
+        slots: { 'Forward/Side': 'Light Machine Gun' },
         extras: [],
       },
     ],
   },
-  "Armored Car": {
-    slots: { veteran_skill: "None" },
+  'Armored Car': {
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "Armored Car",
+        name: 'Armored Car',
         baseStats: {
           points: 40,
           speed: 9,
@@ -185,16 +185,16 @@ export const vehicleDefinitions = {
           capacity: 0,
           ...baseStats,
         },
-        slots: { turret: "20mm Autocannon" },
+        slots: { turret: '20mm Autocannon' },
         extras: [],
       },
     ],
   },
   APC: {
-    slots: { veteran_skill: "None" },
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "APC",
+        name: 'APC',
         baseStats: {
           points: 40,
           speed: 8,
@@ -204,16 +204,16 @@ export const vehicleDefinitions = {
           capacity: 10,
           ...baseStats,
         },
-        slots: { turret: "Light Machine Gun" },
+        slots: { turret: 'Light Machine Gun' },
         extras: [],
       },
     ],
   },
-  "APC - Grav": {
-    slots: { veteran_skill: "None" },
+  'APC - Grav': {
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "APC - Grav",
+        name: 'APC - Grav',
         baseStats: {
           points: 45,
           speed: 9,
@@ -223,16 +223,16 @@ export const vehicleDefinitions = {
           capacity: 8,
           ...baseStats,
         },
-        slots: { turret: "Light Machine Gun" },
+        slots: { turret: 'Light Machine Gun' },
         extras: [],
       },
     ],
   },
   IFV: {
-    slots: { veteran_skill: "None" },
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "IFV",
+        name: 'IFV',
         baseStats: {
           points: 40,
           speed: 8,
@@ -242,16 +242,16 @@ export const vehicleDefinitions = {
           capacity: 6,
           ...baseStats,
         },
-        slots: { front: "Light Machine Gun", turret: "20mm Autocannon" },
+        slots: { front: 'Light Machine Gun', turret: '20mm Autocannon' },
         extras: [],
       },
     ],
   },
-  "IFV - Grav": {
-    slots: { veteran_skill: "None" },
+  'IFV - Grav': {
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "IFV - Grav",
+        name: 'IFV - Grav',
         baseStats: {
           points: 45,
           speed: 9,
@@ -261,16 +261,16 @@ export const vehicleDefinitions = {
           capacity: 5,
           ...baseStats,
         },
-        slots: { front: "Light Machine Gun", turret: "20mm Autocannon" },
+        slots: { front: 'Light Machine Gun', turret: '20mm Autocannon' },
         extras: [],
       },
     ],
   },
-  "Light Tank": {
-    slots: { veteran_skill: "None" },
+  'Light Tank': {
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "Light Tank",
+        name: 'Light Tank',
         baseStats: {
           points: 55,
           speed: 8,
@@ -281,19 +281,19 @@ export const vehicleDefinitions = {
           ...baseStats,
         },
         slots: {
-          front: "Light Machine Gun",
-          coaxial: "Light Machine Gun",
-          turret: "40mm Autocannon",
+          front: 'Light Machine Gun',
+          coaxial: 'Light Machine Gun',
+          turret: '40mm Autocannon',
         },
         extras: [],
       },
     ],
   },
-  "Light Tank - Grav": {
-    slots: { veteran_skill: "None" },
+  'Light Tank - Grav': {
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "Light Tank - Grav",
+        name: 'Light Tank - Grav',
         baseStats: {
           points: 70,
           speed: 7,
@@ -304,19 +304,19 @@ export const vehicleDefinitions = {
           ...baseStats,
         },
         slots: {
-          front: "Light Machine Gun",
-          coaxial: "Light Machine Gun",
-          turret: "40mm Autocannon",
+          front: 'Light Machine Gun',
+          coaxial: 'Light Machine Gun',
+          turret: '40mm Autocannon',
         },
         extras: [],
       },
     ],
   },
-  "Medium Tank": {
-    slots: { veteran_skill: "None" },
+  'Medium Tank': {
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "Medium Tank",
+        name: 'Medium Tank',
         baseStats: {
           points: 65,
           speed: 7,
@@ -327,19 +327,19 @@ export const vehicleDefinitions = {
           ...baseStats,
         },
         slots: {
-          front: "Light Machine Gun",
-          coaxial: "Light Machine Gun",
-          turret: "100mm Cannon",
+          front: 'Light Machine Gun',
+          coaxial: 'Light Machine Gun',
+          turret: '100mm Cannon',
         },
         extras: [],
       },
     ],
   },
-  "Medium Tank - Grav": {
-    slots: { veteran_skill: "None" },
+  'Medium Tank - Grav': {
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "Medium Tank - Grav",
+        name: 'Medium Tank - Grav',
         baseStats: {
           points: 75,
           speed: 8,
@@ -350,19 +350,19 @@ export const vehicleDefinitions = {
           ...baseStats,
         },
         slots: {
-          front: "Light Machine Gun",
-          coaxial: "Light Machine Gun",
-          turret: "100mm Cannon",
+          front: 'Light Machine Gun',
+          coaxial: 'Light Machine Gun',
+          turret: '100mm Cannon',
         },
         extras: [],
       },
     ],
   },
-  "Heavy Tank": {
-    slots: { veteran_skill: "None" },
+  'Heavy Tank': {
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "Heavy Tank",
+        name: 'Heavy Tank',
         baseStats: {
           points: 125,
           speed: 6,
@@ -373,19 +373,19 @@ export const vehicleDefinitions = {
           ...baseStats,
         },
         slots: {
-          front: "Light Machine Gun",
-          coaxial: "Light Machine Gun",
-          turret: "100mm Cannon",
+          front: 'Light Machine Gun',
+          coaxial: 'Light Machine Gun',
+          turret: '100mm Cannon',
         },
         extras: [],
       },
     ],
   },
-  "Light Walker": {
-    slots: { veteran_skill: "None" },
+  'Light Walker': {
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "Light Walker",
+        name: 'Light Walker',
         baseStats: {
           points: 44,
           speed: 5,
@@ -395,16 +395,16 @@ export const vehicleDefinitions = {
           capacity: 0,
           ...baseStats,
         },
-        slots: { arm1: "20mm Autocannon", arm2: "Flame Projector" },
+        slots: { arm1: '20mm Autocannon', arm2: 'Flame Projector' },
         extras: [],
       },
     ],
   },
-  "Heavy Walker": {
-    slots: { veteran_skill: "None" },
+  'Heavy Walker': {
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "Heavy Walker",
+        name: 'Heavy Walker',
         baseStats: {
           points: 55,
           speed: 4,
@@ -414,16 +414,16 @@ export const vehicleDefinitions = {
           capacity: 0,
           ...baseStats,
         },
-        slots: { shoulder: "Pulse Laser", arm: "Light Machine Gun" },
+        slots: { shoulder: 'Pulse Laser', arm: 'Light Machine Gun' },
         extras: [],
       },
     ],
   },
-  "CIM-L": {
-    slots: { veteran_skill: "None" },
+  'CIM-L': {
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "CIM-L",
+        name: 'CIM-L',
         baseStats: {
           points: 21,
           speed: 6,
@@ -433,16 +433,16 @@ export const vehicleDefinitions = {
           capacity: 0,
           ...baseStats,
         },
-        slots: { weapon: "Hyper Blaster" },
+        slots: { weapon: 'Hyper Blaster' },
         extras: [],
       },
     ],
   },
-  "CIM-APP": {
-    slots: { veteran_skill: "None" },
+  'CIM-APP': {
+    slots: { veteran_skill: 'None' },
     models: [
       {
-        name: "CIM-APP",
+        name: 'CIM-APP',
         baseStats: {
           points: 25,
           speed: 4,
@@ -452,7 +452,7 @@ export const vehicleDefinitions = {
           capacity: 0,
           ...baseStats,
         },
-        slots: { weapon: "20mm Autocannon" },
+        slots: { weapon: '20mm Autocannon' },
         extras: [],
       },
     ],
@@ -460,16 +460,16 @@ export const vehicleDefinitions = {
 } satisfies Record<string, UnitTypeDef>;
 
 export const vehicleOptions = {
-  "Nomad Bike": [
+  'Nomad Bike': [
     vehicleVeteranSkill,
     {
-      id: "nomad_forward_slot",
-      name: "Forward",
-      type: "slot",
-      slotName: "forward",
+      id: 'nomad_forward_slot',
+      name: 'Forward',
+      type: 'slot',
+      slotName: 'forward',
       choices: [
-        { id: "nomad_none", name: "None" },
-        { id: "nomad_lmg", name: "Light Machine Gun" },
+        { id: 'nomad_none', name: 'None' },
+        { id: 'nomad_lmg', name: 'Light Machine Gun' },
       ],
     },
   ],
@@ -477,88 +477,88 @@ export const vehicleOptions = {
   Lancer: [
     vehicleVeteranSkill,
     {
-      id: "lancer_forward_slot",
-      name: "Forward",
-      type: "slot",
-      slotName: "forward",
+      id: 'lancer_forward_slot',
+      name: 'Forward',
+      type: 'slot',
+      slotName: 'forward',
       choices: [
-        { id: "lancer_plasma", name: "Plasma Rifle" },
-        { id: "lancer_fury", name: "Fury Rifle" },
+        { id: 'lancer_plasma', name: 'Plasma Rifle' },
+        { id: 'lancer_fury', name: 'Fury Rifle' },
       ],
     },
   ],
-  "Frontier Trike": [vehicleVeteranSkill],
-  "Raider Trike": [
+  'Frontier Trike': [vehicleVeteranSkill],
+  'Raider Trike': [
     vehicleVeteranSkill,
     {
-      id: "raider_forward_side_slot",
-      name: "Forward/Side",
-      type: "slot",
-      slotName: "Forward/Side",
+      id: 'raider_forward_side_slot',
+      name: 'Forward/Side',
+      type: 'slot',
+      slotName: 'Forward/Side',
       choices: [
-        { id: "raider_lmg", name: "Light Machine Gun" },
-        { id: "raider_fury", name: "Fury Rifle" },
+        { id: 'raider_lmg', name: 'Light Machine Gun' },
+        { id: 'raider_fury', name: 'Fury Rifle' },
       ],
     },
   ],
-  "Armored Car": [vehicleVeteranSkill],
+  'Armored Car': [vehicleVeteranSkill],
   APC: [vehicleVeteranSkill],
-  "APC - Grav": [vehicleVeteranSkill],
+  'APC - Grav': [vehicleVeteranSkill],
   IFV: ifvOptions,
-  "IFV - Grav": ifvOptions,
-  "Light Tank": lightTankOptions,
-  "Light Tank - Grav": lightTankOptions,
-  "Medium Tank": mediumTankOptions,
-  "Medium Tank - Grav": mediumTankOptions,
-  "Heavy Tank": [
+  'IFV - Grav': ifvOptions,
+  'Light Tank': lightTankOptions,
+  'Light Tank - Grav': lightTankOptions,
+  'Medium Tank': mediumTankOptions,
+  'Medium Tank - Grav': mediumTankOptions,
+  'Heavy Tank': [
     vehicleVeteranSkill,
     {
-      id: "heavy_tank_front_slot",
-      name: "Front Weapon",
-      type: "slot",
-      slotName: "front",
+      id: 'heavy_tank_front_slot',
+      name: 'Front Weapon',
+      type: 'slot',
+      slotName: 'front',
       choices: [
-        { id: "heavy_front_lmg", name: "Light Machine Gun" },
-        { id: "heavy_front_plasma", name: "Heavy Plasma Gun" },
+        { id: 'heavy_front_lmg', name: 'Light Machine Gun' },
+        { id: 'heavy_front_plasma', name: 'Heavy Plasma Gun' },
       ],
     },
     {
-      id: "heavy_tank_coax_slot",
-      name: "Coaxial Weapon",
-      type: "slot",
-      slotName: "coaxial",
+      id: 'heavy_tank_coax_slot',
+      name: 'Coaxial Weapon',
+      type: 'slot',
+      slotName: 'coaxial',
       choices: [
-        { id: "heavy_coax_lmg", name: "Light Machine Gun" },
-        { id: "heavy_coax_plasma", name: "Heavy Plasma Gun" },
+        { id: 'heavy_coax_lmg', name: 'Light Machine Gun' },
+        { id: 'heavy_coax_plasma', name: 'Heavy Plasma Gun' },
       ],
     },
   ],
-  "Light Walker": [
+  'Light Walker': [
     vehicleVeteranSkill,
     {
-      id: "walker_arm2_slot",
-      name: "Arm 2 Weapon",
-      type: "slot",
-      slotName: "arm2",
+      id: 'walker_arm2_slot',
+      name: 'Arm 2 Weapon',
+      type: 'slot',
+      slotName: 'arm2',
       choices: [
-        { id: "walker_flame", name: "Flame Projector" },
-        { id: "walker_fusion", name: "Fusion Rifle" },
+        { id: 'walker_flame', name: 'Flame Projector' },
+        { id: 'walker_fusion', name: 'Fusion Rifle' },
       ],
     },
   ],
-  "Heavy Walker": [vehicleVeteranSkill],
-  "CIM-L": [
+  'Heavy Walker': [vehicleVeteranSkill],
+  'CIM-L': [
     vehicleVeteranSkill,
     {
-      id: "ciml_weapon_slot",
-      name: "Weapon",
-      type: "slot",
-      slotName: "weapon",
+      id: 'ciml_weapon_slot',
+      name: 'Weapon',
+      type: 'slot',
+      slotName: 'weapon',
       choices: [
-        { id: "ciml_hyper", name: "Hyper Blaster" },
-        { id: "ciml_fury", name: "Fury Rifle" },
+        { id: 'ciml_hyper', name: 'Hyper Blaster' },
+        { id: 'ciml_fury', name: 'Fury Rifle' },
       ],
     },
   ],
-  "CIM-APP": [],
+  'CIM-APP': [],
 } satisfies Record<string, UnitOptionDef[]>;

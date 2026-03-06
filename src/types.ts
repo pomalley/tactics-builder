@@ -1,6 +1,6 @@
-import type { EquipmentName } from "./data/equipment";
-import type { UnitType } from "./data/units";
-import type { Lifeform } from "./data/lifeforms";
+import type { EquipmentName } from './data/equipment';
+import type { UnitType } from './data/units';
+import type { Lifeform } from './data/lifeforms';
 export type { UnitType };
 
 // prettier-ignore
@@ -20,10 +20,10 @@ export interface ModelStats {
 }
 
 export interface WeaponStats {
-    range: number | null;
-    shots: number | null;
-    damage: number | null;
-    bonusDamage?: number | null;
+  range: number | null;
+  shots: number | null;
+  damage: number | null;
+  bonusDamage?: number | null;
 }
 
 export interface EquipmentDef {
@@ -71,7 +71,7 @@ export interface Unit {
 export interface UnitOptionDef {
   id: string;
   name: string;
-  type?: "toggle" | "slot"; // default: 'toggle'
+  type?: 'toggle' | 'slot'; // default: 'toggle'
   slotName?: string; // for type='slot': which slot this controls
   choices?: UnitOptionDef[];
   modifications?: {

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import type { UnitType } from "../types";
-import { lifeformStats, type Lifeform } from "../data/lifeforms";
-import { unitGroups, unitOptions } from "../data/units";
-import ModelItem from "./ModelItem.vue";
+import { computed } from 'vue';
+import type { UnitType } from '../types';
+import { lifeformStats, type Lifeform } from '../data/lifeforms';
+import { unitGroups, unitOptions } from '../data/units';
+import ModelItem from './ModelItem.vue';
 import {
   appState,
   armyState,
@@ -18,21 +18,21 @@ import {
   removeSlotFromUnit,
   addExtraToUnit,
   removeExtraFromUnit,
-} from "../store";
+} from '../store';
 
-import EquipmentManager from "./EquipmentManager.vue";
-import { getOptionDefaultLabel, getChoicePointsLabel, getOptionPointsLabel } from "../logic";
+import EquipmentManager from './EquipmentManager.vue';
+import { getOptionDefaultLabel, getChoicePointsLabel, getOptionPointsLabel } from '../logic';
 
 const lifeformTypes = Object.keys(lifeformStats) as Lifeform[];
 
-const unit = computed(() => armyState.units.find(u => u.id === appState.selectedUnitId));
+const unit = computed(() => armyState.units.find((u) => u.id === appState.selectedUnitId));
 
 const unitPoints = computed(() => {
   return unit.value ? calculateUnitPoints(unit.value) : 0;
 });
 
 const availableOptions = computed(() => {
-  return unit.value ? (unitOptions[unit.value.type] || []) : [];
+  return unit.value ? unitOptions[unit.value.type] || [] : [];
 });
 
 const onTypeChange = (event: Event) => {
@@ -67,11 +67,7 @@ const onLifeformChange = (event: Event) => {
         <div class="setting-group">
           <label>Type:</label>
           <select :value="unit.type" @change="onTypeChange">
-            <optgroup
-              v-for="group in unitGroups"
-              :key="group.label"
-              :label="group.label"
-            >
+            <optgroup v-for="group in unitGroups" :key="group.label" :label="group.label">
               <option v-for="type in group.types" :key="type" :value="type">
                 {{ type }}
               </option>
@@ -90,17 +86,20 @@ const onLifeformChange = (event: Event) => {
 
       <div class="unit-options" v-if="availableOptions.length > 0">
         <h4>Unit Options</h4>
-        <div
-          v-for="opt in availableOptions"
-          :key="opt.id"
-          class="option-item"
-        >
+        <div v-for="opt in availableOptions" :key="opt.id" class="option-item">
           <template v-if="opt.choices">
             <div class="option-select">
               <label :for="opt.id">{{ opt.name }}:</label>
               <select
                 :id="opt.id"
-                @change="(e) => selectUnitOptionChoice(unit!.id, opt.id, (e.target as HTMLSelectElement).value || null)"
+                @change="
+                  (e) =>
+                    selectUnitOptionChoice(
+                      unit!.id,
+                      opt.id,
+                      (e.target as HTMLSelectElement).value || null
+                    )
+                "
               >
                 <option v-if="opt.type !== 'slot'" value="">
                   {{ getOptionDefaultLabel(opt, unit) }}
@@ -124,7 +123,7 @@ const onLifeformChange = (event: Event) => {
                   :checked="unit.selectedOptions.includes(opt.id)"
                   @change="toggleUnitOption(unit!.id, opt.id)"
                 />
-                 {{ opt.name }}{{ getOptionPointsLabel(opt) }}
+                {{ opt.name }}{{ getOptionPointsLabel(opt) }}
               </label>
             </div>
           </template>
@@ -152,7 +151,11 @@ const onLifeformChange = (event: Event) => {
             @remove="removeModelFromUnit(unit!.id, $event)"
           />
         </div>
-        <button v-if="armyState.freeEdit" @click="addModelToUnit(unit.id)" class="btn btn-secondary add-model-btn">
+        <button
+          v-if="armyState.freeEdit"
+          @click="addModelToUnit(unit.id)"
+          class="btn btn-secondary add-model-btn"
+        >
           + Add Model
         </button>
       </div>
@@ -222,13 +225,15 @@ const onLifeformChange = (event: Event) => {
   width: 100%;
 }
 
-.unit-options, .unit-equipment-container {
+.unit-options,
+.unit-equipment-container {
   margin-bottom: var(--space-lg);
   padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--border-color);
 }
 
-.unit-options h4, .unit-equipment-container h4 {
+.unit-options h4,
+.unit-equipment-container h4 {
   margin: 0 0 var(--space-md) 0;
   color: var(--text-muted);
 }

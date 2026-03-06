@@ -1,44 +1,45 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import draggable from 'vuedraggable'
-import { 
-  appState, 
-  armyState, 
-  removeUnit, 
-  totalArmyPoints, 
+import { computed } from 'vue';
+import draggable from 'vuedraggable';
+import {
+  appState,
+  armyState,
+  removeUnit,
+  totalArmyPoints,
   updateArmyName,
   updateArmyDefaultLifeform,
   selectUnit,
   moveUnit,
   updateUnitsOrder,
-  calculateUnitPoints
-} from '../store'
-import { lifeforms } from '../data/lifeforms'
+  calculateUnitPoints,
+} from '../store';
+import { lifeforms } from '../data/lifeforms';
 
 const getUnitPoints = (unit: any) => calculateUnitPoints(unit);
 
 const draggableUnits = computed({
   get: () => armyState.units,
-  set: (value) => updateUnitsOrder(value)
-})
+  set: (value) => updateUnitsOrder(value),
+});
 </script>
 
 <template>
   <div class="army-list card">
-
-
     <div class="army-header">
       <div class="army-name-row">
-        <input 
-          type="text" 
-          :value="armyState.name" 
+        <input
+          type="text"
+          :value="armyState.name"
           @input="(e) => updateArmyName(armyState.id, (e.target as HTMLInputElement).value)"
-          class="input-header army-name-input" 
-          placeholder="Army Name" 
+          class="input-header army-name-input"
+          placeholder="Army Name"
         />
-        <select 
+        <select
           :value="armyState.defaultLifeform"
-          @change="(e) => updateArmyDefaultLifeform(armyState.id, (e.target as HTMLSelectElement).value as any)"
+          @change="
+            (e) =>
+              updateArmyDefaultLifeform(armyState.id, (e.target as HTMLSelectElement).value as any)
+          "
           class="lifeform-select"
         >
           <option v-for="lf in lifeforms" :key="lf" :value="lf">{{ lf }}</option>
@@ -49,36 +50,58 @@ const draggableUnits = computed({
       </div>
     </div>
 
-    <draggable 
-      v-model="draggableUnits" 
+    <draggable
+      v-model="draggableUnits"
       item-key="id"
       handle=".drag-handle"
       class="units-list"
       ghost-class="ghost"
     >
       <template #item="{ element: unit, index }">
-        <div 
+        <div
           class="unit-summary-card"
-          :class="{ 'selected': appState.selectedUnitId === unit.id }"
+          :class="{ selected: appState.selectedUnitId === unit.id }"
           @click="selectUnit(unit.id)"
         >
           <div class="drag-handle" @click.stop title="Drag to reorder">⋮⋮</div>
           <div class="unit-summary-main">
             <div class="unit-summary-name">{{ unit.name }}</div>
-            <div class="unit-summary-details">{{ unit.type }}{{ unit.lifeform ? ' - ' + unit.lifeform : '' }}</div>
+            <div class="unit-summary-details">
+              {{ unit.type }}{{ unit.lifeform ? ' - ' + unit.lifeform : '' }}
+            </div>
           </div>
           <div class="unit-summary-actions">
             <span class="unit-summary-points">{{ getUnitPoints(unit) }} pts</span>
             <div class="action-buttons">
-              <button @click.stop="moveUnit(unit.id, 'up')" :disabled="index === 0" class="btn btn-ghost move-btn" title="Move Up">↑</button>
-              <button @click.stop="moveUnit(unit.id, 'down')" :disabled="index === armyState.units.length - 1" class="btn btn-ghost move-btn" title="Move Down">↓</button>
-              <button @click.stop="removeUnit(unit.id)" class="btn btn-ghost delete-btn" title="Delete Unit">✕</button>
+              <button
+                @click.stop="moveUnit(unit.id, 'up')"
+                :disabled="index === 0"
+                class="btn btn-ghost move-btn"
+                title="Move Up"
+              >
+                ↑
+              </button>
+              <button
+                @click.stop="moveUnit(unit.id, 'down')"
+                :disabled="index === armyState.units.length - 1"
+                class="btn btn-ghost move-btn"
+                title="Move Down"
+              >
+                ↓
+              </button>
+              <button
+                @click.stop="removeUnit(unit.id)"
+                class="btn btn-ghost delete-btn"
+                title="Delete Unit"
+              >
+                ✕
+              </button>
             </div>
           </div>
         </div>
       </template>
     </draggable>
-    
+
     <div v-if="armyState.units.length === 0" class="empty-state">
       <p>Your army has no units.</p>
       <p class="text-muted">Select a unit from the catalog to add it to your roster.</p>
@@ -92,8 +115,6 @@ const draggableUnits = computed({
   flex-direction: column;
   height: 100%;
 }
-
-
 
 .army-header {
   display: flex;
@@ -160,7 +181,9 @@ const draggableUnits = computed({
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: border-color 0.2s, transform 0.1s;
+  transition:
+    border-color 0.2s,
+    transform 0.1s;
 }
 
 .unit-summary-card:hover {
@@ -237,7 +260,7 @@ const draggableUnits = computed({
     opacity: 0;
     transition: opacity 0.2s;
   }
-  
+
   .unit-summary-card:hover .action-buttons,
   .unit-summary-card.selected .action-buttons {
     visibility: visible;

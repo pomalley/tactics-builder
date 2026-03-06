@@ -1,325 +1,336 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { nextTick } from 'vue'
-import { 
-    appState,
-    armyState, 
-    addUnitWithType, 
-    removeUnit,
-    moveUnit,
-    updateUnitsOrder,
-    updateUnitName,
-    changeUnitLifeform,
-    addModelToUnit,
-    removeModelFromUnit,
-    updateModelName,
-    updateModelClass,
-    addSlotToModel,
-    removeSlotFromModel,
-    addExtraToModel,
-    removeExtraFromModel,
-    toggleUnitOption, 
-    selectUnitOptionChoice, 
-    calculateModelPoints, 
-    totalArmyPoints,
-    changeUnitType,
-    calculateUnitPoints,
-    addArmy,
-    selectArmy,
-    removeArmy,
-    updateArmyName,
-    updateArmyDefaultLifeform,
-    resetStore
-} from './store'
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { nextTick } from 'vue';
+import {
+  appState,
+  armyState,
+  addUnitWithType,
+  removeUnit,
+  moveUnit,
+  updateUnitsOrder,
+  updateUnitName,
+  changeUnitLifeform,
+  addModelToUnit,
+  removeModelFromUnit,
+  updateModelName,
+  updateModelClass,
+  addSlotToModel,
+  removeSlotFromModel,
+  addExtraToModel,
+  removeExtraFromModel,
+  toggleUnitOption,
+  selectUnitOptionChoice,
+  calculateModelPoints,
+  totalArmyPoints,
+  changeUnitType,
+  calculateUnitPoints,
+  addArmy,
+  selectArmy,
+  removeArmy,
+  updateArmyName,
+  updateArmyDefaultLifeform,
+  resetStore,
+} from './store';
 
 describe('Army Store', () => {
-    beforeEach(() => {
-        resetStore({
-            armies: [{
-                id: 'test-army-id',
-                name: 'Test Army',
-                units: [],
-                freeEdit: false,
-                defaultLifeform: 'Human'
-            }],
-            currentArmyId: 'test-army-id',
-            selectedUnitId: null
-        })
-    })
+  beforeEach(() => {
+    resetStore({
+      armies: [
+        {
+          id: 'test-army-id',
+          name: 'Test Army',
+          units: [],
+          freeEdit: false,
+          defaultLifeform: 'Human',
+        },
+      ],
+      currentArmyId: 'test-army-id',
+      selectedUnitId: null,
+    });
+  });
 
-    describe('Multi-Army Management', () => {
-        it('should add a new army and select it', () => {
-            addArmy()
-            expect(appState.armies.length).toBe(2)
-            expect(appState.currentArmyId).toBe(appState.armies[1].id)
-            expect(armyState.name).toBe('New Army')
-        })
+  describe('Multi-Army Management', () => {
+    it('should add a new army and select it', () => {
+      addArmy();
+      expect(appState.armies.length).toBe(2);
+      expect(appState.currentArmyId).toBe(appState.armies[1].id);
+      expect(armyState.name).toBe('New Army');
+    });
 
-        it('should select an army by id', () => {
-            const firstId = appState.currentArmyId
-            addArmy()
-            const secondId = appState.currentArmyId
-            
-            selectArmy(firstId!)
-            expect(appState.currentArmyId).toBe(firstId)
-            
-            selectArmy(secondId!)
-            expect(appState.currentArmyId).toBe(secondId)
-        })
+    it('should select an army by id', () => {
+      const firstId = appState.currentArmyId;
+      addArmy();
+      const secondId = appState.currentArmyId;
 
-        it('should remove an army', () => {
-            addArmy()
-            const secondId = appState.currentArmyId
-            removeArmy(secondId!)
-            expect(appState.armies.length).toBe(1)
-            expect(appState.currentArmyId).toBe('test-army-id')
-        })
+      selectArmy(firstId!);
+      expect(appState.currentArmyId).toBe(firstId);
 
-        it('should not remove the last army', () => {
-            removeArmy('test-army-id')
-            expect(appState.armies.length).toBe(1)
-        })
+      selectArmy(secondId!);
+      expect(appState.currentArmyId).toBe(secondId);
+    });
 
-        it('should update army name', () => {
-            updateArmyName('test-army-id', 'Updated Army Name')
-            expect(armyState.name).toBe('Updated Army Name')
-        })
+    it('should remove an army', () => {
+      addArmy();
+      const secondId = appState.currentArmyId;
+      removeArmy(secondId!);
+      expect(appState.armies.length).toBe(1);
+      expect(appState.currentArmyId).toBe('test-army-id');
+    });
 
-        it('should update army default lifeform and inherit it for new units', () => {
-            updateArmyDefaultLifeform('test-army-id', 'Feral')
-            expect(armyState.defaultLifeform).toBe('Feral')
-            
-            addUnitWithType('Infantry')
-            expect(armyState.units[0].lifeform).toBe('Feral')
-        })
+    it('should not remove the last army', () => {
+      removeArmy('test-army-id');
+      expect(appState.armies.length).toBe(1);
+    });
 
-        it('should update totalArmyPoints when switching armies', () => {
-            // Army 1: 0 pts (initial state)
-            expect(totalArmyPoints.value).toBe(0)
+    it('should update army name', () => {
+      updateArmyName('test-army-id', 'Updated Army Name');
+      expect(armyState.name).toBe('Updated Army Name');
+    });
 
-            addArmy() // Army 2
-            addUnitWithType('Infantry') // Add Infantry (82 pts)
-            expect(totalArmyPoints.value).toBe(82)
+    it('should update army default lifeform and inherit it for new units', () => {
+      updateArmyDefaultLifeform('test-army-id', 'Feral');
+      expect(armyState.defaultLifeform).toBe('Feral');
 
-            selectArmy('test-army-id') // Back to Army 1
-            expect(totalArmyPoints.value).toBe(0)
-        })
-    })
+      addUnitWithType('Infantry');
+      expect(armyState.units[0].lifeform).toBe('Feral');
+    });
 
-    describe('Migration and Initialization', () => {
-        it('should migrate legacy single-army data', () => {
-            const legacyData = {
-                name: 'Legacy Army',
-                freeEdit: true,
-                units: [
-                    { id: 'u1', name: 'Legacy Unit', type: 'Infantry', lifeform: 'Human', selectedOptions: [], models: [], slots: {}, extras: [] }
-                ]
-            }
-            
-            // We can't easily re-run the top-level reactive() call in the store module,
-            // but we can verify the logic by passing it through resetStore if we updated it,
-            // or by checking if appState handles migration-like objects.
-            // For now, let's test that resetStore with a full AppState works as expected.
-            resetStore({
-                armies: [{ ...legacyData, id: 'migrated-id' } as any],
-                currentArmyId: 'migrated-id',
-                selectedUnitId: null
-            })
+    it('should update totalArmyPoints when switching armies', () => {
+      // Army 1: 0 pts (initial state)
+      expect(totalArmyPoints.value).toBe(0);
 
-            expect(appState.armies.length).toBe(1)
-            expect(armyState.name).toBe('Legacy Army')
-            expect(armyState.units.length).toBe(1)
-        })
-    })
+      addArmy(); // Army 2
+      addUnitWithType('Infantry'); // Add Infantry (82 pts)
+      expect(totalArmyPoints.value).toBe(82);
 
-    describe('Unit Point Calculations', () => {
-        it('should calculate model points correctly', () => {
-            addUnitWithType('Infantry') // Default is Infantry for Human
-            const model = armyState.units[0].models[0] // Sergeant
-            // Human Minor Character (15) + Military Rifle (3) + Frag Grenade (1) = 19
-            expect(calculateModelPoints(model)).toBe(19)
-        })
+      selectArmy('test-army-id'); // Back to Army 1
+      expect(totalArmyPoints.value).toBe(0);
+    });
+  });
 
-        it('should deduplicate extras when multiple options add the same item', () => {
-            addUnitWithType('Infantry') // Add Infantry
-            const unit = armyState.units[0]
-            let trooper4 = unit.models.find(m => m.name === 'Trooper 4')!
-            
-            expect(trooper4.extras).toContain('Frag Grenade')
-            toggleUnitOption(unit.id, 'fog_grenades')
-            selectUnitOptionChoice(unit.id, 'infantry_support_slot', 'support_grenade_launcher')
-            
-            trooper4 = unit.models.find(m => m.name === 'Trooper 4')!
-            expect(trooper4.extras.filter(x => x === 'Fog Grenade').length).toBe(1)
-        })
+  describe('Migration and Initialization', () => {
+    it('should migrate legacy single-army data', () => {
+      const legacyData = {
+        name: 'Legacy Army',
+        freeEdit: true,
+        units: [
+          {
+            id: 'u1',
+            name: 'Legacy Unit',
+            type: 'Infantry',
+            lifeform: 'Human',
+            selectedOptions: [],
+            models: [],
+            slots: {},
+            extras: [],
+          },
+        ],
+      };
 
-        it('should calculate unit points correctly with unit-level slots (Weapon Team)', () => {
-            addUnitWithType('Infantry')
-            const unit = armyState.units[0]
-            changeUnitType(unit.id, 'Weapon Team')
-            // Gunner(11) + Loader1(11) + Loader2(11) + Laser Cannon(35) + Morale(2) = 70
-            expect(calculateUnitPoints(unit)).toBe(70)
-        })
+      // We can't easily re-run the top-level reactive() call in the store module,
+      // but we can verify the logic by passing it through resetStore if we updated it,
+      // or by checking if appState handles migration-like objects.
+      // For now, let's test that resetStore with a full AppState works as expected.
+      resetStore({
+        armies: [{ ...legacyData, id: 'migrated-id' } as any],
+        currentArmyId: 'migrated-id',
+        selectedUnitId: null,
+      });
 
-        it('should calculate unit points correctly for vehicles using baseStats (Nomad Bike)', () => {
-            addUnitWithType('Infantry')
-            const unit = armyState.units[0]
-            changeUnitType(unit.id, 'Nomad Bike')
-            selectUnitOptionChoice(unit.id, 'nomad_forward_slot', 'nomad_lmg')
-            // baseStats.points: 15 + LMG (10) = 25
-            expect(calculateUnitPoints(unit)).toBe(25)
-        })
+      expect(appState.armies.length).toBe(1);
+      expect(armyState.name).toBe('Legacy Army');
+      expect(armyState.units.length).toBe(1);
+    });
+  });
 
-        it('should calculate unit points for Heavy Tank and its swaps', () => {
-            addUnitWithType('Infantry')
-            const unit = armyState.units[0]
-            changeUnitType(unit.id, 'Heavy Tank')
-            // base 125 + LMG (10) + Coaxial LMG (10) + 100mm (55) = 200
-            expect(calculateUnitPoints(unit)).toBe(200)
+  describe('Unit Point Calculations', () => {
+    it('should calculate model points correctly', () => {
+      addUnitWithType('Infantry'); // Default is Infantry for Human
+      const model = armyState.units[0].models[0]; // Sergeant
+      // Human Minor Character (15) + Military Rifle (3) + Frag Grenade (1) = 19
+      expect(calculateModelPoints(model)).toBe(19);
+    });
 
-            selectUnitOptionChoice(unit.id, 'heavy_tank_front_slot', 'heavy_front_plasma')
-            // 200 - 10 + 20 = 210
-            expect(calculateUnitPoints(unit)).toBe(210)
-        })
-    })
+    it('should deduplicate extras when multiple options add the same item', () => {
+      addUnitWithType('Infantry'); // Add Infantry
+      const unit = armyState.units[0];
+      let trooper4 = unit.models.find((m) => m.name === 'Trooper 4')!;
 
-    describe('Unit Management', () => {
-        it('should add a unit with default models', () => {
-            addUnitWithType('Infantry')
-            expect(armyState.units.length).toBe(1)
-            expect(armyState.units[0].models.length).toBeGreaterThan(0)
-        })
+      expect(trooper4.extras).toContain('Frag Grenade');
+      toggleUnitOption(unit.id, 'fog_grenades');
+      selectUnitOptionChoice(unit.id, 'infantry_support_slot', 'support_grenade_launcher');
 
-        it('should remove a unit', () => {
-            addUnitWithType('Infantry')
-            addUnitWithType('Infantry')
-            const idToRemove = armyState.units[0].id
-            removeUnit(idToRemove)
-            expect(armyState.units.length).toBe(1)
-            expect(armyState.units[0].id).not.toBe(idToRemove)
-        })
+      trooper4 = unit.models.find((m) => m.name === 'Trooper 4')!;
+      expect(trooper4.extras.filter((x) => x === 'Fog Grenade').length).toBe(1);
+    });
 
-        it('should move units up and down', () => {
-            addUnitWithType('Infantry')
-            armyState.units[0].name = 'Unit 1'
-            addUnitWithType('Infantry')
-            armyState.units[1].name = 'Unit 2'
-            
-            const id2 = armyState.units[1].id
-            moveUnit(id2, 'up')
-            expect(armyState.units[0].name).toBe('Unit 2')
-            
-            moveUnit(id2, 'down')
-            expect(armyState.units[0].name).toBe('Unit 1')
-        })
+    it('should calculate unit points correctly with unit-level slots (Weapon Team)', () => {
+      addUnitWithType('Infantry');
+      const unit = armyState.units[0];
+      changeUnitType(unit.id, 'Weapon Team');
+      // Gunner(11) + Loader1(11) + Loader2(11) + Laser Cannon(35) + Morale(2) = 70
+      expect(calculateUnitPoints(unit)).toBe(70);
+    });
 
-        it('should update unit order via updateUnitsOrder', () => {
-            addUnitWithType('Infantry')
-            armyState.units[0].name = 'Unit 1'
-            addUnitWithType('Infantry')
-            armyState.units[1].name = 'Unit 2'
-            
-            const reversed = [...armyState.units].reverse()
-            updateUnitsOrder(reversed)
-            
-            expect(armyState.units[0].name).toBe('Unit 2')
-            expect(armyState.units[1].name).toBe('Unit 1')
-        })
+    it('should calculate unit points correctly for vehicles using baseStats (Nomad Bike)', () => {
+      addUnitWithType('Infantry');
+      const unit = armyState.units[0];
+      changeUnitType(unit.id, 'Nomad Bike');
+      selectUnitOptionChoice(unit.id, 'nomad_forward_slot', 'nomad_lmg');
+      // baseStats.points: 15 + LMG (10) = 25
+      expect(calculateUnitPoints(unit)).toBe(25);
+    });
 
-        it('should update unit name', () => {
-            addUnitWithType('Infantry')
-            updateUnitName(armyState.units[0].id, 'New Name')
-            expect(armyState.units[0].name).toBe('New Name')
-        })
+    it('should calculate unit points for Heavy Tank and its swaps', () => {
+      addUnitWithType('Infantry');
+      const unit = armyState.units[0];
+      changeUnitType(unit.id, 'Heavy Tank');
+      // base 125 + LMG (10) + Coaxial LMG (10) + 100mm (55) = 200
+      expect(calculateUnitPoints(unit)).toBe(200);
 
-        it('should change unit lifeform and propagate to models', () => {
-            addUnitWithType('Infantry')
-            const unit = armyState.units[0]
-            changeUnitLifeform(unit.id, 'Feral')
-            expect(unit.lifeform).toBe('Feral')
-            expect(unit.models[0].lifeform).toBe('Feral')
-        })
-    })
+      selectUnitOptionChoice(unit.id, 'heavy_tank_front_slot', 'heavy_front_plasma');
+      // 200 - 10 + 20 = 210
+      expect(calculateUnitPoints(unit)).toBe(210);
+    });
+  });
 
-    describe('Model Management', () => {
-        it('should add and remove models from unit', () => {
-            addUnitWithType('Infantry')
-            const unit = armyState.units[0]
-            const initialCount = unit.models.length
-            addModelToUnit(unit.id)
-            expect(unit.models.length).toBe(initialCount + 1)
-            
-            const modelId = unit.models[unit.models.length - 1].id
-            removeModelFromUnit(unit.id, modelId)
-            expect(unit.models.length).toBe(initialCount)
-        })
+  describe('Unit Management', () => {
+    it('should add a unit with default models', () => {
+      addUnitWithType('Infantry');
+      expect(armyState.units.length).toBe(1);
+      expect(armyState.units[0].models.length).toBeGreaterThan(0);
+    });
 
-        it('should update model details', () => {
-            addUnitWithType('Infantry')
-            const unit = armyState.units[0]
-            const model = unit.models[0]
+    it('should remove a unit', () => {
+      addUnitWithType('Infantry');
+      addUnitWithType('Infantry');
+      const idToRemove = armyState.units[0].id;
+      removeUnit(idToRemove);
+      expect(armyState.units.length).toBe(1);
+      expect(armyState.units[0].id).not.toBe(idToRemove);
+    });
 
-            updateModelName(unit.id, model.id, 'Special Sergeant')
-            expect(model.name).toBe('Special Sergeant')
+    it('should move units up and down', () => {
+      addUnitWithType('Infantry');
+      armyState.units[0].name = 'Unit 1';
+      addUnitWithType('Infantry');
+      armyState.units[1].name = 'Unit 2';
 
-            updateModelClass(unit.id, model.id, 'Major Character')
-            expect(model.class).toBe('Major Character')
-        })
+      const id2 = armyState.units[1].id;
+      moveUnit(id2, 'up');
+      expect(armyState.units[0].name).toBe('Unit 2');
 
-        it('should add/remove slots and extras from models', () => {
-            addUnitWithType('Infantry')
-            const unit = armyState.units[0]
-            const model = unit.models[0]
+      moveUnit(id2, 'down');
+      expect(armyState.units[0].name).toBe('Unit 1');
+    });
 
-            addSlotToModel(unit.id, model.id, 'extra_gun', 'Military Rifle')
-            expect(model.slots.extra_gun).toBe('Military Rifle')
+    it('should update unit order via updateUnitsOrder', () => {
+      addUnitWithType('Infantry');
+      armyState.units[0].name = 'Unit 1';
+      addUnitWithType('Infantry');
+      armyState.units[1].name = 'Unit 2';
 
-            removeSlotFromModel(unit.id, model.id, 'extra_gun')
-            expect(model.slots.extra_gun).toBeUndefined()
+      const reversed = [...armyState.units].reverse();
+      updateUnitsOrder(reversed);
 
-            addExtraToModel(unit.id, model.id, 'Shock Grenade')
-            expect(model.extras).toContain('Shock Grenade')
+      expect(armyState.units[0].name).toBe('Unit 2');
+      expect(armyState.units[1].name).toBe('Unit 1');
+    });
 
-            const index = model.extras.indexOf('Shock Grenade')
-            removeExtraFromModel(unit.id, model.id, index)
-            expect(model.extras).not.toContain('Shock Grenade')
-        })
-    })
+    it('should update unit name', () => {
+      addUnitWithType('Infantry');
+      updateUnitName(armyState.units[0].id, 'New Name');
+      expect(armyState.units[0].name).toBe('New Name');
+    });
 
-    describe('Persistence', () => {
-        it('should save to localStorage when state changes', async () => {
-            const setItemSpy = vi.spyOn(Storage.prototype, 'setItem')
-            addUnitWithType('Infantry')
-            await nextTick()
-            expect(setItemSpy).toHaveBeenCalled()
-            setItemSpy.mockRestore()
-        })
-    })
+    it('should change unit lifeform and propagate to models', () => {
+      addUnitWithType('Infantry');
+      const unit = armyState.units[0];
+      changeUnitLifeform(unit.id, 'Feral');
+      expect(unit.lifeform).toBe('Feral');
+      expect(unit.models[0].lifeform).toBe('Feral');
+    });
+  });
 
-    describe('Vehicle / No-Lifeform Units', () => {
-        it('should create a vehicle unit with no lifeform', () => {
-            addUnitWithType('Nomad Bike')
-            const unit = armyState.units[0]
-            expect(unit.lifeform).toBeUndefined()
-            expect(unit.models[0].lifeform).toBeUndefined()
-            expect(unit.models[0].class).toBeUndefined()
-            expect(unit.models[0].baseStats).toBeDefined()
-            expect(unit.models[0].baseStats!.points).toBe(15)
-        })
+  describe('Model Management', () => {
+    it('should add and remove models from unit', () => {
+      addUnitWithType('Infantry');
+      const unit = armyState.units[0];
+      const initialCount = unit.models.length;
+      addModelToUnit(unit.id);
+      expect(unit.models.length).toBe(initialCount + 1);
 
-        it('should calculate points from baseStats when no lifeform', () => {
-            addUnitWithType('Nomad Bike')
-            const model = armyState.units[0].models[0]
-            const pts = calculateModelPoints(model)
-            // baseStats.points (15) + equipment
-            expect(pts).toBe(15)
-        })
+      const modelId = unit.models[unit.models.length - 1].id;
+      removeModelFromUnit(unit.id, modelId);
+      expect(unit.models.length).toBe(initialCount);
+    });
 
-        it('should create an infantry unit with a lifeform', () => {
-            addUnitWithType('Infantry')
-            const unit = armyState.units[0]
-            expect(unit.lifeform).toBe('Human')
-            expect(unit.models[0].lifeform).toBe('Human')
-            expect(unit.models[0].class).toBeDefined()
-        })
-    })
-})
+    it('should update model details', () => {
+      addUnitWithType('Infantry');
+      const unit = armyState.units[0];
+      const model = unit.models[0];
+
+      updateModelName(unit.id, model.id, 'Special Sergeant');
+      expect(model.name).toBe('Special Sergeant');
+
+      updateModelClass(unit.id, model.id, 'Major Character');
+      expect(model.class).toBe('Major Character');
+    });
+
+    it('should add/remove slots and extras from models', () => {
+      addUnitWithType('Infantry');
+      const unit = armyState.units[0];
+      const model = unit.models[0];
+
+      addSlotToModel(unit.id, model.id, 'extra_gun', 'Military Rifle');
+      expect(model.slots.extra_gun).toBe('Military Rifle');
+
+      removeSlotFromModel(unit.id, model.id, 'extra_gun');
+      expect(model.slots.extra_gun).toBeUndefined();
+
+      addExtraToModel(unit.id, model.id, 'Shock Grenade');
+      expect(model.extras).toContain('Shock Grenade');
+
+      const index = model.extras.indexOf('Shock Grenade');
+      removeExtraFromModel(unit.id, model.id, index);
+      expect(model.extras).not.toContain('Shock Grenade');
+    });
+  });
+
+  describe('Persistence', () => {
+    it('should save to localStorage when state changes', async () => {
+      const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
+      addUnitWithType('Infantry');
+      await nextTick();
+      expect(setItemSpy).toHaveBeenCalled();
+      setItemSpy.mockRestore();
+    });
+  });
+
+  describe('Vehicle / No-Lifeform Units', () => {
+    it('should create a vehicle unit with no lifeform', () => {
+      addUnitWithType('Nomad Bike');
+      const unit = armyState.units[0];
+      expect(unit.lifeform).toBeUndefined();
+      expect(unit.models[0].lifeform).toBeUndefined();
+      expect(unit.models[0].class).toBeUndefined();
+      expect(unit.models[0].baseStats).toBeDefined();
+      expect(unit.models[0].baseStats!.points).toBe(15);
+    });
+
+    it('should calculate points from baseStats when no lifeform', () => {
+      addUnitWithType('Nomad Bike');
+      const model = armyState.units[0].models[0];
+      const pts = calculateModelPoints(model);
+      // baseStats.points (15) + equipment
+      expect(pts).toBe(15);
+    });
+
+    it('should create an infantry unit with a lifeform', () => {
+      addUnitWithType('Infantry');
+      const unit = armyState.units[0];
+      expect(unit.lifeform).toBe('Human');
+      expect(unit.models[0].lifeform).toBe('Human');
+      expect(unit.models[0].class).toBeDefined();
+    });
+  });
+});

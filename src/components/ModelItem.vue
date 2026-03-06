@@ -1,34 +1,40 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import type { Model, ModelClass } from "../types";
-import { 
-  calculateModelPoints, 
+import { computed } from 'vue';
+import type { Model, ModelClass } from '../types';
+import {
+  calculateModelPoints,
   getModelStats,
   armyState,
   updateModelClass,
   addSlotToModel,
   removeSlotFromModel,
   addExtraToModel,
-  removeExtraFromModel
-} from "../store";
+  removeExtraFromModel,
+} from '../store';
 
-import EquipmentManager from "./EquipmentManager.vue";
+import EquipmentManager from './EquipmentManager.vue';
 
 const props = defineProps<{
   model: Model;
   unitId: string;
 }>();
 
-const modelClasses: ModelClass[] = ['Civilian', 'Soldier', 'Minor Character', 'Major Character', 'Epic Character'];
+const modelClasses: ModelClass[] = [
+  'Civilian',
+  'Soldier',
+  'Minor Character',
+  'Major Character',
+  'Epic Character',
+];
 
 const emit = defineEmits<{
-  (e: "remove", modelId: string): void;
+  (e: 'remove', modelId: string): void;
 }>();
 
 const stats = computed(() => getModelStats(props.model));
 
 const handleRemove = () => {
-  emit("remove", props.model.id);
+  emit('remove', props.model.id);
 };
 </script>
 
@@ -41,7 +47,12 @@ const handleRemove = () => {
         placeholder="Model Name"
         class="input-header model-name-input"
       />
-      <button v-if="armyState.freeEdit" @click="handleRemove" class="btn btn-ghost btn-mini remove-btn" title="Remove Model">
+      <button
+        v-if="armyState.freeEdit"
+        @click="handleRemove"
+        class="btn btn-ghost btn-mini remove-btn"
+        title="Remove Model"
+      >
         ✕
       </button>
     </div>
@@ -54,7 +65,18 @@ const handleRemove = () => {
       <div class="field" v-if="model.class">
         <label>Class</label>
         <template v-if="armyState.freeEdit">
-          <select :value="model.class" @change="(e) => updateModelClass(unitId, model.id, (e.target as HTMLSelectElement).value as ModelClass)" class="inline-select">
+          <select
+            :value="model.class"
+            @change="
+              (e) =>
+                updateModelClass(
+                  unitId,
+                  model.id,
+                  (e.target as HTMLSelectElement).value as ModelClass
+                )
+            "
+            class="inline-select"
+          >
             <option v-for="cls in modelClasses" :key="cls" :value="cls">{{ cls }}</option>
           </select>
         </template>
@@ -70,17 +92,35 @@ const handleRemove = () => {
     </div>
 
     <div class="model-stats" v-if="stats">
-      <div class="stat-box" title="Speed"><span class="stat-label">SPD</span><span class="stat-value">{{ stats.speed }}"</span></div>
-      <div class="stat-box" title="Reaction"><span class="stat-label">REA</span><span class="stat-value">{{ stats.reaction }}</span></div>
-      <div class="stat-box" title="Combat Skill"><span class="stat-label">CS</span><span class="stat-value">{{ stats.combatSkill }}</span></div>
-      <div class="stat-box" title="Toughness"><span class="stat-label">TGH</span><span class="stat-value">{{ stats.toughness }}</span></div>
-      <div class="stat-box" title="Kill Points"><span class="stat-label">KP</span><span class="stat-value">{{ stats.killPoints }}</span></div>
-      <div class="stat-box" title="Savvy"><span class="stat-label">SAV</span><span class="stat-value">{{ stats.savvy }}</span></div>
-      <div class="stat-box" title="Training"><span class="stat-label">TRN</span><span class="stat-value">{{ stats.training }}</span></div>
-      
+      <div class="stat-box" title="Speed">
+        <span class="stat-label">SPD</span><span class="stat-value">{{ stats.speed }}"</span>
+      </div>
+      <div class="stat-box" title="Reaction">
+        <span class="stat-label">REA</span><span class="stat-value">{{ stats.reaction }}</span>
+      </div>
+      <div class="stat-box" title="Combat Skill">
+        <span class="stat-label">CS</span><span class="stat-value">{{ stats.combatSkill }}</span>
+      </div>
+      <div class="stat-box" title="Toughness">
+        <span class="stat-label">TGH</span><span class="stat-value">{{ stats.toughness }}</span>
+      </div>
+      <div class="stat-box" title="Kill Points">
+        <span class="stat-label">KP</span><span class="stat-value">{{ stats.killPoints }}</span>
+      </div>
+      <div class="stat-box" title="Savvy">
+        <span class="stat-label">SAV</span><span class="stat-value">{{ stats.savvy }}</span>
+      </div>
+      <div class="stat-box" title="Training">
+        <span class="stat-label">TRN</span><span class="stat-value">{{ stats.training }}</span>
+      </div>
+
       <template v-if="stats?.crew !== undefined">
-        <div class="stat-box" title="Crew"><span class="stat-label">CRW</span><span class="stat-value">{{ stats.crew }}</span></div>
-        <div class="stat-box" title="Capacity"><span class="stat-label">CAP</span><span class="stat-value">{{ stats.capacity }}</span></div>
+        <div class="stat-box" title="Crew">
+          <span class="stat-label">CRW</span><span class="stat-value">{{ stats.crew }}</span>
+        </div>
+        <div class="stat-box" title="Capacity">
+          <span class="stat-label">CAP</span><span class="stat-value">{{ stats.capacity }}</span>
+        </div>
       </template>
     </div>
 

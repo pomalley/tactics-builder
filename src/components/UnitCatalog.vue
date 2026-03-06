@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { unitGroups } from '../data/units'
-import { addUnitWithType } from '../store'
+import { unitGroups } from '../data/units';
+import { addUnitWithType } from '../store';
 
 const onAddUnit = (type: string) => {
-  addUnitWithType(type as any)
-}
+  addUnitWithType(type as any);
+};
 </script>
 
 <template>
@@ -14,9 +14,9 @@ const onAddUnit = (type: string) => {
       <div v-for="group in unitGroups" :key="group.label" class="catalog-group">
         <h3>{{ group.label }}</h3>
         <div class="unit-buttons">
-          <button 
-            v-for="type in group.types" 
-            :key="type" 
+          <button
+            v-for="type in group.types"
+            :key="type"
             class="btn btn-secondary add-type-btn"
             @click="onAddUnit(type)"
             title="Add this unit to your army"
@@ -46,7 +46,7 @@ const onAddUnit = (type: string) => {
 .catalog-content {
   flex: 1;
   overflow-y: auto;
-  padding-right: var(--space-sm); 
+  padding-right: var(--space-sm);
   /* Allows scrollbar without shifting content too much if we customize it */
 }
 
@@ -70,7 +70,9 @@ const onAddUnit = (type: string) => {
   justify-content: flex-start;
   padding: var(--space-sm) var(--space-md);
   font-size: 0.95rem;
-  transition: transform 0.1s ease, background-color 0.2s;
+  transition:
+    transform 0.1s ease,
+    background-color 0.2s;
 }
 
 .add-type-btn:hover {
