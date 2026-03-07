@@ -297,7 +297,7 @@ describe('Army Store', () => {
 
   describe('Persistence', () => {
     it('should save to localStorage when state changes', async () => {
-      const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
+      const setItemSpy = vi.spyOn(localStorage, 'setItem');
       addUnitWithType('Infantry');
       await nextTick();
       expect(setItemSpy).toHaveBeenCalled();
