@@ -48,9 +48,9 @@ const onRemoveArmy = () => {
 <template>
   <div class="management-actions">
     <button @click="addArmy" class="btn btn-blue" title="New Army">+</button>
-    <button @click="onImportClick" class="btn btn-secondary" title="Import Army">⤓</button>
+    <button @click="onImportClick" class="btn btn-secondary" title="Import Army">⤒</button>
     <button @click="exportArmy(armyState.id)" class="btn btn-secondary" title="Export Army">
-      ⤒
+      ⤓
     </button>
     <button @click="onShareClick" class="btn btn-secondary" title="Share Army">🔗</button>
     <button
