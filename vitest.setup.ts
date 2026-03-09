@@ -1,8 +1,12 @@
 import { vi } from 'vitest';
 
-if (typeof localStorage === 'undefined' || !localStorage.getItem) {
+// Fix for "Warning: --localstorage-file was provided without a valid path"
+// this happens because Node.js 25+ has a native localStorage implementation
+// that warns when accessed if not configured. We override it with a mock.
+
+function createStorageMock() {
   const store: Record<string, string> = {};
-  const localStorageMock = {
+  return {
     getItem: vi.fn((key: string) => store[key] || null),
     setItem: vi.fn((key: string, value: string) => {
       store[key] = value.toString();
@@ -15,11 +19,33 @@ if (typeof localStorage === 'undefined' || !localStorage.getItem) {
         delete store[key];
       }
     }),
-    length: 0,
+    get length() {
+      return Object.keys(store).length;
+    },
     key: vi.fn((index: number) => Object.keys(store)[index] || null),
   };
-  Object.defineProperty(window, 'localStorage', {
-    value: localStorageMock,
-    writable: true,
-  });
 }
+
+const localStorageMock = createStorageMock();
+const sessionStorageMock = createStorageMock();
+
+// Define on both window (for JSDOM) and global (for Node environment)
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+  configurable: true,
+});
+
+Object.defineProperty(global, 'localStorage', {
+  value: localStorageMock,
+  configurable: true,
+});
+
+Object.defineProperty(window, 'sessionStorage', {
+  value: sessionStorageMock,
+  configurable: true,
+});
+
+Object.defineProperty(global, 'sessionStorage', {
+  value: sessionStorageMock,
+  configurable: true,
+});
