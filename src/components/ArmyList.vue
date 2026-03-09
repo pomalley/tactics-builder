@@ -225,6 +225,8 @@ const draggableUnits = computed({
   display: flex;
   flex-direction: column;
   gap: 2px;
+  width: 95%;
+  margin-left: 3px;
 }
 
 .unit-summary-name {
