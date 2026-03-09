@@ -26,6 +26,11 @@ import {
   removeArmy,
   updateArmyName,
   updateArmyDefaultLifeform,
+  exportArmy,
+  importArmy,
+  importFromShareLink,
+  getShareLink,
+  cloneArmy,
   resetStore,
 } from './store';
 import { calculateModelPoints, calculateUnitPoints } from './logic';
@@ -103,6 +108,18 @@ describe('Army Store', () => {
 
       selectArmy('test-army-id'); // Back to Army 1
       expect(totalArmyPoints.value).toBe(0);
+    });
+
+    it('should clone an army and generate new IDs', () => {
+      addUnitWithType('Infantry');
+      const army = appState.armies.find((a) => a.id === 'test-army-id')!;
+      const cloned = cloneArmy(army);
+
+      expect(cloned.name).toBe(army.name);
+      expect(cloned.id).not.toBe(army.id);
+      expect(cloned.units.length).toBe(army.units.length);
+      expect(cloned.units[0].id).not.toBe(army.units[0].id);
+      expect(cloned.units[0].models[0].id).not.toBe(army.units[0].models[0].id);
     });
   });
 
@@ -330,6 +347,112 @@ describe('Army Store', () => {
       expect(unit.lifeform).toBe('Human');
       expect(unit.models[0].lifeform).toBe('Human');
       expect(unit.models[0].class).toBeDefined();
+    });
+  });
+
+  describe('Export and Import', () => {
+    it('should export an army', () => {
+      const createElementSpy = vi.spyOn(document, 'createElement');
+      const clickSpy = vi.fn();
+      const setAttributeSpy = vi.fn();
+
+      createElementSpy.mockReturnValue({
+        setAttribute: setAttributeSpy,
+        click: clickSpy,
+      } as any);
+
+      exportArmy('test-army-id');
+
+      expect(createElementSpy).toHaveBeenCalledWith('a');
+      expect(setAttributeSpy).toHaveBeenCalledWith('download', 'Test_Army.json');
+      expect(clickSpy).toHaveBeenCalled();
+
+      createElementSpy.mockRestore();
+    });
+
+    it('should import an army and generate new IDs', () => {
+      const armyToImport = {
+        id: 'old-army-id',
+        name: 'Imported Army',
+        units: [
+          {
+            id: 'old-unit-id',
+            name: 'Imported Unit',
+            type: 'Infantry',
+            lifeform: 'Human',
+            selectedOptions: [],
+            models: [
+              {
+                id: 'old-model-id',
+                name: 'Imported Model',
+                class: 'Soldier',
+                slots: {},
+                extras: [],
+              },
+            ],
+            slots: {},
+            extras: [],
+          },
+        ],
+        freeEdit: false,
+        defaultLifeform: 'Human',
+      };
+
+      const result = importArmy(JSON.stringify(armyToImport));
+
+      expect(result).toBe(true);
+      expect(appState.armies.length).toBe(2);
+      const newArmy = appState.armies[1];
+      expect(newArmy.name).toBe('Imported Army');
+      expect(newArmy.id).not.toBe('old-army-id');
+      expect(newArmy.units[0].id).not.toBe('old-unit-id');
+      expect(newArmy.units[0].models[0].id).not.toBe('old-model-id');
+      expect(appState.currentArmyId).toBe(newArmy.id);
+    });
+
+    it('should fail to import invalid JSON', () => {
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+      const result = importArmy('invalid-json');
+
+      expect(result).toBe(false);
+      expect(consoleSpy).toHaveBeenCalled();
+      expect(alertSpy).toHaveBeenCalled();
+
+      consoleSpy.mockRestore();
+      alertSpy.mockRestore();
+    });
+
+    it('should fail to import an object that is not an army', () => {
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+      const result = importArmy(JSON.stringify({ some: 'other-object' }));
+
+      expect(result).toBe(false);
+      expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid army file format'));
+
+      consoleSpy.mockRestore();
+      alertSpy.mockRestore();
+    });
+
+    it('should generate a share link and import from it', async () => {
+      addUnitWithType('Infantry');
+      const armyId = appState.currentArmyId!;
+      
+      const link = await getShareLink(armyId);
+      expect(link).toContain('?army=');
+      
+      const url = new URL(link);
+      const base64 = url.searchParams.get('army')!;
+      
+      const importResult = await importFromShareLink(base64);
+      expect(importResult).toBe(true);
+      // It should be 2 because the importArmy logic in store.ts adds to appState.armies
+      // Initial state has 1 army.
+      expect(appState.armies.length).toBe(2);
+      expect(appState.armies[1].name).toBe('Test Army');
     });
   });
 });

@@ -3,7 +3,13 @@ import { ref, watch } from 'vue';
 import UnitCatalog from './components/UnitCatalog.vue';
 import ArmyList from './components/ArmyList.vue';
 import UnitEditor from './components/UnitEditor.vue';
-import { appState, armyState, addArmy, selectArmy, removeArmy, setFreeEdit } from './store';
+import ArmyManagement from './components/ArmyManagement.vue';
+import {
+  appState,
+  armyState,
+  selectArmy,
+  setFreeEdit,
+} from './store';
 
 const title = ref('5PFH: Tactics Army Builder');
 
@@ -25,12 +31,6 @@ const onArmySelect = (event: Event) => {
   const target = event.target as HTMLSelectElement;
   selectArmy(target.value);
 };
-
-const onRemoveArmy = () => {
-  if (confirm(`Are you sure you want to delete "${armyState.name}"?`)) {
-    removeArmy(armyState.id);
-  }
-};
 </script>
 
 <template>
@@ -38,35 +38,23 @@ const onRemoveArmy = () => {
     <header class="app-header">
       <div class="header-title">
         <h1>{{ title }}</h1>
-        <a
-          href="https://github.com/pomalley/tactics-builder"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="info-link"
-        >
+        <a href="https://github.com/pomalley/tactics-builder" target="_blank" rel="noopener noreferrer"
+          class="info-link">
           What is this?
         </a>
       </div>
 
       <!-- Mobile Navigation -->
       <nav class="mobile-nav">
-        <button
-          :class="['nav-btn', { active: activeMobileColumn === 'catalog' }]"
-          @click="activeMobileColumn = 'catalog'"
-        >
+        <button :class="['nav-btn', { active: activeMobileColumn === 'catalog' }]"
+          @click="activeMobileColumn = 'catalog'">
           Catalog
         </button>
-        <button
-          :class="['nav-btn', { active: activeMobileColumn === 'army' }]"
-          @click="activeMobileColumn = 'army'"
-        >
+        <button :class="['nav-btn', { active: activeMobileColumn === 'army' }]" @click="activeMobileColumn = 'army'">
           Army
         </button>
-        <button
-          :class="['nav-btn', { active: activeMobileColumn === 'unit' }]"
-          @click="activeMobileColumn = 'unit'"
-          :disabled="!appState.selectedUnitId"
-        >
+        <button :class="['nav-btn', { active: activeMobileColumn === 'unit' }]" @click="activeMobileColumn = 'unit'"
+          :disabled="!appState.selectedUnitId">
           Unit
         </button>
       </nav>
@@ -80,26 +68,13 @@ const onRemoveArmy = () => {
               {{ army.name }}
             </option>
           </select>
-          <div class="management-actions">
-            <button @click="addArmy" class="btn btn-blue" title="New Army">+</button>
-            <button
-              @click="onRemoveArmy"
-              class="btn btn-danger"
-              :disabled="appState.armies.length <= 1"
-              title="Delete Army"
-            >
-              🗑
-            </button>
-          </div>
+          <ArmyManagement />
         </div>
 
         <div class="toolbar-options">
           <label class="free-edit-label">
-            <input
-              type="checkbox"
-              :checked="armyState.freeEdit"
-              @change="(e) => setFreeEdit((e.target as HTMLInputElement).checked)"
-            />
+            <input type="checkbox" :checked="armyState.freeEdit"
+              @change="(e) => setFreeEdit((e.target as HTMLInputElement).checked)" />
             <span>Free Edit Mode</span>
           </label>
         </div>
@@ -107,10 +82,7 @@ const onRemoveArmy = () => {
     </header>
 
     <main class="layout-grid">
-      <div
-        class="column catalog-column"
-        :class="{ 'mobile-active': activeMobileColumn === 'catalog' }"
-      >
+      <div class="column catalog-column" :class="{ 'mobile-active': activeMobileColumn === 'catalog' }">
         <UnitCatalog />
       </div>
 
@@ -135,7 +107,8 @@ const onRemoveArmy = () => {
   height: 100vh;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* Prevent body scroll, handle in columns */
+  overflow: hidden;
+  /* Prevent body scroll, handle in columns */
 }
 
 /* Header Styles */
@@ -175,13 +148,15 @@ const onRemoveArmy = () => {
   margin-top: var(--space-xs);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-sm);
 }
 
 @media (min-width: 1024px) {
   .army-toolbar {
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
   }
 }
 
@@ -220,11 +195,6 @@ const onRemoveArmy = () => {
   .army-label {
     display: inline;
   }
-}
-
-.management-actions {
-  display: flex;
-  gap: var(--space-xs);
 }
 
 .army-selector-group select {
@@ -294,7 +264,8 @@ const onRemoveArmy = () => {
 
 .column {
   flex: 1;
-  display: none; /* Hidden by default on mobile */
+  display: none;
+  /* Hidden by default on mobile */
   height: 100%;
   padding: var(--space-md);
   overflow: hidden;
@@ -307,7 +278,8 @@ const onRemoveArmy = () => {
 
 /* Empty State on right column */
 .empty-editor-state {
-  display: none; /* Hide when not active completely */
+  display: none;
+  /* Hide when not active completely */
 }
 
 @media (min-width: 1024px) {

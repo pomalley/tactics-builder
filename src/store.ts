@@ -142,6 +142,123 @@ export const updateArmyDefaultLifeform = (id: string, lifeform: Lifeform) => {
   if (army) army.defaultLifeform = lifeform;
 };
 
+/**
+ * Creates a deep copy of an army with fresh IDs for the army, units, and models.
+ */
+export const cloneArmy = (army: Army): Army => {
+  return {
+    ...army,
+    id: crypto.randomUUID(),
+    units: army.units.map((u) => ({
+      ...u,
+      id: crypto.randomUUID(),
+      models: u.models.map((m) => ({
+        ...m,
+        id: crypto.randomUUID(),
+      })),
+    })),
+  };
+};
+
+export const exportArmy = (id: string) => {
+  const army = appState.armies.find((a) => a.id === id);
+  if (!army) return;
+
+  const dataStr = JSON.stringify(army, null, 2);
+  const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
+  const exportFileDefaultName = `${army.name.replace(/\s+/g, '_')}.json`;
+
+  const linkElement = document.createElement('a');
+  linkElement.setAttribute('href', dataUri);
+  linkElement.setAttribute('download', exportFileDefaultName);
+  linkElement.click();
+};
+
+export const importArmy = (jsonString: string) => {
+  try {
+    const imported = JSON.parse(jsonString) as Army;
+
+    // Basic validation
+    if (!imported.name || !Array.isArray(imported.units)) {
+      throw new Error('Invalid army file format');
+    }
+
+    const newArmy = cloneArmy(imported);
+
+    appState.armies.push(newArmy);
+    appState.currentArmyId = newArmy.id;
+    return true;
+  } catch (e) {
+    console.error('Failed to import army', e);
+    alert('Failed to import army: ' + (e instanceof Error ? e.message : 'Unknown error'));
+    return false;
+  }
+};
+
+/**
+ * Encodes an army into a compressed base64 string for sharing via URL.
+ */
+export const getShareLink = async (id: string): Promise<string> => {
+  const army = appState.armies.find((a) => a.id === id);
+  if (!army) return '';
+
+  // Deep clone and strip IDs to save space (cloneArmy will regenerate them on import)
+  const minimalArmy = {
+    ...army,
+    units: army.units.map((u) => ({
+      ...u,
+      id: undefined,
+      models: u.models.map((m) => ({ ...m, id: undefined })),
+    })),
+  };
+
+  const json = JSON.stringify(minimalArmy);
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(json);
+  
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(bytes);
+      controller.close();
+    },
+  }).pipeThrough(new CompressionStream('gzip'));
+
+  const compressedBuffer = await new Response(stream).arrayBuffer();
+
+  const base64 = btoa(String.fromCharCode(...new Uint8Array(compressedBuffer)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+
+  const url = new URL(window.location.origin + window.location.pathname);
+  url.searchParams.set('army', base64);
+  return url.toString();
+};
+
+/**
+ * Decodes and imports an army from a compressed base64 string.
+ */
+export const importFromShareLink = async (base64: string): Promise<boolean> => {
+  try {
+    const binString = atob(base64.replace(/-/g, '+').replace(/_/g, '/'));
+    const bytes = Uint8Array.from(binString, (m) => m.charCodeAt(0));
+
+    const stream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(bytes);
+        controller.close();
+      },
+    }).pipeThrough(new DecompressionStream('gzip'));
+
+    const decompressed = await new Response(stream).text();
+    return importArmy(decompressed);
+  } catch (e) {
+    console.error('Failed to decode shared army', e);
+    return false;
+  }
+};
+
 export const setFreeEdit = (val: boolean) => {
   armyState.freeEdit = val;
 };
